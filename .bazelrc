@@ -2,7 +2,7 @@
 build --incompatible_enable_cc_toolchain_resolution
 
 # Build cache
-build --experimental_guard_against_concurrent_changes
+build --guard_against_concurrent_changes
 
 # Disable `WORKSPACE`
 build --noenable_workspace

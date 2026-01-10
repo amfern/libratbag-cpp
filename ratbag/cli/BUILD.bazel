@@ -1,0 +1,8 @@
+cc_binary(
+    name = "cli",
+    srcs = ["cli.cpp"],
+    cxxopts = ["-std=c++23"],
+    deps = [
+        "//ratbag/lib",
+    ],
+)

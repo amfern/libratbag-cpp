@@ -19,3 +19,6 @@ https://gitlab.arm.com/bazel/pre-commit-hooks
 
 Install the hooks with `bazel run hooks:install`.
 Run the hooks with `baze run hooks`.
+
+
+TODO: use https://github.com/libusb/hidapi for cross os support
