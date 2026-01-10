@@ -1,0 +1,5 @@
+cc_library(
+    name = "libratbag",
+    srcs = ["libratbag.cpp"],
+    cxxopts = ["-std=c++23"],
+)
