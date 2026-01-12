@@ -6,110 +6,102 @@ namespace ratbag {
 namespace lib {
 namespace hidapi {
 
-  // TODO: the idea is to wrap around the memory and not copy it...
-  //       should i use std::span with custom itereator that uses the cur_dev->next? 
-  const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
-    std::vector<HIDDeviceInfo> deviceInfos;
-    struct hid_device_info *devs, *cur_dev;
-    devs = hid_enumerate(0, 0); // 0,0 = find all devices
+// TODO: the idea is to wrap around the memory and not copy it...
+//       should i use std::span with custom itereator that uses the
+//       cur_dev->next?
+const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
+  std::vector<HIDDeviceInfo> deviceInfos;
+  struct hid_device_info *devs, *cur_dev;
+  devs = hid_enumerate(0, 0); // 0,0 = find all devices
 
-    cur_dev = devs;
-    while (cur_dev) {
-      deviceInfos.emplace_back(*cur_dev);
-      cur_dev = cur_dev->next;
-    }
-
-    return deviceInfos; 
+  cur_dev = devs;
+  while (cur_dev) {
+    deviceInfos.emplace_back(*cur_dev);
+    cur_dev = cur_dev->next;
   }
 
-  HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
-      : device_info_(device_info),
-        HIDPath_(device_info_.path),
-        DeviceID_{ device_info_.vendor_id, device_info_.product_id }, // TODO: What is this syntax {...  } , were the {} overriden?
-        SerialNumber_(device_info_.serial_number),
-        ManufacturerString_(device_info_.manufacturer_string),
-        ProductString_(device_info_.product_string) {
+  return deviceInfos;
+}
+
+HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
+    : device_info_(device_info), HIDPath_(device_info_.path),
+      DeviceID_{device_info_.vendor_id,
+                device_info_.product_id}, // TODO: What is this syntax {...  } ,
+                                          // were the {} overriden?
+      SerialNumber_(device_info_.serial_number),
+      ManufacturerString_(device_info_.manufacturer_string),
+      ProductString_(device_info_.product_string) {}
+
+HIDDeviceInfo::~HIDDeviceInfo() {
+  delete HIDPath_.data();
+  delete SerialNumber_.data();
+  delete ManufacturerString_.data();
+  delete ProductString_.data();
+}
+
+// move constructor
+HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
+    : device_info_(other.device_info_), HIDPath_(std::move(other.HIDPath_)),
+      DeviceID_(std::move(other.DeviceID_)),
+      SerialNumber_(std::move(other.SerialNumber_)),
+      ManufacturerString_(std::move(other.ManufacturerString_)),
+      ProductString_(std::move(other.ProductString_)) {
+
+  // TODO: should i just call the move operator from the move constructor,
+  // because it the same logic. *this = std::move(other); // Calls the move
+  // assignment operator
+}
+
+HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
+  if (this != &rhs) {
+    device_info_ = rhs.device_info_;
+    HIDPath_ = std::move(rhs.HIDPath_);
+    DeviceID_ = std::move(rhs.DeviceID_);
+    SerialNumber_ = std::move(rhs.SerialNumber_);
+    ManufacturerString_ = std::move(rhs.ManufacturerString_);
+    ProductString_ = std::move(rhs.ProductString_);
   }
+  return *this;
+}
 
-  HIDDeviceInfo::~HIDDeviceInfo() {
-    delete HIDPath_.data();
-    delete SerialNumber_.data();
-    delete ManufacturerString_.data();
-    delete ProductString_.data();
-  }
+const HIDPath &HIDDeviceInfo::path() { return HIDPath_; }
 
-  // move constructor
-  HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo&& other) noexcept :
-    device_info_(other.device_info_),
-    HIDPath_(std::move(other.HIDPath_)),
-    DeviceID_(std::move(other.DeviceID_)),
-    SerialNumber_(std::move(other.SerialNumber_)),
-    ManufacturerString_(std::move(other.ManufacturerString_)),
-    ProductString_(std::move(other.ProductString_)) { 
+const DeviceID &HIDDeviceInfo::device_id() { return DeviceID_; }
 
-    // TODO: should i just call the move operator from the move constructor, because it the same logic.
-    // *this = std::move(other); // Calls the move assignment operator
-  }
+const SerialNumber &HIDDeviceInfo::serial_number() { return SerialNumber_; }
 
-  HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
-    if (this != &rhs) {
-      device_info_ = rhs.device_info_;
-      HIDPath_ = std::move(rhs.HIDPath_);
-      DeviceID_ = std::move(rhs.DeviceID_);
-      SerialNumber_ = std::move(rhs.SerialNumber_);
-      ManufacturerString_ = std::move(rhs.ManufacturerString_);
-      ProductString_ = std::move(rhs.ProductString_);
-    }
-    return *this;
-  }
+const ReleaseNumber &HIDDeviceInfo::release_number() {
+  // return device_info_.release_number;
 
-  const HIDPath &HIDDeviceInfo::path() {
-    return HIDPath_;
-  }
+  // TODO:  device_info_.release_number is unsigned short and const
+  // ReleaseNumber is uint16_t, should i do an static_cast here?
+  //        ideally i want to return the number by reference and not copy it.
+  // is this correct?
+  return static_cast<const ReleaseNumber &>(device_info_.release_number);
+}
 
-  const DeviceID &HIDDeviceInfo::device_id() {
-    return DeviceID_; 
-  }
+const std::wstring_view &HIDDeviceInfo::manufacturer_string() {
+  return ManufacturerString_;
+}
 
-  const SerialNumber &HIDDeviceInfo::serial_number() {
-    return SerialNumber_;
-    
-  }
+const std::wstring_view &HIDDeviceInfo::product_string() {
+  return ProductString_;
+}
 
-  const ReleaseNumber &HIDDeviceInfo::release_number() {
-    // return device_info_.release_number;
+const UsagePage &HIDDeviceInfo::usage_page() {
+  return static_cast<const UsagePage &>(device_info_.usage_page);
+}
 
-    // TODO:  device_info_.release_number is unsigned short and const ReleaseNumber is uint16_t, should i do an static_cast here?
-    //        ideally i want to return the number by reference and not copy it.
-    // is this correct?
-    return static_cast<const ReleaseNumber &>(device_info_.release_number);
-    
-  }
+const Usage &HIDDeviceInfo::usage() {
+  return static_cast<const Usage &>(device_info_.usage);
+}
 
-  const std::wstring_view &HIDDeviceInfo::manufacturer_string() {
-    return ManufacturerString_;
-  }
+const InterfaceNumber &HIDDeviceInfo::interface_number() {
+  return static_cast<const InterfaceNumber &>(device_info_.interface_number);
+}
 
-  const std::wstring_view &HIDDeviceInfo::product_string() {
-    return ProductString_;
-  }
+const HidBusType &HIDDeviceInfo::bus_type() { return device_info_.bus_type; }
 
-  const UsagePage &HIDDeviceInfo::usage_page() {
-    return static_cast<const UsagePage &>(device_info_.usage_page);
-  }
-
-  const Usage &HIDDeviceInfo::usage() {
-    return static_cast<const Usage &>(device_info_.usage);
-  }
-
-  const InterfaceNumber &HIDDeviceInfo::interface_number() {
-    return static_cast<const InterfaceNumber &>(device_info_.interface_number);
-  }
-
-  const HidBusType &HIDDeviceInfo::bus_type() {
-    return device_info_.bus_type;
-  }
-
-  } // namespace hid
-  } // namespace lib
+} // namespace hidapi
+} // namespace lib
 } // namespace ratbag
