@@ -5,7 +5,7 @@
 
 namespace ratbag {
 namespace lib {
-namespace hid {
+namespace hidapi {
 
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
@@ -27,7 +27,7 @@ public:
   // TODO: is it possible to use array here without knowing the size upfront?
   // TODO: is possible to pu this function as an global static and not part of an class?
   // TODO: maybe it's better to use std::span with custom iterator that iterates over "struct hid_device_info *next;"
-  static const std::vector<HIDDeviceInfo> &enumerate_hid_devices();
+  static const std::vector<HIDDeviceInfo> enumerate_hid_devices();
 
   /** Platform-specific device path */
   const HIDPath& path();
@@ -47,15 +47,16 @@ public:
   const InterfaceNumber& interface_number();
   const HidBusType& bus_type();
 
-private:
   // TODO: this function shouldn't be called by the user, user can't invent hid devices. only enumerate_hid_devices
   explicit HIDDeviceInfo(hid_device_info &device_info);
-  explicit ~HIDDeviceInfo();                           // destructor
-  HIDDeviceInfo(const HIDDeviceInfo &other);           // copy constructor
-  HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;       // copy assignment
-  HIDDeviceInfo &operator=(const HIDDeviceInfo &other);     // move constructor
-  HIDDeviceInfo &operator=(HIDDeviceInfo &&other) noexcept; // move operator
+  ~HIDDeviceInfo();                           // destructor
 
+  HIDDeviceInfo(const HIDDeviceInfo& other) = delete;           // copy constructor
+  HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;                // move constructor
+  HIDDeviceInfo& operator=(const HIDDeviceInfo& rhs);           // copy assignment
+  HIDDeviceInfo& operator=(HIDDeviceInfo&& rhs) noexcept;       // move operator
+
+private:
   struct hid_device_info &device_info_;
 
   const HIDPath HIDPath_;

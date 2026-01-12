@@ -1,12 +1,14 @@
 #include <tuple>
-include "hid_device.hpp"
+
+#include "ratbag/lib/hidapi/device_info.hpp"
 
 namespace ratbag {
 namespace lib {
-namespace hid {
+namespace hidapi {
 
   // TODO: the idea is to wrap around the memory and not copy it...
-  std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
+  //       should i use std::span with custom itereator that uses the cur_dev->next? 
+  const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
     std::vector<HIDDeviceInfo> deviceInfos;
     struct hid_device_info *devs, *cur_dev;
     devs = hid_enumerate(0, 0); // 0,0 = find all devices
@@ -16,42 +18,47 @@ namespace hid {
       deviceInfos.emplace_back(*cur_dev);
       cur_dev = cur_dev->next;
     }
-    hid_free_enumeration(devs);
+
+    return deviceInfos; 
   }
 
-  explicit HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
+  HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
       : device_info_(device_info),
-        DeviceID_{ device_info_.vendor_id, device_info_.product_id }, // TODO: What is this syntax {...  } , were the {} overriden?
         HIDPath_(device_info_.path),
+        DeviceID_{ device_info_.vendor_id, device_info_.product_id }, // TODO: What is this syntax {...  } , were the {} overriden?
         SerialNumber_(device_info_.serial_number),
         ManufacturerString_(device_info_.manufacturer_string),
-        ProductString_(device_info_.product_string), {
+        ProductString_(device_info_.product_string) {
   }
 
   HIDDeviceInfo::~HIDDeviceInfo() {
-    struct hid_device_info *next = d->next;
-    free(device_info_.path);
-    free(device_info_.serial_number);
-    free(device_info_.manufacturer_string);
-    free(device_info_.product_string);
-    free(&device_info_);
-
-    // TODO: do i need to this? can i just call some default c++ destructor?
-    delete HIDPath_;
-    delete DeviceID_;
-    delete SerialNumber_;
-    delete ManufacturerString_;
-    delete ProductString_;
+    delete device_info_.path;
+    delete device_info_.serial_number;
+    delete device_info_.manufacturer_string;
+    delete device_info_.product_string;
+    delete &device_info_;
   }
 
   // TODO: implement those, they are required because we override the destructor
-  HIDDeviceInfo::HIDDeviceInfo(const HIDDeviceInfo &other); // copy constructor
-  HIDDeviceInfo::HIDDeviceInfo(
-      HIDDeviceInfo &&other) noexcept; // copy assignment
-  HIDDeviceInfo::HIDDeviceInfo &
-  operator=(const HIDDeviceInfo &other); // move constructor
-  HIDDeviceInfo::HIDDeviceInfo &
-  operator=(HIDDeviceInfo &&other) noexcept; // move operator
+  // HIDDeviceInfo::HIDDeviceInfo(const HIDDeviceInfo &other) {
+  //   // TODO: should i copy the strings?? or just create and std::shared_ptr for device_info_
+  //   // or disable the copy constructor and disallow copying?
+  // } // copy constructor
+
+  // HIDDeviceInfo::HIDDeviceInfo(
+  //     HIDDeviceInfo &&other) noexcept; // copy assignment
+  // HIDDeviceInfo::HIDDeviceInfo &
+
+  // HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo&& other) noexcept :
+  //     : device_info_(other.device_info),
+  //       HIDPath_(std::move(other.HIDPath_)),
+  //       DeviceID_(std::move(other.DeviceID)),
+  //       SerialNumber_(std::move(other.SerialNumber_)),
+  //       ManufacturerString_(std::move(other.ManufacturerString_)),
+  //       ProductString_(std::move(other.ProductString_)) {
+
+  //   // TODO: how to prevent from the "other" object destructor deleteing the c_string??
+  // }
 
   const HIDPath &HIDDeviceInfo::path() {
     return HIDPath_;
@@ -62,7 +69,8 @@ namespace hid {
   }
 
   const SerialNumber &HIDDeviceInfo::serial_number() {
-    return static_cast<const SerialNumber &>(device_info_.serial_number);
+    return SerialNumber_;
+    
   }
 
   const ReleaseNumber &HIDDeviceInfo::release_number() {
@@ -72,6 +80,7 @@ namespace hid {
     //        ideally i want to return the number by reference and not copy it.
     // is this correct?
     return static_cast<const ReleaseNumber &>(device_info_.release_number);
+    
   }
 
   const std::wstring_view &HIDDeviceInfo::manufacturer_string() {
