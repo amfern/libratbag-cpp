@@ -10,7 +10,9 @@ namespace hidapi {
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
 using VendorID = uint16_t;
-using DeviceID = std::tuple<const VendorID&, const ProductID&>; 
+// TODO: using DeviceID = std::tuple<const VendorID&, const ProductID&>; doesn't work in the move operator
+// using DeviceID = std::tuple<const VendorID&, const ProductID&>;
+using DeviceID = std::tuple<VendorID&, ProductID&>; 
 using SerialNumber = std::wstring_view;
 using ReleaseNumber = uint16_t;
 using UsagePage = uint16_t; 
@@ -51,19 +53,21 @@ public:
   explicit HIDDeviceInfo(hid_device_info &device_info);
   ~HIDDeviceInfo();                           // destructor
 
+  // TODO: create copy constructor
   HIDDeviceInfo(const HIDDeviceInfo& other) = delete;           // copy constructor
   HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;                // move constructor
-  HIDDeviceInfo& operator=(const HIDDeviceInfo& rhs);           // copy assignment
+  HIDDeviceInfo& operator=(const HIDDeviceInfo& rhs) = delete;  // copy assignment
   HIDDeviceInfo& operator=(HIDDeviceInfo&& rhs) noexcept;       // move operator
 
 private:
   struct hid_device_info &device_info_;
 
-  const HIDPath HIDPath_;
-  const DeviceID DeviceID_;
-  const SerialNumber SerialNumber_;
-  const std::wstring_view ManufacturerString_;
-  const std::wstring_view ProductString_;
+  // TODO: i want those members to be const because i don't expect them to change, but it creates an issue with move operator, i cannot assign to const members... is the best practice to remove const?
+  HIDPath HIDPath_;
+  DeviceID DeviceID_;
+  SerialNumber SerialNumber_;
+  std::wstring_view ManufacturerString_;
+  std::wstring_view ProductString_;
 };
 
 } // namespace hid

@@ -32,33 +32,36 @@ namespace hidapi {
   }
 
   HIDDeviceInfo::~HIDDeviceInfo() {
-    delete device_info_.path;
-    delete device_info_.serial_number;
-    delete device_info_.manufacturer_string;
-    delete device_info_.product_string;
-    delete &device_info_;
+    delete HIDPath_.data();
+    delete SerialNumber_.data();
+    delete ManufacturerString_.data();
+    delete ProductString_.data();
   }
 
-  // TODO: implement those, they are required because we override the destructor
-  // HIDDeviceInfo::HIDDeviceInfo(const HIDDeviceInfo &other) {
-  //   // TODO: should i copy the strings?? or just create and std::shared_ptr for device_info_
-  //   // or disable the copy constructor and disallow copying?
-  // } // copy constructor
+  // move constructor
+  HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo&& other) noexcept :
+    device_info_(other.device_info_),
+    HIDPath_(std::move(other.HIDPath_)),
+    DeviceID_(std::move(other.DeviceID_)),
+    SerialNumber_(std::move(other.SerialNumber_)),
+    ManufacturerString_(std::move(other.ManufacturerString_)),
+    ProductString_(std::move(other.ProductString_)) { 
 
-  // HIDDeviceInfo::HIDDeviceInfo(
-  //     HIDDeviceInfo &&other) noexcept; // copy assignment
-  // HIDDeviceInfo::HIDDeviceInfo &
+    // TODO: should i just call the move operator from the move constructor, because it the same logic.
+    // *this = std::move(other); // Calls the move assignment operator
+  }
 
-  // HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo&& other) noexcept :
-  //     : device_info_(other.device_info),
-  //       HIDPath_(std::move(other.HIDPath_)),
-  //       DeviceID_(std::move(other.DeviceID)),
-  //       SerialNumber_(std::move(other.SerialNumber_)),
-  //       ManufacturerString_(std::move(other.ManufacturerString_)),
-  //       ProductString_(std::move(other.ProductString_)) {
-
-  //   // TODO: how to prevent from the "other" object destructor deleteing the c_string??
-  // }
+  HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
+    if (this != &rhs) {
+      device_info_ = rhs.device_info_;
+      HIDPath_ = std::move(rhs.HIDPath_);
+      DeviceID_ = std::move(rhs.DeviceID_);
+      SerialNumber_ = std::move(rhs.SerialNumber_);
+      ManufacturerString_ = std::move(rhs.ManufacturerString_);
+      ProductString_ = std::move(rhs.ProductString_);
+    }
+    return *this;
+  }
 
   const HIDPath &HIDDeviceInfo::path() {
     return HIDPath_;
