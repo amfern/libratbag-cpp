@@ -57,10 +57,10 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 
   // TODO: Crash here, pointer freed was not allocated.... is it because i am
   // using delete instead of free()?
-  delete HIDPath_.data();
-  delete SerialNumber_.data();
-  delete ManufacturerString_.data();
-  delete ProductString_.data();
+  // delete HIDPath_.data();
+  // delete SerialNumber_.data();
+  // delete ManufacturerString_.data();
+  // delete ProductString_.data();
 
   // // TODO: no matching function for call to 'free' no known conversion from
   // 'const_pointer' (aka 'const wchar_t *') to 'void *' for 1st argument

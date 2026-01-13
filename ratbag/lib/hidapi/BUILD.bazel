@@ -12,3 +12,12 @@ cc_library(
         "@hidapi",
     ],
 )
+
+cc_test(
+    name = "hidapi-test",
+    srcs = ["device_info_test.cpp"],
+    deps = [
+        ":hidapi",
+        "@googletest//:gtest_main",
+    ],
+)

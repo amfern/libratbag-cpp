@@ -21,8 +21,10 @@ build:debug --features=oso_prefix_is_pwd
 build:debug -c dbg
 
 
+
 # Avoid building all targets when testing
 test --build_tests_only
+test --test_env="PATH=/bin:/usr/bin:$PATH" # TODO: why i need this work around on osx?
 
 # Print relative paths where possible to reduce noise
 common --attempt_to_print_relative_paths
