@@ -13,6 +13,14 @@ build --incompatible_strict_action_env
 # Prevent symlink forest under `.runfiles/wsname/external/repo`
 build --nolegacy_external_runfiles
 
+# lldb bazel-bin/ratbag/cli/cli
+build:debug --spawn_strategy=local
+build:debug --sandbox_debug
+build:debug --strip=never
+build:debug --features=oso_prefix_is_pwd
+build:debug -c dbg
+
+
 # Avoid building all targets when testing
 test --build_tests_only
 
@@ -26,3 +34,5 @@ common --@rules_python//python/config_settings:bootstrap_impl=script
 common:pre-commit --ui_event_filters=-info,-stdout,-stderr
 common:pre-commit --noshow_progress
 common:pre-commit --lockfile_mode=off
+
+

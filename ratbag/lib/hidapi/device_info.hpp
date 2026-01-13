@@ -40,6 +40,7 @@ public:
   /** Device Release Number in binary-coded decimal,
           also known as Device Version Number */
   const ReleaseNumber &release_number();
+  // TODO: we should have the wstring, only when compiled for windows...
   const std::wstring_view &manufacturer_string();
   const std::wstring_view &product_string();
   /** Usage Page for this Device/Interface
@@ -68,7 +69,7 @@ private:
 
   // TODO: i want those members to be const because i don't expect them to
   // change, but it creates an issue with move operator, i cannot assign to
-  // const members... is the best practice to remove const?
+  // const members... is the best practice to not have const members?
   HIDPath HIDPath_;
   DeviceID DeviceID_;
   SerialNumber SerialNumber_;
