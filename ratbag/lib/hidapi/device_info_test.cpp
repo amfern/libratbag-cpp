@@ -8,15 +8,15 @@ TEST(DeviceInfoTestSuit, CreateAndMoveDeviceInfo) {
   std::strcpy(path, ptr_path);
 
   auto serial_number = new wchar_t[100];
-  const wchar_t *ptr_serial_number = L"Myserial";
+  const wchar_t *ptr_serial_number = L"MySerial";
   std::wcscpy(serial_number, ptr_serial_number);
 
   auto manufacturer_string = new wchar_t[100];
-  const wchar_t *ptr_manufacturer_string = L"Myserial";
+  const wchar_t *ptr_manufacturer_string = L"MyManufacturere";
   std::wcscpy(manufacturer_string, ptr_manufacturer_string);
 
   auto product_string = new wchar_t[100];
-  const wchar_t *ptr_product_string = L"Myserial";
+  const wchar_t *ptr_product_string = L"MyProduct";
   std::wcscpy(product_string, ptr_product_string);
 
   hid_device_info hid_device_dummy = {
