@@ -57,6 +57,10 @@ cc_library(
     name = "darwin",
     srcs = ["mac/hid.c"],
     hdrs = ["mac/hidapi_darwin.h"],
+    linkopts = [
+        "-framework IOKit",
+        "-framework CoreFoundation",
+    ],
     visibility = ["//:__subpackages__"],
     deps = [
         ":headers",
