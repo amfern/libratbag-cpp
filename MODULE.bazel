@@ -20,29 +20,11 @@ python.toolchain(
     python_version = "3.12",
 )
 
-# # For https://github.com/libusb/hidapi
-# bazel_dep(name = "hidapi", version = "0.0.1")
-# archive_override(
-#     module_name = "hidapi",
-#     integrity = "sha256-nfNEp86X1YI48kp7nyCFbubyFrtzDw+8dwBl0PACXrc=",
-#     strip_prefix = "abseil-cpp-7599e36e7cbad38ec77cadd959d3a45d2124800a",
-#     urls = ["https://github.com/abseil/abseil-cpp/archive/7599e36e7cbad38ec77cadd959d3a45d2124800a.tar.gz"],
-#     build_file = ""
-# )
-
 non_module_deps = use_extension("//:extension.bzl", "non_module_deps")
 use_repo(
     non_module_deps,
     "hidapi",
 )
-
-# bazel_dep(name = "rules_foreign_cc", version = "0.15.1")
-# bazel_dep(name = "platforms", version = "1.0.0")
-
-# local_path_override(
-#     module_name = "hidapi",
-#     path = "./hidapi"
-# )
 
 bazel_dep(name = "hedron_compile_commands", dev_dependency = True)
 git_override(
@@ -50,3 +32,4 @@ git_override(
     commit = "abb61a688167623088f8768cc9264798df6a9d10",
     remote = "https://github.com/hedronvision/bazel-compile-commands-extractor.git",
 )
+
