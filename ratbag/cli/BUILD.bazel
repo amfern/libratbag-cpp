@@ -1,13 +1,6 @@
 cc_binary(
     name = "cli",
     srcs = ["cli.cpp"],
-    cxxopts = [
-        "-std=c++23",
-    ] + select({
-        "@bazel_tools//src/conditions:darwin": [
-            "-mmacosx-version-min=13.3",
-        ],
-    }),
     deps = [
         "//ratbag/lib",
     ],

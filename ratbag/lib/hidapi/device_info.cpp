@@ -1,88 +1,49 @@
-#include <cstdint>
-#include <tuple>
-
 #include "ratbag/lib/hidapi/device_info.hpp"
 
 namespace ratbag {
 namespace lib {
 namespace hidapi {
 
-// TODO: the idea is to wrap around the memory and not copy it...
-//       should i use std::span with custom itereator that uses the
-//       cur_dev->next?
+// TODO: should i return here a vector or be more vague/abstract. and return an
+// iterator....?
 const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *devs, *cur_dev;
   devs = hid_enumerate(0, 0); // 0,0 = find all devices
 
-  // count the devices to prepare the capacity for the vector, to avoid
-  // reallocation
-  // TODO: we can use std::list and convert it later to array. however there
-  // would be more move opereations.
-  cur_dev = devs;
-  auto capacity = 0;
-  while (cur_dev) {
-    cur_dev = cur_dev->next;
-    capacity++;
-  }
-
   std::vector<HIDDeviceInfo> deviceInfos;
-  deviceInfos.reserve(capacity);
 
   cur_dev = devs;
   while (cur_dev) {
-    deviceInfos.emplace_back(*cur_dev);
+    deviceInfos.emplace_back(HIDDeviceInfo(cur_dev));
     cur_dev = cur_dev->next;
   }
 
   return deviceInfos;
 }
 
-HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
-    : device_info_(device_info), HIDPath_(device_info_.path),
-      DeviceID_{device_info_.vendor_id,
-                device_info_.product_id}, // TODO: What is this syntax {...  } ,
-                                          // is the {} overriden?
-      SerialNumber_(device_info_.serial_number),
-      ManufacturerString_(device_info_.manufacturer_string),
-      ProductString_(device_info_.product_string) {
-
-  // TODO: It seems like the strings are sometimes null pointers and cannot be
-  // freed, how can i assert in the constructor if it has null string and just
-  // not allow to construct info.
-  // TODO: static assert if device_info_.serial_number is nullpointer
-  //       Or just don't create
-}
+// TODO: What is this syntax {...  }, is the {} overriden? NO,
+// 1. if no constructor in the class it's an aggregate initialization, the class
+// memeber initilzation
+// 2. If constrctuion has std::initializer_list<T>, the the list in the curly
+// braces will be elements.
+// 3. MyClass{} will call constructor as if ()
+// 4. {} It's a C++ things, uniform initialization feature.
+HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
+    : device_info_(device_info), HIDPath_(device_info_->path),
+      DeviceID_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
+      SerialNumber_(device_info_->serial_number),
+      ManufacturerString_(device_info_->manufacturer_string),
+      ProductString_(device_info_->product_string) {}
 
 HIDDeviceInfo::~HIDDeviceInfo() {
-
-  // TODO: Crash here, pointer freed was not allocated.... is it because i am
-  // using delete instead of free()?
-  // delete HIDPath_.data();
-  // delete SerialNumber_.data();
-  // delete ManufacturerString_.data();
-  // delete ProductString_.data();
-
-  // // TODO: no matching function for call to 'free' no known conversion from
-  // 'const_pointer' (aka 'const wchar_t *') to 'void *' for 1st argument
-  // free(const_cast<char*>(HIDPath_.data()));
-  // free(const_cast<wchar_t*>(SerialNumber_.data()));
-  // free(const_cast<wchar_t*>(ManufacturerString_.data()));
-  // free(const_cast<wchar_t*>(ProductString_.data()));
-
-  // TODO: do i also need to free the other members?
-  // free(HIDPath_);
-  // free(SerialNumber_);
-  // free(ManufacturerString_);
-  // free(ProductString_);
-
-  // TODO: If move is called, this destructor will be called for object it was
-  // moved from. Which is not good... How can i nullify the reference to
-  // device_info_, to avoid the destructor from being called.
-  // free(device_info_.path);
-  // free(device_info_.serial_number);
-  // free(device_info_.manufacturer_string);
-  // free(device_info_.product_string);
-  // free(&device_info_);
+  if (device_info_) {
+    // TODO: we remove the next element to prevent from the hid_free_enumeration
+    // deleting them.
+    //       ideally we should add an single delete function to the upper hidapi
+    //       library.
+    device_info_->next = nullptr;
+    hid_free_enumeration(device_info_);
+  }
 }
 
 // move constructor
@@ -93,68 +54,78 @@ HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
       ManufacturerString_(std::move(other.ManufacturerString_)),
       ProductString_(std::move(other.ProductString_)) {
 
-  // nullify the other string
-  other.HIDPath_ = HIDPath("");
-  uint16_t trash = 0;
-  auto tempDevId = DeviceID{trash, trash};
-  other.SerialNumber_ = SerialNumber(L"");
-  other.ManufacturerString_ = std::wstring_view(L"");
-  other.ProductString_ = std::wstring_view(L"");
-
-  // TODO: should i just call the move operator from the move constructor,
-  // because it the same logic. *this = std::move(other); // Calls the move
-  // assignment operator
+  other.device_info_ = nullptr;
+  // TODO: we can set the other.HIDPath_ = string_view{} to reset the other
+  // device, however it will add overhead. But we can leave the other object in
+  // and valid but undefined state
 }
 
 HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   if (this != &rhs) {
+    device_info_->next = nullptr;
+    hid_free_enumeration(device_info_);
+
     device_info_ = rhs.device_info_;
+    rhs.device_info_ = nullptr;
     HIDPath_ = std::move(rhs.HIDPath_);
     DeviceID_ = std::move(rhs.DeviceID_);
     SerialNumber_ = std::move(rhs.SerialNumber_);
     ManufacturerString_ = std::move(rhs.ManufacturerString_);
     ProductString_ = std::move(rhs.ProductString_);
+
+    // TODO: should i also nullify the string views? it will add more overhead
+    // but we will prevent leaky abstraction? rhs.HIDPath_ = std::string_view{};
+    // rhs.DeviceID_ = std::string_view{};
+    // rhs.SerialNumber_ = std::string_view{};
+    // rhs.ManufacturerString_ = std::string_view{};
+    // rhs.ProductString_ = std::string_view{};
   }
+
   return *this;
 }
 
-const HIDPath &HIDDeviceInfo::path() { return HIDPath_; }
+const HIDPath &HIDDeviceInfo::path() const { return HIDPath_; }
 
-const DeviceID &HIDDeviceInfo::device_id() { return DeviceID_; }
+const DeviceID &HIDDeviceInfo::device_id() const { return DeviceID_; }
 
-const SerialNumber &HIDDeviceInfo::serial_number() { return SerialNumber_; }
+const SerialNumber &HIDDeviceInfo::serial_number() const {
+  return SerialNumber_;
+}
 
-const ReleaseNumber &HIDDeviceInfo::release_number() {
+const ReleaseNumber &HIDDeviceInfo::release_number() const {
   // return device_info_.release_number;
 
   // TODO:  device_info_.release_number is unsigned short and const
   // ReleaseNumber is uint16_t, should i do an static_cast here?
   //        ideally i want to return the number by reference and not copy it.
   // is this correct?
-  return static_cast<const ReleaseNumber &>(device_info_.release_number);
+  return static_cast<const ReleaseNumber &>(device_info_->release_number);
 }
 
-const std::wstring_view &HIDDeviceInfo::manufacturer_string() {
+const std::wstring_view &HIDDeviceInfo::manufacturer_string() const {
   return ManufacturerString_;
 }
 
-const std::wstring_view &HIDDeviceInfo::product_string() {
+const std::wstring_view &HIDDeviceInfo::product_string() const {
   return ProductString_;
 }
 
-const UsagePage &HIDDeviceInfo::usage_page() {
-  return static_cast<const UsagePage &>(device_info_.usage_page);
+// TODO: this are really simple function.... should i force them inline? or
+const UsagePage &HIDDeviceInfo::usage_page() const {
+  return static_cast<const UsagePage &>(device_info_->usage_page);
 }
 
-const Usage &HIDDeviceInfo::usage() {
-  return static_cast<const Usage &>(device_info_.usage);
+const Usage &HIDDeviceInfo::usage() const {
+  return static_cast<const Usage &>(device_info_->usage);
 }
 
-const InterfaceNumber &HIDDeviceInfo::interface_number() {
-  return static_cast<const InterfaceNumber &>(device_info_.interface_number);
+const InterfaceNumber &HIDDeviceInfo::interface_number() const {
+  return static_cast<const InterfaceNumber &>(device_info_->interface_number);
 }
 
-const HidBusType &HIDDeviceInfo::bus_type() { return device_info_.bus_type; }
+const HidBusType &HIDDeviceInfo::bus_type() const {
+  return device_info_->bus_type;
+}
 
 } // namespace hidapi
 } // namespace lib
