@@ -10055,6 +10055,95 @@
           ]
         ]
       }
+    },
+    "@@rules_shellcheck+//internal:extensions.bzl%shellcheck_dependencies": {
+      "general": {
+        "bzlTransitiveDigest": "0CGrZn0w83thasyxBfT7RLvHDQ68uL5td6c2rix3338=",
+        "usagesDigest": "dB1tqxp4QomnAlt2Na7AnDC2qZdvV3Sjc3OCSEyzwdQ=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "shellcheck_darwin_aarch64": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "exports_files([\"shellcheck\"])\n",
+              "sha256": "a75b912015aaa5b2a48698b63f3619783d90abda4d32a31362209315e6c1cdf6",
+              "urls": [
+                "https://mirror.bazel.build/github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.darwin.aarch64.tar.gz",
+                "https://github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.darwin.aarch64.tar.gz"
+              ]
+            }
+          },
+          "shellcheck_darwin_x86_64": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "exports_files([\"shellcheck\"])\n",
+              "sha256": "d1244da2aa5d0c2874f3a4a680c6ac79a488ff6dbf9928e12dc80ff3fdc294db",
+              "urls": [
+                "https://mirror.bazel.build/github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.darwin.x86_64.tar.gz",
+                "https://github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.darwin.x86_64.tar.gz"
+              ]
+            }
+          },
+          "shellcheck_linux_aarch64": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "exports_files([\"shellcheck\"])\n",
+              "sha256": "b5633bd195cfe61a310bd8dcff2514855afefea908942a0fd4d01fa6451cb4e6",
+              "urls": [
+                "https://mirror.bazel.build/github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.linux.aarch64.tar.gz",
+                "https://github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.linux.aarch64.tar.gz"
+              ]
+            }
+          },
+          "shellcheck_linux_armv6hf": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "exports_files([\"shellcheck\"])\n",
+              "sha256": "4791d36d84a626c4366746d14ad68daf2c07f502da09319c45fa6c5c0a847aa9",
+              "urls": [
+                "https://mirror.bazel.build/github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.linux.armv6hf.tar.gz",
+                "https://github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.linux.armv6hf.tar.gz"
+              ]
+            }
+          },
+          "shellcheck_linux_x86_64": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "exports_files([\"shellcheck\"])\n",
+              "sha256": "0ab5711861e6fcafad5aa21587ee75bbd2b16505d56f41c9ba1191a83d314074",
+              "urls": [
+                "https://mirror.bazel.build/github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.gz",
+                "https://github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.linux.x86_64.tar.gz"
+              ]
+            }
+          },
+          "shellcheck_windows_x86_64": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "exports_files([\"shellcheck\"])\n",
+              "sha256": "a0f021057b6d6a69a22f6b0db0187bcaca3f5195385e92a7555ad63a6e39ee15",
+              "urls": [
+                "https://mirror.bazel.build/github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.windows.x86_64.tar.gz",
+                "https://github.com/vscode-shellcheck/shellcheck-binaries/releases/download/v0.9.0/shellcheck-v0.9.0.windows.x86_64.tar.gz"
+              ]
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "rules_shellcheck+",
+            "bazel_tools",
+            "bazel_tools"
+          ],
+          [
+            "rules_shellcheck+",
+            "rules_shellcheck",
+            "rules_shellcheck+"
+          ]
+        ]
+      }
     }
   },
   "facts": {}
