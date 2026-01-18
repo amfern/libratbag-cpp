@@ -21,7 +21,7 @@ const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
   return deviceInfos;
 }
 
-// TODO: What is this syntax {...  }, is the {} overriden? NO,
+// What is this syntax {...  }, is the {} overriden? NO,
 // 1. if no constructor in the class it's an aggregate initialization, the class
 // memeber initilzation
 // 2. If constrctuion has std::initializer_list<T>, the the list in the curly
@@ -37,10 +37,10 @@ HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
 
 HIDDeviceInfo::~HIDDeviceInfo() {
   if (device_info_) {
-    // TODO: we remove the next element to prevent from the hid_free_enumeration
+    // We remove the next element to prevent from the hid_free_enumeration
     // deleting them.
-    //       ideally we should add an single delete function to the upper hidapi
-    //       library.
+    // ideally we should modify the hidapi librarby and add an single delete
+    // function to the upper hidapi library.
     device_info_->next = nullptr;
     hid_free_enumeration(device_info_);
   }

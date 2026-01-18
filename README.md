@@ -21,9 +21,6 @@ Install the hooks with `bazel run hooks:install`.
 Run the hooks with `baze run hooks`.
 
 
-TODO: use https://github.com/libusb/hidapi for cross os support
-
-
 ### Development
 
 Generate compile_commnads.json:
@@ -35,5 +32,3 @@ Run under debugger:
 ``` sh
 bazel run --sandbox_debug --config debug --run_under=lldb //ratbag/cli:cli
 ```
-
-
