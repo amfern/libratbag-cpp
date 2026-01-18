@@ -49,6 +49,7 @@ public:
   const UsagePage &usage_page() const;
   /** Usage for this Device/Interface
           (Windows/Mac/hidraw only) */
+  // TODO: does it mean that if i do const & it will return an pointer,
   const Usage &usage() const;
   const InterfaceNumber &interface_number() const;
   const HidBusType &bus_type() const;
@@ -60,6 +61,9 @@ public:
   HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;      // move constructor
   HIDDeviceInfo &operator=(const HIDDeviceInfo &rhs) = delete; // copy operator
   HIDDeviceInfo &operator=(HIDDeviceInfo &&rhs) noexcept;      // move operator
+
+  friend std::wostream &operator<<(std::wostream &os,
+                                   const HIDDeviceInfo &info);
 
 private:
   // TODO: this function shouldn't be called by the user, user can't invent hid

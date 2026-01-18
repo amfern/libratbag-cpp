@@ -20,15 +20,20 @@ https://gitlab.arm.com/bazel/pre-commit-hooks
 Install the hooks with `bazel run hooks:install`.
 Run the hooks with `baze run hooks`.
 
+### Tests
+Run tests:
+``` sh
+bazel test //ratbag/...
+```
 
-### Development
+### Generate compile_commnads.json:
 
 Generate compile_commnads.json:
 ``` sh
 bazel run @hedron_compile_commands//:refresh_all
 ```
 
-Run under debugger:
+### Run under debugger
 ``` sh
 bazel run --sandbox_debug --config debug --run_under=lldb //ratbag/cli:cli
 ```

@@ -1,5 +1,8 @@
 #include "ratbag/lib/hidapi/device_info.hpp"
 
+#include <format>
+#include <ostream>
+
 namespace ratbag {
 namespace lib {
 namespace hidapi {
@@ -127,6 +130,23 @@ const HidBusType &HIDDeviceInfo::bus_type() const {
   return device_info_->bus_type;
 }
 
+std::wostream &operator<<(std::wostream &os, const HIDDeviceInfo &info) {
+  auto [vid, pid] = info.device_id();
+
+  // TODO: how should i deal with wide char and normal char, how should i print
+  // it?
+  os << std::format(L"=====\npath: {}\nvid {:x}\npid {:x}\nserial_number: {}\n"
+                    L"manufacturer_string: {}\nproduct_string = {}\nusage_page "
+                    L"= {}\nusage = {}\ninterface_number = {}\n=====",
+                    info.path(), vid, pid, info.serial_number(),
+                    info.manufacturer_string(), info.product_string(),
+                    info.usage_page(), info.usage(), info.interface_number());
+
+  return os;
+}
+
 } // namespace hidapi
 } // namespace lib
 } // namespace ratbag
+
+// Define the overloaded operator outside the class
