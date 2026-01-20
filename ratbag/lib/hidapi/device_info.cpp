@@ -7,8 +7,42 @@ namespace ratbag {
 namespace lib {
 namespace hidapi {
 
-// TODO: should i return here a vector or be more vague/abstract. and return an
-// iterator....?
+std::wostream &operator<<(std::wostream &os, const DeviceID &di) {
+  auto [vid, pid] = di;
+
+  os << std::format(L"vid {:x}\npid {:x}", vid, pid);
+
+  return os;
+}
+
+// TODO: implement formater for DeviceID
+// Specialize the std::formatter template for the Color type
+// template <>
+// struct std::formatter<DeviceID> {
+//     // The parse function is called at compile time to handle format
+//     specifiers constexpr auto parse(std::format_parse_context& ctx) {
+//         // In this simple example, we don't handle custom format specifiers
+//         (like alignment, precision, etc.)
+//         // We just need to advance the iterator to the end of the format
+//         specifier '}' auto it = ctx.begin(); while (it != ctx.end() && *it !=
+//         '}') {
+//             ++it;
+//         }
+//         return it;
+//     }
+
+//     // The format function is called at runtime to produce the output
+//     auto format(const Color& col, std::format_context& ctx) const {
+//         // Use std::format_to to write the formatted string to the output
+//         buffer
+//         // In this case, format the Color as an RGB tuple (r, g, b)
+//         return std::format_to(ctx.out(), "({}, {}, {})", col.r, col.g,
+//         col.b);
+//     }
+// };
+//
+// TODO: implement formater for hid_device_info
+
 const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *devs, *cur_dev;
   devs = hid_enumerate(0, 0); // 0,0 = find all devices
@@ -17,7 +51,7 @@ const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
 
   cur_dev = devs;
   while (cur_dev) {
-    deviceInfos.emplace_back(HIDDeviceInfo(cur_dev));
+    deviceInfos.emplace_back(HIDDeviceInfo(*cur_dev));
     cur_dev = cur_dev->next;
   }
 
@@ -31,8 +65,8 @@ const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
 // braces will be elements.
 // 3. MyClass{} will call constructor as if ()
 // 4. {} It's a C++ things, uniform initialization feature.
-HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
-    : device_info_(device_info), HIDPath_(device_info_->path),
+HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
+    : device_info_(&device_info), HIDPath_(device_info_->path),
       DeviceID_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
       SerialNumber_(device_info_->serial_number),
       ManufacturerString_(device_info_->manufacturer_string),
@@ -51,94 +85,102 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 
 // move constructor
 HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
-    : device_info_(other.device_info_), HIDPath_(std::move(other.HIDPath_)),
-      DeviceID_(std::move(other.DeviceID_)),
-      SerialNumber_(std::move(other.SerialNumber_)),
-      ManufacturerString_(std::move(other.ManufacturerString_)),
-      ProductString_(std::move(other.ProductString_)) {
+    : device_info_(other.device_info_), HIDPath_(other.HIDPath_),
+      DeviceID_(std::move(other.DeviceID_)), SerialNumber_(other.SerialNumber_),
+      ManufacturerString_(other.ManufacturerString_),
+      ProductString_(other.ProductString_) {
 
   other.device_info_ = nullptr;
-  // TODO: we can set the other.HIDPath_ = string_view{} to reset the other
-  // device, however it will add overhead. But we can leave the other object in
-  // and valid but undefined state
+
+  other.DeviceID_ = DeviceID{0, 0};
+  other.HIDPath_ = HIDPath{};
+  other.SerialNumber_ = SerialNumber{};
+  other.ManufacturerString_ = std::wstring_view{};
+  other.ProductString_ = std::wstring_view{};
 }
 
 HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   if (this != &rhs) {
-    device_info_->next = nullptr;
-    hid_free_enumeration(device_info_);
 
-    device_info_ = rhs.device_info_;
+    // handle case, where the object was moved
+    // In rust the moved from object cannot be used, it's a compiler error
+    // In C++ we add this check
+    // Why we don't implement similar behavior in C++?
+    if (device_info_ != nullptr) {
+      device_info_->next = nullptr;
+      hid_free_enumeration(device_info_);
+    }
+
+    this->device_info_ = rhs.device_info_;
     rhs.device_info_ = nullptr;
-    HIDPath_ = std::move(rhs.HIDPath_);
-    DeviceID_ = std::move(rhs.DeviceID_);
-    SerialNumber_ = std::move(rhs.SerialNumber_);
-    ManufacturerString_ = std::move(rhs.ManufacturerString_);
-    ProductString_ = std::move(rhs.ProductString_);
 
-    // TODO: should i also nullify the string views? it will add more overhead
+    this->HIDPath_ = rhs.HIDPath_;
+    this->DeviceID_ = std::move(rhs.DeviceID_);
+    this->SerialNumber_ = rhs.SerialNumber_;
+    this->ManufacturerString_ = rhs.ManufacturerString_;
+    this->ProductString_ = rhs.ProductString_;
+
+    // should i also nullify the string views? it will add more overhead
     // but we will prevent leaky abstraction? rhs.HIDPath_ = std::string_view{};
-    // rhs.DeviceID_ = std::string_view{};
-    // rhs.SerialNumber_ = std::string_view{};
-    // rhs.ManufacturerString_ = std::string_view{};
-    // rhs.ProductString_ = std::string_view{};
+    // Better to start with the conceptually correct thing, and then make it
+    // fast and correct. The overheard is neglegable
+
+    rhs.DeviceID_ = DeviceID{0, 0};
+    rhs.HIDPath_ = HIDPath{};
+    rhs.SerialNumber_ = SerialNumber{};
+    rhs.ManufacturerString_ = std::wstring_view{};
+    rhs.ProductString_ = std::wstring_view{};
   }
 
   return *this;
 }
 
-const HIDPath &HIDDeviceInfo::path() const { return HIDPath_; }
+HIDPath HIDDeviceInfo::path() const { return HIDPath_; }
 
-const DeviceID &HIDDeviceInfo::device_id() const { return DeviceID_; }
+DeviceID HIDDeviceInfo::device_id() const { return DeviceID_; }
 
-const SerialNumber &HIDDeviceInfo::serial_number() const {
-  return SerialNumber_;
-}
+SerialNumber HIDDeviceInfo::serial_number() const { return SerialNumber_; }
 
-const ReleaseNumber &HIDDeviceInfo::release_number() const {
-  // return device_info_.release_number;
-
-  // TODO:  device_info_.release_number is unsigned short and const
-  // ReleaseNumber is uint16_t, should i do an static_cast here?
-  //        ideally i want to return the number by reference and not copy it.
-  // is this correct?
+ReleaseNumber HIDDeviceInfo::release_number() const {
   return static_cast<const ReleaseNumber &>(device_info_->release_number);
 }
 
-const std::wstring_view &HIDDeviceInfo::manufacturer_string() const {
+std::wstring_view HIDDeviceInfo::manufacturer_string() const {
   return ManufacturerString_;
 }
 
-const std::wstring_view &HIDDeviceInfo::product_string() const {
+std::wstring_view HIDDeviceInfo::product_string() const {
+  // From what i understand from the hidapi library, the wide char is only used
+  // for windows variant. Should i create like an template that for linux retuns
+  // std::string, and for windows retuns std::Would it be better
+
+  // ANS: it's better to not worry about, becuase UI framewoks will be doing
+  // convertions anyway. So we shouldn't converyt to std::string to avoid the
+  // double allocations
   return ProductString_;
 }
 
-// TODO: this are really simple function.... should i force them inline? or
-const UsagePage &HIDDeviceInfo::usage_page() const {
+UsagePage HIDDeviceInfo::usage_page() const {
   return static_cast<const UsagePage &>(device_info_->usage_page);
 }
 
-const Usage &HIDDeviceInfo::usage() const {
+Usage HIDDeviceInfo::usage() const {
   return static_cast<const Usage &>(device_info_->usage);
 }
 
-const InterfaceNumber &HIDDeviceInfo::interface_number() const {
+InterfaceNumber HIDDeviceInfo::interface_number() const {
   return static_cast<const InterfaceNumber &>(device_info_->interface_number);
 }
 
-const HidBusType &HIDDeviceInfo::bus_type() const {
-  return device_info_->bus_type;
-}
+hid_bus_type HIDDeviceInfo::bus_type() const { return device_info_->bus_type; }
 
 std::wostream &operator<<(std::wostream &os, const HIDDeviceInfo &info) {
   auto [vid, pid] = info.device_id();
 
-  // TODO: how should i deal with wide char and normal char, how should i print
-  // it?
-  os << std::format(L"=====\npath: {}\nvid {:x}\npid {:x}\nserial_number: {}\n"
+  os << std::format(L"=====\npath: {}\ndeviceId: {}\nserial_number: {}\n"
                     L"manufacturer_string: {}\nproduct_string = {}\nusage_page "
                     L"= {}\nusage = {}\ninterface_number = {}\n=====",
-                    info.path(), vid, pid, info.serial_number(),
+                    info.path(), info.device_id(), info.serial_number(),
                     info.manufacturer_string(), info.product_string(),
                     info.usage_page(), info.usage(), info.interface_number());
 
