@@ -89,6 +89,56 @@ private:
 
 } // namespace ratbag
 
+// template <class E> requires std::is_enum_v<E>
+// auto format_as(E e) { return std::to_underlying(e); }
+
+// template <typename T>
+// using format_as_type = decltype(format_as(std::declval<T>()));
+
+// template <class T>
+//     requires requires { typename format_as_type<T>; }
+// struct formatter<T> : formatter<format_as_type<T>> {
+//     auto format(T e, auto& ctx) const {
+//         return formatter<format_as_type<T>>::format(format_as(e), ctx);
+//     }
+// };
+
+// auto format_as(hid_bus_type e) { return std::to_underlying(e); }
+
+template <typename CharT> struct std::formatter<hid_bus_type, CharT> {
+  constexpr auto parse(auto &ctx) {
+    // TODO: what is this function needed for? what does it do?
+    return ctx.begin();
+  }
+
+  auto format(const hid_bus_type &bus_type, auto &ctx) const {
+    if constexpr (std::is_same_v<CharT, char>) {
+      // TODO: i don't want to be implementing the switch case bellow for utf8
+      // and wchar_t types...
+    } else if constexpr (std::is_same_v<CharT, wchar_t>) {
+      std::wstring_view name = L"unknown";
+
+      switch (bus_type) {
+      case HID_API_BUS_USB:
+        name = L"USB";
+        break;
+      case HID_API_BUS_BLUETOOTH:
+        name = L"Bluetooth";
+        break;
+      case HID_API_BUS_I2C:
+        name = L"I2C";
+        break;
+      case HID_API_BUS_SPI:
+        name = L"SPI";
+        break;
+      case HID_API_BUS_UNKNOWN:
+        break;
+      }
+      return std::format_to(ctx.out(), L"{}", name);
+    }
+  }
+};
+
 template <typename CharT>
 struct std::formatter<ratbag::lib::hidapi::DeviceID, CharT> {
   constexpr auto parse(auto &ctx) {
@@ -132,10 +182,10 @@ struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo, CharT> {
           ctx.out(),
           L"HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
           L"manufacturer_string: {}, product_string = {}, usage_page "
-          L"= {}, usage = {}, interface_number = {})",
+          L"= {}, usage = {}, interface_number = {}, bus_type = {})",
           wpath, info.device_id(), info.serial_number(),
           info.manufacturer_string(), info.product_string(), info.usage_page(),
-          info.usage(), info.interface_number());
+          info.usage(), info.interface_number(), info.bus_type());
     }
   }
 };
