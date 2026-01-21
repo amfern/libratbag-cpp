@@ -5,6 +5,7 @@ namespace lib {
 
 Device Device::Open() {
   Device dev;
+
   return dev;
 }
 
