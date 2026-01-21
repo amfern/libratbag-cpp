@@ -12,7 +12,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevices) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 
   for (auto &info : deviceInfos) {
-    std::wcout << info << std::endl;
+    std::wcout << std::format(L"{}\n", info);
   }
 }
 

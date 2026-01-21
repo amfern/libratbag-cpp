@@ -2,10 +2,35 @@
 
 #include <format>
 #include <ostream>
+#include <string_view>
+
+// TODO: i tried to move the implemnetation into cpp file, but i ran into vague compiler errors, and after testing it seems the wide stgring type is what causing the errors
+// auto fmt::formatter<color>::format(color c, format_context& ctx) const
+//     -> format_context::iterator {
+
+// template <typename CharT>
+// auto std::formatter<ratbag::lib::hidapi::DeviceID, CharTo>::format(
+//     const ratbag::lib::hidapi::DeviceID &id, auto &ctx) const {
+
+//   if constexpr (std::is_same_v<CharT, char>) {
+//     return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
+//                           id.vid(), id.pid());
+//   } else if constexpr (std::is_same_v<CharT, wchar_t>) {
+//     return std::format_to(ctx.out(), L"DeviceID(vid: {:#06x}, pid: {:#06x})",
+//                           id.vid(), id.pid());
+//   }
+// }
 
 namespace ratbag {
 namespace lib {
 namespace hidapi {
+
+
+DeviceID::DeviceID(ProductID vid, VendorID pid) : vid_(vid), pid_(pid) {  }
+
+ProductID DeviceID::pid() const { return pid_; }
+
+VendorID DeviceID::vid() const { return vid_; }
 
 std::wostream &operator<<(std::wostream &os, const DeviceID &di) {
   auto [vid, pid] = di;
@@ -15,32 +40,6 @@ std::wostream &operator<<(std::wostream &os, const DeviceID &di) {
   return os;
 }
 
-// TODO: implement formater for DeviceID
-// Specialize the std::formatter template for the Color type
-// template <>
-// struct std::formatter<DeviceID> {
-//     // The parse function is called at compile time to handle format
-//     specifiers constexpr auto parse(std::format_parse_context& ctx) {
-//         // In this simple example, we don't handle custom format specifiers
-//         (like alignment, precision, etc.)
-//         // We just need to advance the iterator to the end of the format
-//         specifier '}' auto it = ctx.begin(); while (it != ctx.end() && *it !=
-//         '}') {
-//             ++it;
-//         }
-//         return it;
-//     }
-
-//     // The format function is called at runtime to produce the output
-//     auto format(const Color& col, std::format_context& ctx) const {
-//         // Use std::format_to to write the formatted string to the output
-//         buffer
-//         // In this case, format the Color as an RGB tuple (r, g, b)
-//         return std::format_to(ctx.out(), "({}, {}, {})", col.r, col.g,
-//         col.b);
-//     }
-// };
-//
 // TODO: implement formater for hid_device_info
 
 const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
@@ -175,14 +174,7 @@ InterfaceNumber HIDDeviceInfo::interface_number() const {
 hid_bus_type HIDDeviceInfo::bus_type() const { return device_info_->bus_type; }
 
 std::wostream &operator<<(std::wostream &os, const HIDDeviceInfo &info) {
-  auto [vid, pid] = info.device_id();
-
-  os << std::format(L"=====\npath: {}\ndeviceId: {}\nserial_number: {}\n"
-                    L"manufacturer_string: {}\nproduct_string = {}\nusage_page "
-                    L"= {}\nusage = {}\ninterface_number = {}\n=====",
-                    info.path(), info.device_id(), info.serial_number(),
-                    info.manufacturer_string(), info.product_string(),
-                    info.usage_page(), info.usage(), info.interface_number());
+  os << std::format(L"{}", info);
 
   return os;
 }

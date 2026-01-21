@@ -1,8 +1,12 @@
 #include <cstdint>
 #include <string_view>
 #include <vector>
+#include <format>
+
 
 #include "hidapi.h"
+
+
 
 namespace ratbag {
 namespace lib {
@@ -13,9 +17,26 @@ using ProductID = uint16_t;
 using VendorID = uint16_t;
 
 // TODO: convert it to class with move operator
-using DeviceID = std::tuple<VendorID, ProductID>;
+// using DeviceID =
 
-std::wostream &operator<<(std::wostream &os, const DeviceID &di);
+class DeviceID {
+
+public:
+  VendorID vid() const;
+  ProductID pid() const;
+
+private:
+  VendorID vid_;
+  ProductID pid_;
+
+explicit DeviceID(ProductID vid, VendorID pid);
+
+friend std::wostream &operator<<(std::wostream &os, const DeviceID &di);
+friend class HIDDeviceInfo;
+};
+
+
+
 
 using SerialNumber = std::wstring_view;
 using ReleaseNumber = uint16_t;
@@ -44,16 +65,15 @@ public:
   UsagePage usage_page() const;
   /** Usage for this Device/Interface
           (Windows/Mac/hidraw only) */
-  // TODO(ASK): regatrding that "reference is just an pointer with limitation",
+  // regatrding that "reference is just an pointer with limitation",
   // does it mean that if i do "const &" it will return an pointer.
   //            And the caller will receive and pointer that it will have to
   //            dereference? Usage is just an uint16_t, should i just return by
   //            value and let it be copied?
 
-  // 1. avoid copying the thing
-  // 2. to make sure they are synced if the orignal value changed
-  //
-  // if the object is expensive to copy.
+  // yes! the reason for using reference
+  // 1. avoid copying the thing if the thing is expansive to copy
+  // 2. To make sure the returned values stays synced if something changes whithin the class
   // string_view is an alredy and reference, so we cna return it by value. It's
   // cheap to copy. cheaper than dereferencing an address
   Usage usage() const;
@@ -74,7 +94,6 @@ public:
 private:
   explicit HIDDeviceInfo(hid_device_info &device_info);
 
-  // return static_cast<const Usage &>(device_info_->usage);
   // No difference between pointer and reference in terms of performance...
   // refernce is an c++ syntatic sugar, can't be null.
   // Compiler cannot optimize reference more than an pointer.
@@ -83,7 +102,7 @@ private:
   // null Using reference as class member tights instance of the class to the
   // object unrevocably
 
-  // TODO(ASK): I want it to be reference because it gives me the assurance it's
+  // I want it to be reference because it gives me the assurance it's
   // not going to be nullptr DeviceInfo class cannot exist without
   // hid_device_info. However, the other side is that i can't move HIDDeviceInfo
   // class. Why can't i have both, being able to tell c++ that this object has
@@ -114,3 +133,54 @@ private:
 } // namespace lib
 
 } // namespace ratbag
+
+
+template <typename CharT>
+struct std::formatter<ratbag::lib::hidapi::DeviceID, CharT> {
+    constexpr auto parse(auto& ctx) {
+        // TODO: what is this function needed for?
+        return ctx.begin();
+    }
+
+    // Format the Point object.
+    auto format(const ratbag::lib::hidapi::DeviceID& id, auto& ctx) const {
+        if constexpr (std::is_same_v<CharT, char>) {
+            return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})", id.vid(), id.pid());
+        } else if constexpr (std::is_same_v<CharT, wchar_t>) {
+            return std::format_to(ctx.out(), L"DeviceID(vid: {:#06x}, pid: {:#06x})", id.vid(), id.pid());
+        }
+    }
+};
+
+
+template <typename CharT>
+struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo, CharT> {
+    constexpr auto parse(auto& ctx) {
+        // TODO: what is this function needed for?
+        return ctx.begin();
+    }
+
+    // Format the Point object.
+    auto format(const ratbag::lib::hidapi::HIDDeviceInfo& info, auto& ctx) const {
+        if constexpr (std::is_same_v<CharT, char>) {
+            // return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})", id.vid(), id.pid());
+        } else if constexpr (std::is_same_v<CharT, wchar_t>) {
+
+          // TODO: it is very in convenient to work with wchar_t...
+          //       I have to convert path to wstring and also it forces my code to use wide chars every where.
+          std::wstring wpath(info.path().length(), L' '); // Make room for characters
+          std::copy(info.path().begin(), info.path().end(), wpath.begin());
+
+          return std::format_to(
+              ctx.out(),
+              L"HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
+              L"manufacturer_string: {}, product_string = {}, usage_page "
+              L"= {}, usage = {}, interface_number = {})",
+              wpath, info.device_id(), info.serial_number(),
+              info.manufacturer_string(), info.product_string(),
+              info.usage_page(), info.usage(), info.interface_number());
+        }
+    }
+};
+
+
