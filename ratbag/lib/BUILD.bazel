@@ -21,5 +21,6 @@ cc_library(
     visibility = ["//ratbag/cli:__pkg__"],
     deps = [
         ":device",
+        "//ratbag/lib/hidapi",
     ],
 )

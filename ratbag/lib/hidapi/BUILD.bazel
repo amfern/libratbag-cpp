@@ -1,0 +1,24 @@
+cc_library(
+    name = "hidapi",
+    srcs = [
+        "device_info.cpp",
+    ],
+    hdrs = [
+        "device_info.hpp",
+    ],
+    cxxopts = ["-std=c++23"],
+    visibility = ["//ratbag/lib:__subpackages__"],
+    deps = [
+        "@hidapi",
+    ],
+)
+
+cc_test(
+    name = "hidapi-test",
+    srcs = ["device_info_test.cpp"],
+    cxxopts = ["-std=c++23"],
+    deps = [
+        ":hidapi",
+        "@googletest//:gtest_main",
+    ],
+)
