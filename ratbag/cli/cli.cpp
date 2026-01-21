@@ -11,11 +11,7 @@ int main() {
   std::cout << "List of HID devices" << std::endl;
 
   for (auto &info : deviceInfos) {
-    auto [vid, pid] = info.device_id();
-
-    std::cout << std::format("vid {:x}, pid {:x}.", vid, pid) << std::endl;
-    std::wcout << std::format(L"serial number {}.", info.serial_number())
-               << std::endl;
+    std::wcout << std::format(L"serial number {}.", info) << std::endl;
   }
 
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));

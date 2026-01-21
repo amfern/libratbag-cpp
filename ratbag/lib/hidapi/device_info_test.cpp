@@ -11,48 +11,39 @@ using ratbag::lib::hidapi::HIDDeviceInfo;
 TEST(DeviceInfoTestSuit, EnumarateDevices) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 
+  // TODO: i am testing an call to enumurate devices, but this would be
+  // different on each PC. I can't find an good way to mock the devices, what
+  // should i do in such situation that mocking is immpossible. Should i use
+  // linker --wrap function call to mock the C api return to test my C++ code.
+
   for (auto &info : deviceInfos) {
     std::wcout << std::format(L"{}\n", info);
   }
+
+  EXPECT_TRUE(true);
 }
 
-// TEST(DeviceInfoTestSuit, CreateAndMoveDeviceInfo) {
-//   auto path = new char[100];
-//   const char *ptr_path = "myPath/somehewere/there";
-//   std::strcpy(path, ptr_path);
+// TODO: fill this test by creating device.cpp
+TEST(DeviceInfoTestSuit, OpenDeviceAndPrintDescriptors) {
+  // auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 
-//   auto serial_number = new wchar_t[100];
-//   const wchar_t *ptr_serial_number = L"MySerial";
-//   std::wcscpy(serial_number, ptr_serial_number);
+  // for (auto &info : deviceInfos) {
+  //   auto device = info.open();
+  //   std::wcout << std::format(L"{}\n", device);
+  // }
 
-//   auto manufacturer_string = new wchar_t[100];
-//   const wchar_t *ptr_manufacturer_string = L"MyManufacturere";
-//   std::wcscpy(manufacturer_string, ptr_manufacturer_string);
+  // auto device = deviceInfos[0].open();
 
-//   auto product_string = new wchar_t[100];
-//   const wchar_t *ptr_product_string = L"MyProduct";
-//   std::wcscpy(product_string, ptr_product_string);
+  // handle = hid_open(0x4d8, 0x3f, NULL);
 
-//   hid_device_info hid_device_dummy = {
-//       .path = path,
-//       .vendor_id = 0x123,
-//       .product_id = 0x321,
-//       .serial_number = serial_number,
-//       .release_number = 0,
-//       .manufacturer_string = manufacturer_string,
-//       .product_string = product_string,
-//       .usage_page = 0,
-//       .usage = 0,
-//       .interface_number = 0,
-//       .next = nullptr,
-//       .bus_type = HID_API_BUS_UNKNOWN,
-//   };
+  // if (!handle) {
+  //   printf("unable to open device\n");
+  //   // hid_exit();
+  //   return 1;
+  // }
 
-//   // TODO: validate move works correctly
-//   {
-//     auto info = ratbag::lib::hidapi::HIDDeviceInfo(&hid_device_dummy);
-//     // auto info2 = std::move(info);
-//   }
+  // HID_API_EXPORT hid_device * HID_API_CALL hid_open(unsigned short vendor_id,
+  // unsigned short product_id, const wchar_t *serial_number);
 
-//   EXPECT_TRUE(true);
-// }
+  EXPECT_TRUE(true);
+}

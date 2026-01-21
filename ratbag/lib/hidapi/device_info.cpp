@@ -4,8 +4,10 @@
 #include <ostream>
 #include <string_view>
 
-// TODO: i tried to move the implemnetation into cpp file, but i ran into vague compiler errors, and after testing it seems the wide stgring type is what causing the errors
-// auto fmt::formatter<color>::format(color c, format_context& ctx) const
+// TODO: i tried to move the implemnetation into cpp file, but i ran into vague
+// compiler errors, and after testing it seems the wide stgring type is what
+// causing the errors auto fmt::formatter<color>::format(color c,
+// format_context& ctx) const
 //     -> format_context::iterator {
 
 // template <typename CharT>
@@ -25,8 +27,7 @@ namespace ratbag {
 namespace lib {
 namespace hidapi {
 
-
-DeviceID::DeviceID(ProductID vid, VendorID pid) : vid_(vid), pid_(pid) {  }
+DeviceID::DeviceID(ProductID vid, VendorID pid) : vid_(vid), pid_(pid) {}
 
 ProductID DeviceID::pid() const { return pid_; }
 
@@ -39,8 +40,6 @@ std::wostream &operator<<(std::wostream &os, const DeviceID &di) {
 
   return os;
 }
-
-// TODO: implement formater for hid_device_info
 
 const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *devs, *cur_dev;
