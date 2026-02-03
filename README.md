@@ -13,6 +13,10 @@ Libratbag reimplementation in modern c++ 23
 This repository uses [bazel](https://github.com/bazelbuild/bazel) 8.5 for building, testing, and releasing. 
 All tool and LLVM toolchain installations are managed by Bazel. The project is compiled using LLVM-based toolchains.
 
+``` shell
+bazel build //ratbag/lib/...
+```
+
 ### precommit hooks
 This repository runs precommit hooks through bazel using the project
 https://gitlab.arm.com/bazel/pre-commit-hooks

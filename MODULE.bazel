@@ -2,6 +2,7 @@ module(name = "libratbag")
 
 bazel_dep(name = "toolchains_llvm", version = "1.6.0")
 bazel_dep(name = "googletest", version = "1.17.0")
+bazel_dep(name = "rules_cc", version = "0.2.16")
 
 # for precommit hooks https://gitlab.arm.com/bazel/pre-commit-hooks
 bazel_dep(name = "pre-commit", version = "1.0.9")
