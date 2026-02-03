@@ -1,3 +1,5 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 # TODO: upstream bazel support to https://github.com/libusb/hidapi
 cc_library(
     name = "hidapi",
