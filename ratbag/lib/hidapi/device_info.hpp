@@ -37,10 +37,22 @@ using InterfaceNumber = int32_t;
 
 class HIDDeviceInfo {
 
+
 public:
   // TODO(ASK): should i return here a vector or be more vague/abstract and
+  // C++ moto is to protect against murphy not macievalian, we stop accidents not some one who tries to maliciussly break things and missuse on doing the wrong thing
   // return some "container" type?
-  static const std::vector<HIDDeviceInfo> enumerate_hid_devices();
+  // it's better to defined
+  using HIDDeviceInfoList = std::vector<HIDDeviceInfo>;
+  // or class  that limits twhat the list can do, but contains the actual storage(vector) inside
+  // class HIDDeviceInfoList  {
+  // not copieable
+  // private:
+  //   std::vector<HIDDeviceInfo> storage;
+  // };
+
+
+  static HIDDeviceInfoList enumerate_hid_devices();
 
   /** Platform-specific device path */
   HIDPath path() const;
@@ -115,10 +127,24 @@ template <typename CharT> struct std::formatter<hid_bus_type, CharT> {
     if constexpr (std::is_same_v<CharT, char>) {
       // TODO: i don't want to be implementing the switch case bellow for utf8
       // and wchar_t types...
+      //     convert all wchar_t to utf8, pay the encoding fee to the god of performance. To make it more ergonomically to use my app
     } else if constexpr (std::is_same_v<CharT, wchar_t>) {
       std::wstring_view name = L"unknown";
 
-      switch (bus_type) {
+
+      return std::format_to(ctx.out(), L"{}", name);
+    }
+  }
+};
+
+// unit test this function
+// it's not possible to test all outcomes of a big function,
+// but we can intentionally test a small thing and relay on small thing working correcntly first
+// It's harder to check all possible inputs on an higher level.
+// integration - two different parts from different places are working togather, even if it's in the same process and same project.
+// Use detail like in arene-base for all the private functions that need testing, extract helper class.
+auto bus_type_to_string(const ) {
+    switch (bus_type) {
       case HID_API_BUS_USB:
         name = L"USB";
         break;
@@ -133,11 +159,8 @@ template <typename CharT> struct std::formatter<hid_bus_type, CharT> {
         break;
       case HID_API_BUS_UNKNOWN:
         break;
-      }
-      return std::format_to(ctx.out(), L"{}", name);
     }
-  }
-};
+}
 
 template <typename CharT>
 struct std::formatter<ratbag::lib::hidapi::DeviceID, CharT> {
@@ -164,7 +187,7 @@ struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo, CharT> {
   // Format the Point object.
   auto format(const ratbag::lib::hidapi::HIDDeviceInfo &info, auto &ctx) const {
     if constexpr (std::is_same_v<CharT, char>) {
-      // TODO(ask): it is very in convenient to work with wchar_t...
+      // TODO(ask): it is very in-convenient to work with wchar_t...
       //       I have to convert path to wstring, and because of hidapi decision
       //       to use wchar, it forces forces my code to use wide chars every
       //       where. also it make this situation impossible, and i can't print
@@ -173,6 +196,10 @@ struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo, CharT> {
       //       https://github.com/libusb/hidapi/blob/a7587175f35ddcbdfb1ce5a1e4dd7a268699ba7f/linux/hid.c#L736
       //       And let the c++ pick the correct char encoding fo the platform.
       //       It will make the library abit more cross platform.
+      //
+      //       Prior to C++26, the recommended way to do UTF-8 conversions is still codecvt_utf8  https://en.cppreference.com/w/cpp/locale/codecvt_utf8.html even though this is deprecated.
+      //       we don't reallt plan to have alot of windows users
+      //       the utf converation will not be in an performance intensive process, so it's okay to not have it
     } else if constexpr (std::is_same_v<CharT, wchar_t>) {
       std::wstring wpath(info.path().length(),
                          L' '); // Make room for characters

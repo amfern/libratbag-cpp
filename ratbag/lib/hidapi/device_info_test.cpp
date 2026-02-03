@@ -14,7 +14,10 @@ TEST(DeviceInfoTestSuit, EnumarateDevices) {
   // TODO: i am testing an call to enumurate devices, but this would be
   // different on each PC. I can't find an good way to mock the devices, what
   // should i do in such situation that mocking is immpossible. Should i use
-  // linker --wrap function call to mock the C api return to test my C++ code.
+
+  // 1. linker --wrap function call to mock the C api return to test my C++ code.
+  // 2. call the underlying API and compare the two...will work on all PC's
+  // Best - Do both
 
   for (auto &info : deviceInfos) {
     std::wcout << std::format(L"{}\n", info);
