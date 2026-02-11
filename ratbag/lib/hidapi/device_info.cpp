@@ -41,7 +41,7 @@ std::wostream &operator<<(std::wostream &os, const DeviceID &di) {
   return os;
 }
 
-const std::vector<HIDDeviceInfo> HIDDeviceInfo::enumerate_hid_devices() {
+const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *devs, *cur_dev;
   devs = hid_enumerate(0, 0); // 0,0 = find all devices
 
