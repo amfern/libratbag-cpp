@@ -15,7 +15,6 @@ namespace hidapi {
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
 using VendorID = uint16_t;
-using HidBusType = ratbag::lib::hidapi::detail::HidBusType;
 
 class DeviceID {
 
@@ -41,6 +40,7 @@ using UsagePage = uint16_t;
 using Usage = uint16_t;
 using InterfaceNumber = int32_t;
 using HIDDeviceInfoList = std::vector<HIDDeviceInfo>;
+using HidBusType = ratbag::lib::hidapi::detail::HidBusType;
 
 class HIDDeviceInfo {
 
