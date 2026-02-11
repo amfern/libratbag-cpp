@@ -11,3 +11,7 @@ TEST(BusTypeToStringTest, CanReturnCorrectStringToEnum) {
   ASSERT_EQ(bus_type_to_string(HID_API_BUS_SPI), L"SPI");
   ASSERT_EQ(bus_type_to_string(HID_API_BUS_UNKNOWN), L"unknown");
 }
+
+TEST(BusTypeToStringTest, CanFormatString) {
+  ASSERT_EQ(std::format(L"This is {}", HID_API_BUS_USB), L"This is USB");
+}

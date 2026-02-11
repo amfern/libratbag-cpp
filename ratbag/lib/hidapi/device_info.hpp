@@ -15,6 +15,7 @@ namespace hidapi {
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
 using VendorID = uint16_t;
+using HidBusType = hid_bus_type;
 
 class DeviceID {
 
@@ -64,7 +65,7 @@ public:
 
   Usage usage() const;
   InterfaceNumber interface_number() const;
-  hid_bus_type bus_type() const;
+  HidBusType bus_type() const;
 
   ~HIDDeviceInfo(); // destructor
 
