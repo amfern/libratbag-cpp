@@ -93,40 +93,6 @@ private:
 
 } // namespace ratbag
 
-// template <class E> requires std::is_enum_v<E>
-// auto format_as(E e) { return std::to_underlying(e); }
-
-// template <typename T>
-// using format_as_type = decltype(format_as(std::declval<T>()));
-
-// template <class T>
-//     requires requires { typename format_as_type<T>; }
-// struct formatter<T> : formatter<format_as_type<T>> {
-//     auto format(T e, auto& ctx) const {
-//         return formatter<format_as_type<T>>::format(format_as(e), ctx);
-//     }
-// };
-
-// auto format_as(hid_bus_type e) { return std::to_underlying(e); }
-
-// TODO: i wonder if i can move these templates into cpp file
-template <typename CharT> struct std::formatter<hid_bus_type, CharT> {
-  constexpr auto parse(auto &ctx) {
-    // TODO: what is this function needed for? what does it do?
-    return ctx.begin();
-  }
-
-  auto format(const hid_bus_type &bus_type, auto &ctx) const {
-    if constexpr (std::is_same_v<CharT, char>) {
-      // TODO: i don't want to be implementing the switch case bellow for utf8
-      // and wchar_t types...
-      // TODO: convert all wchar_t to utf8, pay the encoding fee to the god of performance. To make it more ergonomically to use my api
-    } else if constexpr (std::is_same_v<CharT, wchar_t>) {
-      auto name = ratbag::lib::hidapi::detail::bus_type_to_string(bus_type);
-      return std::format_to(ctx.out(), L"{}", name);
-    }
-  }
-};
 
 template <typename CharT>
 struct std::formatter<ratbag::lib::hidapi::DeviceID, CharT> {
