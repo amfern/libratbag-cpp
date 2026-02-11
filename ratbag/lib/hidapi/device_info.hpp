@@ -1,9 +1,12 @@
+#pragma once
+
 #include <cstdint>
 #include <format>
 #include <string_view>
 #include <vector>
 
 #include "hidapi.h"
+#include "ratbag/lib/hidapi/detail/bus_type_to_string.hpp"
 
 namespace ratbag {
 namespace lib {
@@ -72,35 +75,6 @@ public:
 
   friend std::wostream &operator<<(std::wostream &os,
                                    const HIDDeviceInfo &info);
-
-  // TODO: unit test this function
-  // TODO: move this function to detail
-  // it's not possible to test all outcomes of a big function,
-  // but we can intentionally test a small thing and relay on small thing
-  // working correcntly first It's harder to check all possible inputs on an
-  // higher level. integration - two different parts from different places are
-  // working togather, even if it's in the same process and same project. Use
-  // detail like in arene-base for all the private functions that need testing,
-  // extract helper class.
-  static std::wstring_view bus_type_to_string(hid_bus_type bus_type) {
-    switch (bus_type) {
-    case HID_API_BUS_USB:
-      return std::wstring_view(L"USB");
-      break;
-    case HID_API_BUS_BLUETOOTH:
-      return std::wstring_view(L"Bluetooth");
-      break;
-    case HID_API_BUS_I2C:
-      return std::wstring_view(L"I2C");
-      break;
-    case HID_API_BUS_SPI:
-      return std::wstring_view(L"SPI");
-      break;
-    case HID_API_BUS_UNKNOWN:
-      return std::wstring_view(L"unknown");
-    }
-  }
-
 private:
   explicit HIDDeviceInfo(hid_device_info &device_info);
 
@@ -135,6 +109,7 @@ private:
 
 // auto format_as(hid_bus_type e) { return std::to_underlying(e); }
 
+// TODO: i wonder if i can move these templates into cpp file
 template <typename CharT> struct std::formatter<hid_bus_type, CharT> {
   constexpr auto parse(auto &ctx) {
     // TODO: what is this function needed for? what does it do?
@@ -145,9 +120,9 @@ template <typename CharT> struct std::formatter<hid_bus_type, CharT> {
     if constexpr (std::is_same_v<CharT, char>) {
       // TODO: i don't want to be implementing the switch case bellow for utf8
       // and wchar_t types...
-      //     convert all wchar_t to utf8, pay the encoding fee to the god of performance. To make it more ergonomically to use my app
+      // TODO: convert all wchar_t to utf8, pay the encoding fee to the god of performance. To make it more ergonomically to use my api
     } else if constexpr (std::is_same_v<CharT, wchar_t>) {
-      auto name = ratbag::lib::hidapi::HIDDeviceInfo::bus_type_to_string(bus_type);
+      auto name = ratbag::lib::hidapi::detail::bus_type_to_string(bus_type);
       return std::format_to(ctx.out(), L"{}", name);
     }
   }

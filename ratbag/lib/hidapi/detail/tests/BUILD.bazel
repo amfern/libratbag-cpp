@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "bus_type_to_string_test",
+    srcs = [
+        "bus_type_to_string_test.cpp",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi/detail:bus_type_to_string",
+        "@hidapi",
+        "@googletest//:gtest_main",
+    ],
+)

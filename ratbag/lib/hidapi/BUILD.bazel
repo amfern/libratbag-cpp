@@ -9,6 +9,7 @@ cc_library(
     cxxopts = ["-std=c++23"],
     visibility = ["//ratbag/lib:__subpackages__"],
     deps = [
+        "//ratbag/lib/hidapi/detail:bus_type_to_string",
         "@hidapi",
     ],
 )

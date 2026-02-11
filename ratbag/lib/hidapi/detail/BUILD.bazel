@@ -1,0 +1,9 @@
+cc_library(
+    name = "bus_type_to_string",
+    hdrs = [
+        "bus_type_to_string.hpp"
+    ],
+    visibility = [
+        "//ratbag/lib/hidapi:__subpackages__",
+    ],
+)
