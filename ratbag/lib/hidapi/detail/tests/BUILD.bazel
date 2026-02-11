@@ -6,7 +6,7 @@ cc_test(
         "bus_type_to_string_test.cpp",
     ],
     deps = [
-        "//ratbag/lib/hidapi/detail:bus_type_to_string",
+        "//ratbag/lib/hidapi/detail:hid_bus_type",
         "@hidapi",
         "@googletest//:gtest_main",
     ],

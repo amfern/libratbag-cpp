@@ -10,6 +10,8 @@ namespace lib {
 namespace hidapi {
 namespace detail {
 
+  using HidBusType = hid_bus_type;
+
   // it's not possible to test all outcomes of a big function,
   // but we can intentionally test a small thing and relay on small thing
   // working correcntly first It's harder to check all possible inputs on an
@@ -17,7 +19,7 @@ namespace detail {
   // working togather, even if it's in the same process and same project. Use
   // detail like in arene-base for all the private functions that need testing,
   // extract helper class.
-  static constexpr std::wstring_view bus_type_to_string(hid_bus_type bus_type) {
+  static constexpr std::wstring_view bus_type_to_string(HidBusType bus_type) {
     switch (bus_type) {
     case HID_API_BUS_USB:
       return std::wstring_view(L"USB");
@@ -45,13 +47,14 @@ namespace detail {
 
 
 // TODO: i wonder if i can move these templates into cpp file
-template <typename CharT> struct std::formatter<hid_bus_type, CharT> {
+template <typename CharT> struct std::formatter<ratbag::lib::hidapi::detail::HidBusType, CharT> {
+
   constexpr auto parse(auto &ctx) {
     // TODO: what is this function needed for? what does it do?
     return ctx.begin();
   }
 
-  auto format(const hid_bus_type &bus_type, auto &ctx) const {
+  auto format(const ratbag::lib::hidapi::detail::HidBusType &bus_type, auto &ctx) const {
     if constexpr (std::is_same_v<CharT, char>) {
       // TODO: i don't want to be implementing the switch case bellow for utf8
       // and wchar_t types...

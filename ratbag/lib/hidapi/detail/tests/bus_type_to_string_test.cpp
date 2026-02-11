@@ -1,4 +1,4 @@
-#include "ratbag/lib/hidapi/detail/bus_type_to_string.hpp"
+#include "ratbag/lib/hidapi/detail/hid_bus_type.hpp"
 
 #include <gtest/gtest.h>
 

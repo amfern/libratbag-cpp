@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "hidapi.h"
-#include "ratbag/lib/hidapi/detail/bus_type_to_string.hpp"
+#include "ratbag/lib/hidapi/detail/hid_bus_type.hpp"
 
 namespace ratbag {
 namespace lib {
@@ -15,7 +15,7 @@ namespace hidapi {
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
 using VendorID = uint16_t;
-using HidBusType = hid_bus_type;
+using HidBusType = ratbag::lib::hidapi::detail::HidBusType;
 
 class DeviceID {
 

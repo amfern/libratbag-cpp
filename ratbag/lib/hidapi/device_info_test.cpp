@@ -3,6 +3,8 @@
 #include "gtest/gtest.h"
 
 using ratbag::lib::hidapi::HIDDeviceInfo;
+using ratbag::lib::hidapi::HidBusType;
+
 
 // TODO(ask): Now that i create an wrapper for C class, what sort of tests
 // should i write.
