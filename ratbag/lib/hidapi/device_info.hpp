@@ -52,8 +52,6 @@ class HIDDeviceInfo;
 // or alternatively use conditional compilation (#ifdef) in C to adjust the return type based on the target OS.
 // Adopting this strategy would make HIDAPI more natural and efficient to use in cross-platform projects.
 using HIDAPIString = std::wstring_view;
-
-using SerialNumber = HIDAPIString;
 using ReleaseNumber = uint16_t;
 using UsagePage = uint16_t;
 using Usage = uint16_t;
@@ -70,7 +68,7 @@ public:
   /** Platform-specific device path */
   HIDPath path() const;
   DeviceID device_id() const;
-  SerialNumber serial_number() const;
+  HIDAPIString serial_number() const;
   /** Device Release Number in binary-coded decimal,
           also known as Device Version Number */
   ReleaseNumber release_number() const;
@@ -102,7 +100,7 @@ private:
 
   HIDPath HIDPath_;
   DeviceID DeviceID_;
-  SerialNumber SerialNumber_;
+  HIDAPIString SerialNumber_;
   HIDAPIString ManufacturerString_;
   HIDAPIString ProductString_;
 };

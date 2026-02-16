@@ -92,7 +92,7 @@ HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
 
   other.DeviceID_ = DeviceID{0, 0};
   other.HIDPath_ = HIDPath{};
-  other.SerialNumber_ = SerialNumber{};
+  other.SerialNumber_ = HIDAPIString{};
   other.ManufacturerString_ = HIDAPIString{};
   other.ProductString_ = HIDAPIString{};
 }
@@ -125,7 +125,7 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
 
     rhs.DeviceID_ = DeviceID{0, 0};
     rhs.HIDPath_ = HIDPath{};
-    rhs.SerialNumber_ = SerialNumber{};
+    rhs.SerialNumber_ = HIDAPIString{};
     rhs.ManufacturerString_ = HIDAPIString{};
     rhs.ProductString_ = HIDAPIString{};
   }
@@ -137,7 +137,7 @@ HIDPath HIDDeviceInfo::path() const { return HIDPath_; }
 
 DeviceID HIDDeviceInfo::device_id() const { return DeviceID_; }
 
-SerialNumber HIDDeviceInfo::serial_number() const { return SerialNumber_; }
+HIDAPIString HIDDeviceInfo::serial_number() const { return SerialNumber_; }
 
 ReleaseNumber HIDDeviceInfo::release_number() const {
   return static_cast<const ReleaseNumber &>(device_info_->release_number);
