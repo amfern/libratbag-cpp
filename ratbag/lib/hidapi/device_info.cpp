@@ -173,5 +173,3 @@ std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
 } // namespace hidapi
 } // namespace lib
 } // namespace ratbag
-
-// Define the overloaded operator outside the class

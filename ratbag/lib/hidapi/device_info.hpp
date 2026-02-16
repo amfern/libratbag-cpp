@@ -119,11 +119,9 @@ private:
 
 } // namespace ratbag
 
-template <> struct std::formatter<ratbag::lib::hidapi::DeviceID> {
-  constexpr auto parse(auto &ctx) {
-    // TODO: what is this function needed for? what does it do?
-    return ctx.begin();
-  }
+template <>
+struct std::formatter<ratbag::lib::hidapi::DeviceID>
+    : std::formatter<std::string_view> {
 
   auto format(const ratbag::lib::hidapi::DeviceID &id, auto &ctx) const {
     return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
@@ -131,18 +129,12 @@ template <> struct std::formatter<ratbag::lib::hidapi::DeviceID> {
   }
 };
 
-template <> struct std::formatter<ratbag::lib::hidapi::HIDAPIString> {
-  constexpr auto parse(auto &ctx) { return ctx.begin(); }
+template <>
+struct std::formatter<ratbag::lib::hidapi::HIDAPIString>
+    : std::formatter<std::string_view> {
 
-  // Format the Point object.
-  auto format(const ratbag::lib::hidapi::HIDAPIString &hidapi_string,
-              auto &ctx) const {
-    // Before C++26, the recommended approach for UTF-8 conversions remains
-    // std::codecvt_utf8
-    // (https://en.cppreference.com/w/cpp/locale/codecvt_utf8), even though it
-    // is deprecated. Use the converter’s from_bytes() function to convert
-    // wchar_t to a UTF-8 string. Note that this is not ideal, as it requires
-    // additional memory allocation.
+  auto format(const ratbag::lib::hidapi::HIDAPIString &hidapi_string, auto &ctx) const {
+
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     std::string string_utf8 = converter.to_bytes(hidapi_string.data());
 
@@ -150,19 +142,21 @@ template <> struct std::formatter<ratbag::lib::hidapi::HIDAPIString> {
   }
 };
 
-template <> struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo> {
-  constexpr auto parse(auto &ctx) { return ctx.begin(); }
+template<>
+struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo> : std::formatter<std::string_view> {
 
-  // Format the Point object.
-  auto format(const ratbag::lib::hidapi::HIDDeviceInfo &info, auto &ctx) const {
+    auto format(const ratbag::lib::hidapi::HIDDeviceInfo &info, auto &ctx) const {
+      return std::format_to(
+          ctx.out(),
+          "HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
+          "manufacturer_string: {}, product_string = {}, usage_page "
+          "= {}, usage = {}, interface_number = {}, bus_type = {})",
+          info.path(), info.device_id(), info.serial_number(),
+          info.manufacturer_string(), info.product_string(), info.usage_page(),
+          info.usage(), info.interface_number(), info.bus_type());
 
-    return std::format_to(
-        ctx.out(),
-        "HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
-        "manufacturer_string: {}, product_string = {}, usage_page "
-        "= {}, usage = {}, interface_number = {}, bus_type = {})",
-        info.path(), info.device_id(), info.serial_number(),
-        info.manufacturer_string(), info.product_string(), info.usage_page(),
-        info.usage(), info.interface_number(), info.bus_type());
-  }
+      // return std::formatter<std::string_view>::format(to_string(direction),
+      //                                                 context);
+    }
+
 };
