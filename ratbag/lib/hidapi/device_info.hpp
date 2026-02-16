@@ -122,41 +122,25 @@ private:
 template <>
 struct std::formatter<ratbag::lib::hidapi::DeviceID>
     : std::formatter<std::string_view> {
-
-  auto format(const ratbag::lib::hidapi::DeviceID &id, auto &ctx) const {
-    return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
-                          id.vid(), id.pid());
-  }
+  template <class FormatContext>
+  typename FormatContext::iterator
+  format(const ratbag::lib::hidapi::DeviceID &id, FormatContext &ctx) const;
 };
 
 template <>
 struct std::formatter<ratbag::lib::hidapi::HIDAPIString>
     : std::formatter<std::string_view> {
-
-  auto format(const ratbag::lib::hidapi::HIDAPIString &hidapi_string, auto &ctx) const {
-
-    std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::string string_utf8 = converter.to_bytes(hidapi_string.data());
-
-    return std::format_to(ctx.out(), "{}", string_utf8);
-  }
+  template <class FormatContext>
+  typename FormatContext::iterator
+  format(const ratbag::lib::hidapi::HIDAPIString &hidapi_string,
+         FormatContext &ctx) const;
 };
 
-template<>
-struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo> : std::formatter<std::string_view> {
-
-    auto format(const ratbag::lib::hidapi::HIDDeviceInfo &info, auto &ctx) const {
-      return std::format_to(
-          ctx.out(),
-          "HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
-          "manufacturer_string: {}, product_string = {}, usage_page "
-          "= {}, usage = {}, interface_number = {}, bus_type = {})",
-          info.path(), info.device_id(), info.serial_number(),
-          info.manufacturer_string(), info.product_string(), info.usage_page(),
-          info.usage(), info.interface_number(), info.bus_type());
-
-      // return std::formatter<std::string_view>::format(to_string(direction),
-      //                                                 context);
-    }
-
+template <>
+struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo>
+    : std::formatter<std::string_view> {
+  template <class FormatContext>
+  typename FormatContext::iterator
+  format(const ratbag::lib::hidapi::HIDDeviceInfo &info,
+         FormatContext &ctx) const;
 };
