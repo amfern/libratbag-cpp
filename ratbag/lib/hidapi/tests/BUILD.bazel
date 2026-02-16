@@ -1,0 +1,14 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "hidapi_test",
+    srcs = ["device_info_test.cpp"],
+    cxxopts = [
+        "-std=c++23",
+        "-Wno-deprecated-declarations",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi",
+        "@googletest//:gtest_main",
+    ],
+)
