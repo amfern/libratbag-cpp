@@ -2,9 +2,8 @@
 
 #include "gtest/gtest.h"
 
-using ratbag::lib::hidapi::HIDDeviceInfo;
 using ratbag::lib::hidapi::HidBusType;
-
+using ratbag::lib::hidapi::HIDDeviceInfo;
 
 // TODO(ask): Now that i create an wrapper for C class, what sort of tests
 // should i write.
@@ -17,7 +16,8 @@ TEST(DeviceInfoTestSuit, EnumarateDevices) {
   // different on each PC. I can't find an good way to mock the devices, what
   // should i do in such situation that mocking is immpossible. Should i use
 
-  // 1. linker --wrap function call to mock the C api return to test my C++ code.
+  // 1. linker --wrap function call to mock the C api return to test my C++
+  // code.
   // 2. call the underlying API and compare the two...will work on all PC's
   // Best - Do both
 

@@ -1,10 +1,10 @@
 #pragma once
 
+#include <codecvt>
 #include <cstdint>
 #include <format>
 #include <string_view>
 #include <vector>
-#include <codecvt>
 
 #include "hidapi.h"
 #include "ratbag/lib/hidapi/detail/hid_bus_type.hpp"
@@ -34,23 +34,31 @@ private:
 };
 
 class HIDDeviceInfo;
-  
+
 // TODO:
 // By default, the HIDAPI library uses wchar_t in its API for returning strings.
-// This choice was primarily made to align with the Windows API, which natively uses wchar_t.
-// However, this design introduces several issues for downstream users:
-// - On Linux and macOS, it requires converting UTF-8 strings to wchar_t, adding unnecessary conversion overhead (for example, see the implementation in the HIDAPI Linux backend).
-// - It forces the use of wchar_t throughout the codebase, propagating the same requirement downstream to dependent projects.
-// - It complicates otherwise simple scenarios—for instance, using std::cout is no longer sufficient and must be replaced with std::wcout. Additionally, many C++ libraries and containers do not fully support wchar_t.
-// 
-// For a cross-platform library, it’s generally better to avoid enforcing either wchat_t or UTF-8(char*) at the API level.
-// Instead, the API should align with the native string type of the target operating system, 
-// since most UI frameworks and system libraries expect the platform’s default encoding
-// (UTF-8 on Unix-like systems, wide strings on Windows).
-// This approach avoids unnecessary allocations and string re-encoding.
-// A better design for HIDAPI would be to use C++ templates to select the appropriate character type per platform,
-// or alternatively use conditional compilation (#ifdef) in C to adjust the return type based on the target OS.
-// Adopting this strategy would make HIDAPI more natural and efficient to use in cross-platform projects.
+// This choice was primarily made to align with the Windows API, which natively
+// uses wchar_t. However, this design introduces several issues for downstream
+// users:
+// - On Linux and macOS, it requires converting UTF-8 strings to wchar_t, adding
+// unnecessary conversion overhead (for example, see the implementation in the
+// HIDAPI Linux backend).
+// - It forces the use of wchar_t throughout the codebase, propagating the same
+// requirement downstream to dependent projects.
+// - It complicates otherwise simple scenarios—for instance, using std::cout is
+// no longer sufficient and must be replaced with std::wcout. Additionally, many
+// C++ libraries and containers do not fully support wchar_t.
+//
+// For a cross-platform library, it’s generally better to avoid enforcing either
+// wchat_t or UTF-8(char*) at the API level. Instead, the API should align with
+// the native string type of the target operating system, since most UI
+// frameworks and system libraries expect the platform’s default encoding (UTF-8
+// on Unix-like systems, wide strings on Windows). This approach avoids
+// unnecessary allocations and string re-encoding. A better design for HIDAPI
+// would be to use C++ templates to select the appropriate character type per
+// platform, or alternatively use conditional compilation (#ifdef) in C to
+// adjust the return type based on the target OS. Adopting this strategy would
+// make HIDAPI more natural and efficient to use in cross-platform projects.
 using HIDAPIString = std::wstring_view;
 using ReleaseNumber = uint16_t;
 using UsagePage = uint16_t;
@@ -62,7 +70,6 @@ using HidBusType = ratbag::lib::hidapi::detail::HidBusType;
 class HIDDeviceInfo {
 
 public:
-
   static const HIDDeviceInfoList enumerate_hid_devices();
 
   /** Platform-specific device path */
@@ -93,6 +100,7 @@ public:
 
   friend std::wostream &operator<<(std::wostream &os,
                                    const HIDDeviceInfo &info);
+
 private:
   explicit HIDDeviceInfo(hid_device_info &device_info);
 
@@ -111,9 +119,7 @@ private:
 
 } // namespace ratbag
 
-
-template <>
-struct std::formatter<ratbag::lib::hidapi::DeviceID> {
+template <> struct std::formatter<ratbag::lib::hidapi::DeviceID> {
   constexpr auto parse(auto &ctx) {
     // TODO: what is this function needed for? what does it do?
     return ctx.begin();
@@ -125,12 +131,12 @@ struct std::formatter<ratbag::lib::hidapi::DeviceID> {
   }
 };
 
-template <>
-struct std::formatter<ratbag::lib::hidapi::HIDAPIString> {
+template <> struct std::formatter<ratbag::lib::hidapi::HIDAPIString> {
   constexpr auto parse(auto &ctx) { return ctx.begin(); }
 
   // Format the Point object.
-  auto format(const ratbag::lib::hidapi::HIDAPIString &hidapi_string, auto &ctx) const {
+  auto format(const ratbag::lib::hidapi::HIDAPIString &hidapi_string,
+              auto &ctx) const {
     // Before C++26, the recommended approach for UTF-8 conversions remains
     // std::codecvt_utf8
     // (https://en.cppreference.com/w/cpp/locale/codecvt_utf8), even though it
@@ -144,8 +150,7 @@ struct std::formatter<ratbag::lib::hidapi::HIDAPIString> {
   }
 };
 
-template <>
-struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo> {
+template <> struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo> {
   constexpr auto parse(auto &ctx) { return ctx.begin(); }
 
   // Format the Point object.
@@ -156,8 +161,8 @@ struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo> {
         "HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
         "manufacturer_string: {}, product_string = {}, usage_page "
         "= {}, usage = {}, interface_number = {}, bus_type = {})",
-        info.path(), info.device_id(), info.serial_number(), info.manufacturer_string(),
-        info.product_string(), info.usage_page(), info.usage(),
-        info.interface_number(), info.bus_type());
+        info.path(), info.device_id(), info.serial_number(),
+        info.manufacturer_string(), info.product_string(), info.usage_page(),
+        info.usage(), info.interface_number(), info.bus_type());
   }
 };

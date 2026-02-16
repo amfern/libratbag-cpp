@@ -84,7 +84,8 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 // move constructor
 HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
     : device_info_(other.device_info_), HIDPath_(other.HIDPath_),
-      DeviceID_(std::move(other.DeviceID_)), SerialNumber_(std::move(other.SerialNumber_)),
+      DeviceID_(std::move(other.DeviceID_)),
+      SerialNumber_(std::move(other.SerialNumber_)),
       ManufacturerString_(std::move(other.ManufacturerString_)),
       ProductString_(std::move(other.ProductString_)) {
 
@@ -147,9 +148,7 @@ HIDAPIString HIDDeviceInfo::manufacturer_string() const {
   return ManufacturerString_;
 }
 
-HIDAPIString HIDDeviceInfo::product_string() const {
-  return ProductString_;
-}
+HIDAPIString HIDDeviceInfo::product_string() const { return ProductString_; }
 
 UsagePage HIDDeviceInfo::usage_page() const {
   return static_cast<const UsagePage &>(device_info_->usage_page);

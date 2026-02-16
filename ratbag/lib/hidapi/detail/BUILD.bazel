@@ -1,7 +1,7 @@
 cc_library(
     name = "hid_bus_type",
     hdrs = [
-        "hid_bus_type.hpp"
+        "hid_bus_type.hpp",
     ],
     visibility = [
         "//ratbag/lib/hidapi:__subpackages__",
