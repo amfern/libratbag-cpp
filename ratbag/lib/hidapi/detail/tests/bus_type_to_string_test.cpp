@@ -5,13 +5,13 @@
 using ratbag::lib::hidapi::detail::bus_type_to_string;
 
 TEST(BusTypeToStringTest, CanReturnCorrectStringToEnum) {
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_USB), L"USB");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_BLUETOOTH), L"Bluetooth");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_I2C), L"I2C");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_SPI), L"SPI");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_UNKNOWN), L"unknown");
+  ASSERT_EQ(bus_type_to_string(HID_API_BUS_USB), "USB");
+  ASSERT_EQ(bus_type_to_string(HID_API_BUS_BLUETOOTH), "Bluetooth");
+  ASSERT_EQ(bus_type_to_string(HID_API_BUS_I2C), "I2C");
+  ASSERT_EQ(bus_type_to_string(HID_API_BUS_SPI), "SPI");
+  ASSERT_EQ(bus_type_to_string(HID_API_BUS_UNKNOWN), "unknown");
 }
 
 TEST(BusTypeToStringTest, CanFormatString) {
-  ASSERT_EQ(std::format(L"This is {}", HID_API_BUS_USB), L"This is USB");
+  ASSERT_EQ(std::format("This is {}", HID_API_BUS_USB), "This is USB");
 }

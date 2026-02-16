@@ -28,13 +28,13 @@ private:
 
   explicit DeviceID(ProductID vid, VendorID pid);
 
-  friend std::wostream &operator<<(std::wostream &os, const DeviceID &di);
+  friend std::ostream &operator<<(std::ostream &os, const DeviceID &di);
   friend class HIDDeviceInfo;
 };
 
 class HIDDeviceInfo;
   
-using SerialNumber = std::wstring_view;
+using SerialNumber = std::string_view;
 using ReleaseNumber = uint16_t;
 using UsagePage = uint16_t;
 using Usage = uint16_t;
@@ -55,8 +55,8 @@ public:
   /** Device Release Number in binary-coded decimal,
           also known as Device Version Number */
   ReleaseNumber release_number() const;
-  std::wstring_view manufacturer_string() const;
-  std::wstring_view product_string() const;
+  std::string_view manufacturer_string() const;
+  std::string_view product_string() const;
   /** Usage Page for this Device/Interface
           (Windows/Mac/hidraw only) */
   UsagePage usage_page() const;
@@ -83,9 +83,9 @@ private:
 
   HIDPath HIDPath_;
   DeviceID DeviceID_;
-  SerialNumber SerialNumber_;
-  std::wstring_view ManufacturerString_;
-  std::wstring_view ProductString_;
+  std::string SerialNumber_;
+  std::string ManufacturerString_;
+  std::string ProductString_;
 };
 
 } // namespace hidapi
@@ -95,57 +95,32 @@ private:
 } // namespace ratbag
 
 
-template <typename CharT>
-struct std::formatter<ratbag::lib::hidapi::DeviceID, CharT> {
+template <>
+struct std::formatter<ratbag::lib::hidapi::DeviceID> {
   constexpr auto parse(auto &ctx) {
     // TODO: what is this function needed for? what does it do?
     return ctx.begin();
   }
 
   auto format(const ratbag::lib::hidapi::DeviceID &id, auto &ctx) const {
-    if constexpr (std::is_same_v<CharT, char>) {
-      return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
-                            id.vid(), id.pid());
-    } else if constexpr (std::is_same_v<CharT, wchar_t>) {
-      return std::format_to(ctx.out(), L"DeviceID(vid: {:#06x}, pid: {:#06x})",
-                            id.vid(), id.pid());
-    }
+    return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
+                          id.vid(), id.pid());
   }
 };
 
-template <typename CharT>
-struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo, CharT> {
+template <>
+struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo> {
   constexpr auto parse(auto &ctx) { return ctx.begin(); }
 
   // Format the Point object.
   auto format(const ratbag::lib::hidapi::HIDDeviceInfo &info, auto &ctx) const {
-    if constexpr (std::is_same_v<CharT, char>) {
-      // TODO(ask): it is very in-convenient to work with wchar_t...
-      //       I have to convert path to wstring, and because of hidapi decision
-      //       to use wchar, it forces forces my code to use wide chars every
-      //       where. also it make this situation impossible, and i can't print
-      //       into std::cout... It's better to fix the issue at the root, and
-      //       prevent the hidapi library from convert utf8 to wchar_t with. eg:
-      //       https://github.com/libusb/hidapi/blob/a7587175f35ddcbdfb1ce5a1e4dd7a268699ba7f/linux/hid.c#L736
-      //       And let the c++ pick the correct char encoding fo the platform.
-      //       It will make the library abit more cross platform.
-      //
-      //       Prior to C++26, the recommended way to do UTF-8 conversions is still codecvt_utf8  https://en.cppreference.com/w/cpp/locale/codecvt_utf8.html even though this is deprecated.
-      //       we don't reallt plan to have alot of windows users
-      //       the utf converation will not be in an performance intensive process, so it's okay to not have it
-    } else if constexpr (std::is_same_v<CharT, wchar_t>) {
-      std::wstring wpath(info.path().length(),
-                         L' '); // Make room for characters
-      std::copy(info.path().begin(), info.path().end(), wpath.begin());
-
       return std::format_to(
           ctx.out(),
-          L"HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
-          L"manufacturer_string: {}, product_string = {}, usage_page "
-          L"= {}, usage = {}, interface_number = {}, bus_type = {})",
-          wpath, info.device_id(), info.serial_number(),
+          "HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
+          "manufacturer_string: {}, product_string = {}, usage_page "
+          "= {}, usage = {}, interface_number = {}, bus_type = {})",
+          info.path(), info.device_id(), info.serial_number(),
           info.manufacturer_string(), info.product_string(), info.usage_page(),
           info.usage(), info.interface_number(), info.bus_type());
-    }
   }
 };

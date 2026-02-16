@@ -3,6 +3,7 @@
 #include <format>
 #include <ostream>
 #include <string_view>
+#include <codecvt>
 
 // TODO: i tried to move the implemnetation into cpp file, but i ran into vague
 // compiler errors, and after testing it seems the wide stgring type is what
@@ -33,10 +34,10 @@ ProductID DeviceID::pid() const { return pid_; }
 
 VendorID DeviceID::vid() const { return vid_; }
 
-std::wostream &operator<<(std::wostream &os, const DeviceID &di) {
+std::ostream &operator<<(std::ostream &os, const DeviceID &di) {
   auto [vid, pid] = di;
 
-  os << std::format(L"vid {:x}\npid {:x}", vid, pid);
+  os << std::format("vid {:x}\npid {:x}", vid, pid);
 
   return os;
 }
@@ -65,10 +66,29 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
 // 4. {} It's a C++ things, uniform initialization feature.
 HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
     : device_info_(&device_info), HIDPath_(device_info_->path),
-      DeviceID_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
-      SerialNumber_(device_info_->serial_number),
-      ManufacturerString_(device_info_->manufacturer_string),
-      ProductString_(device_info_->product_string) {}
+      DeviceID_(DeviceID{device_info_->vendor_id, device_info_->product_id}) {
+
+  // TODO: it is very in-convenient to work with wchar_t...
+  //       I have to convert path to wstring, and because of hidapi decision
+  //       to use wchar, it forces forces my code to use wide chars every
+  //       where. also it make this situation impossible, and i can't print
+  //       into std::cout... It's better to fix the issue at the root, and
+  //       prevent the hidapi library from convert utf8 to wchar_t with. eg:
+  //       https://github.com/libusb/hidapi/blob/a7587175f35ddcbdfb1ce5a1e4dd7a268699ba7f/linux/hid.c#L736
+  //       And let the c++ pick the correct char encoding fo the platform.
+  //       It will make the library abit more cross platform.
+  //
+  //       Prior to C++26, the recommended way to do UTF-8 conversions is still codecvt_utf8  https://en.cppreference.com/w/cpp/locale/codecvt_utf8.html even though this is deprecated.
+  //       we don't reallt plan to have alot of windows users
+  //       the utf converation will not be in an performance intensive process, so it's okay to not have it
+  //       for linux hidapi.c converts utf8 to wchar, this is stupid, we shouldn't be converting native OS strings, it should be fixed on the hidapi level.
+  //       Use the converter to from_bytes (wchar to UTF-8 string)
+  //       This is not perfect, because we essentially allocate memory
+  std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+  SerialNumber_ = converter.to_bytes(device_info_->serial_number);
+  ManufacturerString_ = converter.to_bytes(device_info_->manufacturer_string);
+  ProductString_ = converter.to_bytes(device_info_->product_string);
+}
 
 HIDDeviceInfo::~HIDDeviceInfo() {
   if (device_info_) {
@@ -84,17 +104,17 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 // move constructor
 HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
     : device_info_(other.device_info_), HIDPath_(other.HIDPath_),
-      DeviceID_(std::move(other.DeviceID_)), SerialNumber_(other.SerialNumber_),
-      ManufacturerString_(other.ManufacturerString_),
-      ProductString_(other.ProductString_) {
+      DeviceID_(std::move(other.DeviceID_)), SerialNumber_(std::move(other.SerialNumber_)),
+      ManufacturerString_(std::move(other.ManufacturerString_)),
+      ProductString_(std::move(other.ProductString_)) {
 
   other.device_info_ = nullptr;
 
   other.DeviceID_ = DeviceID{0, 0};
   other.HIDPath_ = HIDPath{};
   other.SerialNumber_ = SerialNumber{};
-  other.ManufacturerString_ = std::wstring_view{};
-  other.ProductString_ = std::wstring_view{};
+  other.ManufacturerString_ = std::string_view{};
+  other.ProductString_ = std::string_view{};
 }
 
 HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
@@ -114,9 +134,9 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
 
     this->HIDPath_ = rhs.HIDPath_;
     this->DeviceID_ = std::move(rhs.DeviceID_);
-    this->SerialNumber_ = rhs.SerialNumber_;
-    this->ManufacturerString_ = rhs.ManufacturerString_;
-    this->ProductString_ = rhs.ProductString_;
+    this->SerialNumber_ = std::move(rhs.SerialNumber_);
+    this->ManufacturerString_ = std::move(rhs.ManufacturerString_);
+    this->ProductString_ = std::move(rhs.ProductString_);
 
     // should i also nullify the string views? it will add more overhead
     // but we will prevent leaky abstraction? rhs.HIDPath_ = std::string_view{};
@@ -126,8 +146,8 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
     rhs.DeviceID_ = DeviceID{0, 0};
     rhs.HIDPath_ = HIDPath{};
     rhs.SerialNumber_ = SerialNumber{};
-    rhs.ManufacturerString_ = std::wstring_view{};
-    rhs.ProductString_ = std::wstring_view{};
+    rhs.ManufacturerString_ = std::string_view{};
+    rhs.ProductString_ = std::string_view{};
   }
 
   return *this;
@@ -143,11 +163,11 @@ ReleaseNumber HIDDeviceInfo::release_number() const {
   return static_cast<const ReleaseNumber &>(device_info_->release_number);
 }
 
-std::wstring_view HIDDeviceInfo::manufacturer_string() const {
+std::string_view HIDDeviceInfo::manufacturer_string() const {
   return ManufacturerString_;
 }
 
-std::wstring_view HIDDeviceInfo::product_string() const {
+std::string_view HIDDeviceInfo::product_string() const {
   // From what i understand from the hidapi library, the wide char is only used
   // for windows variant. Should i create like an template that for linux retuns
   // std::string, and for windows retuns std::Would it be better
@@ -172,8 +192,8 @@ InterfaceNumber HIDDeviceInfo::interface_number() const {
 
 hid_bus_type HIDDeviceInfo::bus_type() const { return device_info_->bus_type; }
 
-std::wostream &operator<<(std::wostream &os, const HIDDeviceInfo &info) {
-  os << std::format(L"{}", info);
+std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
+  os << std::format("{}", info);
 
   return os;
 }

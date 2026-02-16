@@ -22,7 +22,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevices) {
   // Best - Do both
 
   for (auto &info : deviceInfos) {
-    std::wcout << std::format(L"{}\n", info);
+    std::cout << std::format("{}\n", info);
   }
 
   EXPECT_TRUE(true);
