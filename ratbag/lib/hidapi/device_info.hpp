@@ -122,19 +122,19 @@ private:
 namespace std {
 using namespace ratbag::lib::hidapi;
 
-template <> struct formatter<DeviceID> : std::formatter<std::string_view> {
+template <> struct formatter<DeviceID> : formatter<string_view> {
   template <class FormatContext>
   typename FormatContext::iterator format(const DeviceID &id,
                                           FormatContext &ctx) const;
 };
 
-template <> struct formatter<HIDAPIString> : std::formatter<std::string_view> {
+template <> struct formatter<HIDAPIString> : formatter<string_view> {
   template <class FormatContext>
   typename FormatContext::iterator format(const HIDAPIString &hidapi_string,
                                           FormatContext &ctx) const;
 };
 
-template <> struct formatter<HIDDeviceInfo> : std::formatter<std::string_view> {
+template <> struct formatter<HIDDeviceInfo> : formatter<string_view> {
   template <class FormatContext>
   typename FormatContext::iterator format(const HIDDeviceInfo &info,
                                           FormatContext &ctx) const;
