@@ -16,7 +16,7 @@ use_repo(
 )
 
 ############################################################################
-# configure llvm toolchain 
+# configure llvm toolchain
 ############################################################################
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
 llvm.toolchain(
@@ -27,6 +27,7 @@ llvm.toolchain(
     },
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
+
 register_toolchains("@llvm_toolchain//:all")
 ############################################################################
 
@@ -40,7 +41,6 @@ python.toolchain(
     ignore_root_user_error = True,
     python_version = "3.10",
 )
-
 python.toolchain(
     ignore_root_user_error = True,
     python_version = "3.12",
