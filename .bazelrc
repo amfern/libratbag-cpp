@@ -20,11 +20,20 @@ build:debug --strip=never
 build:debug --features=oso_prefix_is_pwd
 build:debug -c dbg
 
+build:asan --strip=never
+build:asan --copt -fsanitize=address
+build:asan --copt=-fno-omit-frame-pointer
+build:asan --copt=-g
+build:asan --copt=-O1
+build:asan --linkopt -fsanitize=address
 
+build:ubsan --copt=-fsanitize=undefined
+build:ubsan --linkopt=-fsanitize=undefined
 
 # Avoid building all targets when testing
 test --build_tests_only
 test --test_env="PATH=/bin:/usr/bin:$PATH" # TODO: why i need this work around on osx?
+test --config=asan --config=ubsan
 
 # Print relative paths where possible to reduce noise
 common --attempt_to_print_relative_paths
