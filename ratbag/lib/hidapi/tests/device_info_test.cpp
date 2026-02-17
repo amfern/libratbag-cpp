@@ -102,8 +102,7 @@ TEST(DeviceInfoTestSuit, OpenDeviceAndPrintDescriptors) {
   //   return 1;
   // }
 
-  // HID_API_EXPORT hid_device * HID_API_CALL hid_open(unsigned short
-  vendor_id,
+  // HID_API_EXPORT hid_device * HID_API_CALL hid_open(unsigned short vendor_id,
   // unsigned short product_id, const wchar_t *serial_number);
 
   EXPECT_TRUE(true);
