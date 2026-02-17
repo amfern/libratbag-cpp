@@ -119,28 +119,24 @@ private:
 
 } // namespace ratbag
 
-template <>
-struct std::formatter<ratbag::lib::hidapi::DeviceID>
-    : std::formatter<std::string_view> {
+namespace std {
+using namespace ratbag::lib::hidapi;
+
+template <> struct formatter<DeviceID> : std::formatter<std::string_view> {
   template <class FormatContext>
-  typename FormatContext::iterator
-  format(const ratbag::lib::hidapi::DeviceID &id, FormatContext &ctx) const;
+  typename FormatContext::iterator format(const DeviceID &id,
+                                          FormatContext &ctx) const;
 };
 
-template <>
-struct std::formatter<ratbag::lib::hidapi::HIDAPIString>
-    : std::formatter<std::string_view> {
+template <> struct formatter<HIDAPIString> : std::formatter<std::string_view> {
   template <class FormatContext>
-  typename FormatContext::iterator
-  format(const ratbag::lib::hidapi::HIDAPIString &hidapi_string,
-         FormatContext &ctx) const;
+  typename FormatContext::iterator format(const HIDAPIString &hidapi_string,
+                                          FormatContext &ctx) const;
 };
 
-template <>
-struct std::formatter<ratbag::lib::hidapi::HIDDeviceInfo>
-    : std::formatter<std::string_view> {
+template <> struct formatter<HIDDeviceInfo> : std::formatter<std::string_view> {
   template <class FormatContext>
-  typename FormatContext::iterator
-  format(const ratbag::lib::hidapi::HIDDeviceInfo &info,
-         FormatContext &ctx) const;
+  typename FormatContext::iterator format(const HIDDeviceInfo &info,
+                                          FormatContext &ctx) const;
 };
+} // namespace std
