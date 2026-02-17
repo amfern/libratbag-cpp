@@ -24,7 +24,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevices) {
     std::cout << std::format("{}\n", info);
   }
 
-  EXPECT_TRUE(true);
+  SUCCEED();
 }
 
 // call the underlying API and compare the two...will work on all PC's
@@ -66,8 +66,6 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
         serial_number_utf8, cur_dev->release_number, manufacturer_string_utf8,
         product_string_utf8, cur_dev->usage_page, cur_dev->usage,
         cur_dev->interface_number, cur_dev->bus_type);
-
-    std::cout << std::format("{}\n", info);
 
     ASSERT_EQ(std::format("{}", info), hid_device_info_string);
 

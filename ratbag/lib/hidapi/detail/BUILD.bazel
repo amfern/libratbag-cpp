@@ -5,9 +5,6 @@ cc_library(
     hdrs = [
         "hid_bus_type.hpp",
     ],
-    srcs = [
-        "hid_bus_type.cpp",
-    ],
     visibility = [
         "//ratbag/lib/hidapi:__subpackages__",
     ],

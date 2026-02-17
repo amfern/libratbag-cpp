@@ -60,8 +60,5 @@ template <> struct formatter<HidBusType> : formatter<string_view> {
     return format_to(ctx.out(), "{}", name);
   }
 
-  // template <class FormatContext>
-  // typename FormatContext::iterator format(const HidBusType &bus_type,
-  //                                         FormatContext &ctx) const;
 };
 } // namespace std

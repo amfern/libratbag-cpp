@@ -58,7 +58,10 @@ class HIDDeviceInfo;
 // platform, or alternatively use conditional compilation (#ifdef) in C to
 // adjust the return type based on the target OS. Adopting this strategy would
 // make HIDAPI more natural and efficient to use in cross-platform projects.
-using HIDAPIString = std::wstring_view;
+class HIDAPIString : public std::wstring_view {
+public:
+  std::string toString() const;
+};
 using ReleaseNumber = uint16_t;
 using UsagePage = uint16_t;
 using Usage = uint16_t;
@@ -121,21 +124,36 @@ private:
 namespace std {
 using namespace ratbag::lib::hidapi;
 
-template <> struct formatter<DeviceID> : formatter<string_view> {
-  template <class FormatContext>
-  typename FormatContext::iterator format(const DeviceID &id,
-                                          FormatContext &ctx) const;
+
+template <>
+struct formatter<DeviceID>
+    : formatter<string_view> {
+
+  auto format(const DeviceID &id, auto &ctx) const {
+    return format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
+                          id.vid(), id.pid());
+  }
 };
 
 template <> struct formatter<HIDAPIString> : formatter<string_view> {
-  template <class FormatContext>
-  typename FormatContext::iterator format(const HIDAPIString &hidapi_string,
-                                          FormatContext &ctx) const;
+  auto format(const HIDAPIString &hidapi_string, auto &ctx) const {
+    std::string string_utf8 = hidapi_string.toString();
+    return format_to(ctx.out(), "{}", string_utf8);
+  }
 };
 
 template <> struct formatter<HIDDeviceInfo> : formatter<string_view> {
-  template <class FormatContext>
-  typename FormatContext::iterator format(const HIDDeviceInfo &info,
-                                          FormatContext &ctx) const;
+  auto format(const HIDDeviceInfo &info, auto &ctx) const {
+    return format_to(ctx.out(),
+                     "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
+                     "release_number: {}, "
+                     "manufacturer_string: {}, product_string = {}, usage_page "
+                     "= {}, usage = {}, interface_number = {}, bus_type = {})",
+                     info.path(), info.device_id(), info.serial_number(),
+                     info.release_number(), info.manufacturer_string(),
+                     info.product_string(), info.usage_page(), info.usage(),
+                     info.interface_number(), info.bus_type());
+  }
 };
+
 } // namespace std

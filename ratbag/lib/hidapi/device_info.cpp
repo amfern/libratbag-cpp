@@ -23,6 +23,11 @@ std::ostream &operator<<(std::ostream &os, const DeviceID &di) {
   return os;
 }
 
+std::string HIDAPIString::toString() const {
+  std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
+  return converter.to_bytes(data());
+};
+
 const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *cur_dev;
   cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
@@ -156,38 +161,3 @@ std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
 } // namespace lib
 } // namespace ratbag
 
-
-namespace std {
-
-template <class FormatContext>
-typename FormatContext::iterator
-formatter<DeviceID>::format(const DeviceID &id, FormatContext &ctx) const {
-  return format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})", id.vid(),
-                   id.pid());
-}
-
-template <class FormatContext>
-typename FormatContext::iterator
-formatter<HIDAPIString>::format(const HIDAPIString &hidapi_string,
-                                FormatContext &ctx) const {
-  wstring_convert<codecvt_utf8<wchar_t>> converter;
-  string string_utf8 = converter.to_bytes(hidapi_string.data());
-
-  return format_to(ctx.out(), "{}", string_utf8);
-}
-
-template <class FormatContext>
-typename FormatContext::iterator
-formatter<HIDDeviceInfo>::format(const HIDDeviceInfo &info,
-                                 FormatContext &ctx) const {
-  return format_to(ctx.out(),
-                   "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
-                   "release_number: {}, "
-                   "manufacturer_string: {}, product_string = {}, usage_page "
-                   "= {}, usage = {}, interface_number = {}, bus_type = {})",
-                   info.path(), info.device_id(), info.serial_number(),
-                   info.release_number(), info.manufacturer_string(),
-                   info.product_string(), info.usage_page(), info.usage(),
-                   info.interface_number(), info.bus_type());
-}
-} // namespace std
