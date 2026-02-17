@@ -16,10 +16,7 @@ ProductID DeviceID::pid() const { return pid_; }
 VendorID DeviceID::vid() const { return vid_; }
 
 std::ostream &operator<<(std::ostream &os, const DeviceID &di) {
-  auto [vid, pid] = di;
-
-  os << std::format("vid {:x}\npid {:x}", vid, pid);
-
+  os << std::format("{}", di);
   return os;
 }
 
@@ -27,6 +24,11 @@ std::string HIDAPIString::toString() const {
   std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
   return converter.to_bytes(data());
 };
+
+std::ostream &operator<<(std::ostream &os, const HIDAPIString &s) {
+  os << std::format("{}", s);
+  return os;
+}
 
 const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *cur_dev;
@@ -152,7 +154,6 @@ hid_bus_type HIDDeviceInfo::bus_type() const { return device_info_->bus_type; }
 
 std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
   os << std::format("{}", info);
-
   return os;
 }
 

@@ -28,6 +28,7 @@ private:
 
   explicit DeviceID(ProductID vid, VendorID pid);
 
+  // TODO: with c++23, should i still use the << operator? or should i use the formating?
   friend std::ostream &operator<<(std::ostream &os, const DeviceID &di);
   friend class HIDDeviceInfo;
 };
@@ -61,6 +62,7 @@ class HIDDeviceInfo;
 class HIDAPIString : public std::wstring_view {
 public:
   std::string toString() const;
+  friend std::ostream &operator<<(std::ostream &os, const HIDAPIString &s);
 };
 using ReleaseNumber = uint16_t;
 using UsagePage = uint16_t;
@@ -100,8 +102,7 @@ public:
   HIDDeviceInfo &operator=(const HIDDeviceInfo &rhs) = delete; // copy operator
   HIDDeviceInfo &operator=(HIDDeviceInfo &&rhs) noexcept;      // move operator
 
-  friend std::wostream &operator<<(std::wostream &os,
-                                   const HIDDeviceInfo &info);
+  friend std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info);
 
 private:
   explicit HIDDeviceInfo(hid_device_info &device_info);

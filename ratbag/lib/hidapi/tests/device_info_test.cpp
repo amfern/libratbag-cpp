@@ -21,7 +21,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevices) {
   // code.
 
   for (auto &info : deviceInfos) {
-    std::cout << std::format("{}\n", info);
+    std::println(std::cout, "{}", info);
   }
 
   SUCCEED();
