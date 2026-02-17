@@ -6,24 +6,6 @@
 using ratbag::lib::hidapi::HidBusType;
 using ratbag::lib::hidapi::HIDDeviceInfo;
 
-// TODO: https://github.com/libusb/hidapi/blob/master/hidtest/test.c
-TEST(DeviceInfoTestSuit, EnumarateDevices) {
-  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-
-  // TODO: i am testing an call to enumurate devices, but this would be
-  // different on each PC. I can't find an good way to mock the devices, what
-  // should i do in such situation that mocking is immpossible. Should i use
-
-  // 1. linker --wrap function call to mock the C api return to test my C++
-  // code.
-
-  for (auto &info : deviceInfos) {
-    std::println(std::cout, "{}", info);
-  }
-
-  SUCCEED();
-}
-
 // call the underlying API and compare the two...will work on all PC's
 TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();

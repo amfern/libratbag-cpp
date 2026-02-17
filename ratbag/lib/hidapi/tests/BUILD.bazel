@@ -8,3 +8,19 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_test(
+    name = "hidapi_test_mocked",
+    srcs = [
+        "device_info_test_mock.cpp",
+        "hid_mocked.c",
+    ],
+    # linkopts = [
+    #     "-Wl,--wrap,hid_enumerate",
+    # ],
+    deps = [
+        # ":mocked_hidapi",
+        "//ratbag/lib/hidapi",
+        "@googletest//:gtest_main",
+    ],
+)
