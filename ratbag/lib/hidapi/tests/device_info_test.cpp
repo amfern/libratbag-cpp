@@ -36,7 +36,8 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
 
   for (auto &info : deviceInfos) {
     if (cur_dev == nullptr) {
-      FAIL() << "HIDDeviceInfo::enumerate_hid_devices returned more elements than returned by hid_enumurate";
+      FAIL() << "HIDDeviceInfo::enumerate_hid_devices returned more elements "
+                "than returned by hid_enumurate";
     }
 
     ASSERT_EQ(info.path(), cur_dev->path);
@@ -52,8 +53,10 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
     ASSERT_EQ(info.bus_type(), cur_dev->bus_type);
 
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
-    std::string manufacturer_string_utf8 = converter.to_bytes(cur_dev->manufacturer_string);
-    std::string product_string_utf8 = converter.to_bytes(cur_dev->product_string);
+    std::string manufacturer_string_utf8 =
+        converter.to_bytes(cur_dev->manufacturer_string);
+    std::string product_string_utf8 =
+        converter.to_bytes(cur_dev->product_string);
     std::string serial_number_utf8 = converter.to_bytes(cur_dev->serial_number);
 
     std::string hid_device_info_string = std::format(
@@ -73,35 +76,35 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
   }
 
   if (cur_dev != nullptr) {
-    FAIL() << "HIDDeviceInfo::enumerate_hid_devices returned less elements than returned by hid_enumurate";
+    FAIL() << "HIDDeviceInfo::enumerate_hid_devices returned less elements "
+              "than returned by hid_enumurate";
   }
 
   hid_free_enumeration(devs);
 }
 
+// TODO: fill this test by creating device.cpp
+TEST(DeviceInfoTestSuit, OpenDeviceAndPrintDescriptors) {
+  // auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 
+  // for (auto &info : deviceInfos) {
+  //   auto device = info.open();
+  //   std::wcout << std::format(L"{}\n", device);
+  // }
 
-// // TODO: fill this test by creating device.cpp
-// TEST(DeviceInfoTestSuit, OpenDeviceAndPrintDescriptors) {
-//   // auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
+  // auto device = deviceInfos[0].open();
 
-//   // for (auto &info : deviceInfos) {
-//   //   auto device = info.open();
-//   //   std::wcout << std::format(L"{}\n", device);
-//   // }
+  // handle = hid_open(0x4d8, 0x3f, NULL);
 
-//   // auto device = deviceInfos[0].open();
+  // if (!handle) {
+  //   printf("unable to open device\n");
+  //   // hid_exit();
+  //   return 1;
+  // }
 
-//   // handle = hid_open(0x4d8, 0x3f, NULL);
+  // HID_API_EXPORT hid_device * HID_API_CALL hid_open(unsigned short
+  vendor_id,
+  // unsigned short product_id, const wchar_t *serial_number);
 
-//   // if (!handle) {
-//   //   printf("unable to open device\n");
-//   //   // hid_exit();
-//   //   return 1;
-//   // }
-
-//   // HID_API_EXPORT hid_device * HID_API_CALL hid_open(unsigned short vendor_id,
-//   // unsigned short product_id, const wchar_t *serial_number);
-
-//   EXPECT_TRUE(true);
-// }
+  EXPECT_TRUE(true);
+}

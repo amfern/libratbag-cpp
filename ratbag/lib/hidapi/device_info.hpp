@@ -28,7 +28,6 @@ private:
 
   explicit DeviceID(ProductID vid, VendorID pid);
 
-  // TODO: with c++23, should i still use the << operator? or should i use the formating?
   friend std::ostream &operator<<(std::ostream &os, const DeviceID &di);
   friend class HIDDeviceInfo;
 };
@@ -125,14 +124,11 @@ private:
 namespace std {
 using namespace ratbag::lib::hidapi;
 
-
-template <>
-struct formatter<DeviceID>
-    : formatter<string_view> {
+template <> struct formatter<DeviceID> : formatter<string_view> {
 
   auto format(const DeviceID &id, auto &ctx) const {
     return format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
-                          id.vid(), id.pid());
+                     id.vid(), id.pid());
   }
 };
 

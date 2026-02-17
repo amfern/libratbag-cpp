@@ -59,6 +59,5 @@ template <> struct formatter<HidBusType> : formatter<string_view> {
     auto name = bus_type_to_string(bus_type);
     return format_to(ctx.out(), "{}", name);
   }
-
 };
 } // namespace std

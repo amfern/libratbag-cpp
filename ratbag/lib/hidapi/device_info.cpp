@@ -1,9 +1,9 @@
 #include "ratbag/lib/hidapi/device_info.hpp"
 
+#include <codecvt>
 #include <format>
 #include <ostream>
 #include <string_view>
-#include <codecvt>
 
 namespace ratbag {
 namespace lib {
@@ -157,8 +157,6 @@ std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
   return os;
 }
 
-
 } // namespace hidapi
 } // namespace lib
 } // namespace ratbag
-
