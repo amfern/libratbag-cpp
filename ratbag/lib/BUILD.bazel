@@ -8,7 +8,6 @@ cc_library(
     hdrs = [
         "device.hpp",
     ],
-    cxxopts = ["-std=c++23"],
     deps = [
         "//ratbag/lib/common",
     ],
@@ -19,7 +18,6 @@ cc_library(
     hdrs = [
         "libratbag.hpp",
     ],
-    cxxopts = ["-std=c++23"],
     visibility = ["//ratbag/cli:__pkg__"],
     deps = [
         ":device",

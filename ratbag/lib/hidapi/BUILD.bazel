@@ -9,7 +9,6 @@ cc_library(
         "device_info.hpp",
     ],
     cxxopts = [
-        "-std=c++23",
         "-Wno-deprecated-declarations",
     ],
     visibility = ["//ratbag/lib:__subpackages__"],

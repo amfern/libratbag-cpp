@@ -13,32 +13,47 @@ build --incompatible_strict_action_env
 # Prevent symlink forest under `.runfiles/wsname/external/repo`
 build --nolegacy_external_runfiles
 
-# lldb bazel-bin/ratbag/cli/cli
+# fail on warnning
+build --copt=-Werror
+build --linkopt=-Werror
+
+# To debug: lldb bazel-bin/ratbag/cli/cli
 build:debug --spawn_strategy=local
 build:debug --sandbox_debug
 build:debug --strip=never
 build:debug --features=oso_prefix_is_pwd
 build:debug -c dbg
 
+# address sanitizer
 build:asan --strip=never
-build:asan --copt -fsanitize=address
+build:asan --copt=-fsanitize=address
 build:asan --copt=-fno-omit-frame-pointer
 build:asan --copt=-g
 build:asan --copt=-O1
-build:asan --linkopt -fsanitize=address
+build:asan --linkopt=-fsanitize=address
 
+# undefined behavior sanitizer
 build:ubsan --copt=-fsanitize=undefined
 build:ubsan --linkopt=-fsanitize=undefined
 
+# memory sanitizer
+build:msan --strip=never
+build:msan --copt=-fsanitize=memory
+build:msan --copt=-fno-omit-frame-pointer
+build:msan --copt=-g
+build:msan --copt=-O1
+build:msan --linkopt=-fsanitize=memory
+
 # Avoid building all targets when testing
 test --build_tests_only
-test --test_env="PATH=/bin:/usr/bin:$PATH" # TODO: why i need this work around on osx?
-test --config=asan --config=ubsan
+test --config=asan --config=ubsan # --config=msan
 
+# TODO: this probably not needed for osx anymore
 # Print relative paths where possible to reduce noise
-common --attempt_to_print_relative_paths
-common --macos_minimum_os=13.3
-common --cxxopt="-std=c++23"
+# test --test_env="PATH=/bin:/usr/bin:$PATH" # TODO: why i need this work around on osx?
+# common --attempt_to_print_relative_paths
+# common --macos_minimum_os=13.3
+# common --cxxopt="-std=c++23"
 
 # Enable hermetic `rules_python`
 common --@rules_python//python/config_settings:bootstrap_impl=script
@@ -47,5 +62,3 @@ common --@rules_python//python/config_settings:bootstrap_impl=script
 common:pre-commit --ui_event_filters=-info,-stdout,-stderr
 common:pre-commit --noshow_progress
 common:pre-commit --lockfile_mode=off
-
-
