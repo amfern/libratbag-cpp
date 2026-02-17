@@ -6,9 +6,6 @@
 using ratbag::lib::hidapi::HidBusType;
 using ratbag::lib::hidapi::HIDDeviceInfo;
 
-// TODO(ask): Now that i create an wrapper for C class, what sort of tests
-// should i write.
-
 // TODO: https://github.com/libusb/hidapi/blob/master/hidtest/test.c
 TEST(DeviceInfoTestSuit, EnumarateDevices) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
