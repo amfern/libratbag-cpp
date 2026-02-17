@@ -79,28 +79,3 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
 
   hid_free_enumeration(devs);
 }
-
-// TODO: fill this test by creating device.cpp
-TEST(DeviceInfoTestSuit, OpenDeviceAndPrintDescriptors) {
-  // auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-
-  // for (auto &info : deviceInfos) {
-  //   auto device = info.open();
-  //   std::wcout << std::format(L"{}\n", device);
-  // }
-
-  // auto device = deviceInfos[0].open();
-
-  // handle = hid_open(0x4d8, 0x3f, NULL);
-
-  // if (!handle) {
-  //   printf("unable to open device\n");
-  //   // hid_exit();
-  //   return 1;
-  // }
-
-  // HID_API_EXPORT hid_device * HID_API_CALL hid_open(unsigned short vendor_id,
-  // unsigned short product_id, const wchar_t *serial_number);
-
-  EXPECT_TRUE(true);
-}
