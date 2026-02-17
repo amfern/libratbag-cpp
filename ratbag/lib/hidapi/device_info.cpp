@@ -3,6 +3,7 @@
 #include <format>
 #include <ostream>
 #include <string_view>
+#include <codecvt>
 
 namespace ratbag {
 namespace lib {
@@ -23,12 +24,11 @@ std::ostream &operator<<(std::ostream &os, const DeviceID &di) {
 }
 
 const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
-  struct hid_device_info *devs, *cur_dev;
-  devs = hid_enumerate(0, 0); // 0,0 = find all devices
+  struct hid_device_info *cur_dev;
+  cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
 
   std::vector<HIDDeviceInfo> deviceInfos;
 
-  cur_dev = devs;
   while (cur_dev) {
     deviceInfos.emplace_back(HIDDeviceInfo(*cur_dev));
     cur_dev = cur_dev->next;
@@ -181,12 +181,13 @@ typename FormatContext::iterator
 formatter<HIDDeviceInfo>::format(const HIDDeviceInfo &info,
                                  FormatContext &ctx) const {
   return format_to(ctx.out(),
-                   "HIDDeviceInfo(path: {}, deviceId: {},serial_number: {}, "
+                   "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
+                   "release_number: {}, "
                    "manufacturer_string: {}, product_string = {}, usage_page "
                    "= {}, usage = {}, interface_number = {}, bus_type = {})",
                    info.path(), info.device_id(), info.serial_number(),
-                   info.manufacturer_string(), info.product_string(),
-                   info.usage_page(), info.usage(), info.interface_number(),
-                   info.bus_type());
+                   info.release_number(), info.manufacturer_string(),
+                   info.product_string(), info.usage_page(), info.usage(),
+                   info.interface_number(), info.bus_type());
 }
 } // namespace std
