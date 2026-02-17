@@ -40,22 +40,28 @@ static constexpr std::string_view bus_type_to_string(HidBusType bus_type) {
   return std::string_view("unknown");
 }
 
+// TOOD: testing why some symbols are not included
+void miau();
+
 } // namespace detail
 } // namespace hidapi
 } // namespace lib
 } // namespace ratbag
 
-// TODO: i wonder if i can move these templates into cpp file
-template <> struct std::formatter<ratbag::lib::hidapi::detail::HidBusType> {
+namespace std {
+using namespace ratbag::lib::hidapi::detail;
 
-  constexpr auto parse(auto &ctx) {
-    // TODO: what is this function needed for? what does it do?
-    return ctx.begin();
+template <> struct formatter<HidBusType> : formatter<string_view> {
+
+  template <class FormatContext>
+  typename FormatContext::iterator format(const HidBusType &bus_type,
+                                          FormatContext &ctx) const {
+    auto name = bus_type_to_string(bus_type);
+    return format_to(ctx.out(), "{}", name);
   }
 
-  auto format(const ratbag::lib::hidapi::detail::HidBusType &bus_type,
-              auto &ctx) const {
-    auto name = ratbag::lib::hidapi::detail::bus_type_to_string(bus_type);
-    return std::format_to(ctx.out(), "{}", name);
-  }
+  // template <class FormatContext>
+  // typename FormatContext::iterator format(const HidBusType &bus_type,
+  //                                         FormatContext &ctx) const;
 };
+} // namespace std

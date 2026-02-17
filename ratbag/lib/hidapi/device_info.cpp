@@ -4,25 +4,6 @@
 #include <ostream>
 #include <string_view>
 
-// TODO: i tried to move the implemnetation into cpp file, but i ran into vague
-// compiler errors, and after testing it seems the wide stgring type is what
-// causing the errors auto fmt::formatter<color>::format(color c,
-// format_context& ctx) const
-//     -> format_context::iterator {
-
-// template <typename CharT>
-// auto std::formatter<ratbag::lib::hidapi::DeviceID, CharTo>::format(
-//     const ratbag::lib::hidapi::DeviceID &id, auto &ctx) const {
-
-//   if constexpr (std::is_same_v<CharT, char>) {
-//     return std::format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
-//                           id.vid(), id.pid());
-//   } else if constexpr (std::is_same_v<CharT, wchar_t>) {
-//     return std::format_to(ctx.out(), L"DeviceID(vid: {:#06x}, pid: {:#06x})",
-//                           id.vid(), id.pid());
-//   }
-// }
-
 namespace ratbag {
 namespace lib {
 namespace hidapi {
@@ -177,8 +158,6 @@ std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
 
 
 namespace std {
-
-using namespace ratbag::lib::hidapi;
 
 template <class FormatContext>
 typename FormatContext::iterator

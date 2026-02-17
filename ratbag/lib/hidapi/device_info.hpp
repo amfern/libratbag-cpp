@@ -35,7 +35,7 @@ private:
 
 class HIDDeviceInfo;
 
-// TODO:
+// TODO: update hidapi repo to support utf-8 alongside wchat_t
 // By default, the HIDAPI library uses wchar_t in its API for returning strings.
 // This choice was primarily made to align with the Windows API, which natively
 // uses wchar_t. However, this design introduces several issues for downstream

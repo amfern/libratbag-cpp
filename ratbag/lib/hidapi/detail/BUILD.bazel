@@ -1,9 +1,17 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
 cc_library(
     name = "hid_bus_type",
     hdrs = [
         "hid_bus_type.hpp",
     ],
+    srcs = [
+        "hid_bus_type.cpp",
+    ],
     visibility = [
         "//ratbag/lib/hidapi:__subpackages__",
+    ],
+    deps = [
+        "@hidapi",
     ],
 )
