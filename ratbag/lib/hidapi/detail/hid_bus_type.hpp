@@ -40,9 +40,6 @@ static constexpr std::string_view bus_type_to_string(HidBusType bus_type) {
   return std::string_view("unknown");
 }
 
-// TOOD: testing why some symbols are not included
-void miau();
-
 } // namespace detail
 } // namespace hidapi
 } // namespace lib
