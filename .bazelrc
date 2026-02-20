@@ -18,18 +18,17 @@ build --copt=-Werror
 build --linkopt=-Werror
 
 # To debug: lldb bazel-bin/ratbag/cli/cli
-build:debug --spawn_strategy=local
+# build:debug --spawn_strategy=local
 build:debug --sandbox_debug
 build:debug --strip=never
 build:debug --features=oso_prefix_is_pwd
 build:debug -c dbg
+build:debug --copt=-fno-omit-frame-pointer
+# build:debug --copt=-O1
+# build:debug --strip=never
 
 # address sanitizer
-build:asan --strip=never
 build:asan --copt=-fsanitize=address
-build:asan --copt=-fno-omit-frame-pointer
-build:asan --copt=-g
-build:asan --copt=-O1
 build:asan --linkopt=-fsanitize=address
 
 # undefined behavior sanitizer
@@ -37,16 +36,11 @@ build:ubsan --copt=-fsanitize=undefined
 build:ubsan --linkopt=-fsanitize=undefined
 
 # memory sanitizer
-build:msan --strip=never
-build:msan --copt=-fsanitize=memory
-build:msan --copt=-fno-omit-frame-pointer
-build:msan --copt=-g
-build:msan --copt=-O1
 build:msan --linkopt=-fsanitize=memory
 
 # Avoid building all targets when testing
 test --build_tests_only
-test --config=asan --config=ubsan # --config=msan
+test --config=debug --config=asan --config=ubsan # --config=msan
 
 # TODO: this probably not needed for osx anymore
 # Print relative paths where possible to reduce noise
