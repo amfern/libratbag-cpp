@@ -13,11 +13,41 @@ build --incompatible_strict_action_env
 # Prevent symlink forest under `.runfiles/wsname/external/repo`
 build --nolegacy_external_runfiles
 
+# fail on warnning
+build --copt=-Werror
+build --linkopt=-Werror
+
+# To debug: lldb bazel-bin/ratbag/cli/cli
+# build:debug --spawn_strategy=local
+build:debug --sandbox_debug
+build:debug --strip=never
+build:debug --features=oso_prefix_is_pwd
+build:debug -c dbg
+build:debug --copt=-fno-omit-frame-pointer
+# build:debug --copt=-O1
+# build:debug --strip=never
+
+# address sanitizer
+build:asan --copt=-fsanitize=address
+build:asan --linkopt=-fsanitize=address
+
+# undefined behavior sanitizer
+build:ubsan --copt=-fsanitize=undefined
+build:ubsan --linkopt=-fsanitize=undefined
+
+# memory sanitizer
+build:msan --linkopt=-fsanitize=memory
+
 # Avoid building all targets when testing
 test --build_tests_only
+test --config=debug --config=asan --config=ubsan # --config=msan
 
+# TODO: this probably not needed for osx anymore
 # Print relative paths where possible to reduce noise
-common --attempt_to_print_relative_paths
+# test --test_env="PATH=/bin:/usr/bin:$PATH" # TODO: why i need this work around on osx?
+# common --attempt_to_print_relative_paths
+# common --macos_minimum_os=13.3
+# common --cxxopt="-std=c++23"
 
 # Enable hermetic `rules_python`
 common --@rules_python//python/config_settings:bootstrap_impl=script

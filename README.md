@@ -13,31 +13,33 @@ Libratbag reimplementation in modern c++ 23
 This repository uses [bazel](https://github.com/bazelbuild/bazel) 8.5 for building, testing, and releasing. 
 All tool and LLVM toolchain installations are managed by Bazel. The project is compiled using LLVM-based toolchains.
 
-``` shell
-bazel build //ratbag/lib/...
-```
-
 ### precommit hooks
 This repository runs precommit hooks through bazel using the project
 https://gitlab.arm.com/bazel/pre-commit-hooks
 
 Install the hooks with `bazel run hooks:install`.
-Run the hooks with `baze run hooks`.
+Run the hooks with `bazel run hooks`.
 
+### Build
+``` shell
+bazel build //ratbag/lib/...
+```
 
-TODO: use https://github.com/libusb/hidapi for cross os support
+### Tests
+Run tests:
+``` sh
+bazel test //ratbag/...
+bazel test --test_output=all //ratbag/...
+```
 
-
-### Development
+### Generate compile_commnads.json:
 
 Generate compile_commnads.json:
 ``` sh
 bazel run @hedron_compile_commands//:refresh_all
 ```
 
-Run under debugger:
+### Run under debugger
 ``` sh
 bazel run --sandbox_debug --config debug --run_under=lldb //ratbag/cli:cli
 ```
-
-

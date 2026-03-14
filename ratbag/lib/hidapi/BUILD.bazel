@@ -1,0 +1,19 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "hidapi",
+    srcs = [
+        "device_info.cpp",
+    ],
+    hdrs = [
+        "device_info.hpp",
+    ],
+    cxxopts = [
+        "-Wno-deprecated-declarations",
+    ],
+    visibility = ["//ratbag/lib:__subpackages__"],
+    deps = [
+        "//ratbag/lib/hidapi/detail:hid_bus_type",
+        "@hidapi",
+    ],
+)

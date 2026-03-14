@@ -1,22 +1,15 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 # TODO: upstream bazel support to https://github.com/libusb/hidapi
-cc_library(
+
+alias(
     name = "hidapi",
-    includes = [":headers"],
-    visibility = ["//visibility:public"],
-    deps = select({
-        "@bazel_tools//src/conditions:windows": [
-            ":windows",
-        ],
-        "@bazel_tools//src/conditions:darwin": [
-            ":darwin",
-        ],
-        "@bazel_tools//src/conditions:linux": [
-            ":linux",
-        ],
+    actual = select({
+        "@bazel_tools//src/conditions:windows": ":windows",
+        "@bazel_tools//src/conditions:darwin": ":darwin",
+        "@bazel_tools//src/conditions:linux": ":linux",
     }),
-    alwayslink = True,
+    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -28,9 +21,8 @@ cc_library(
 
 cc_library(
     name = "linux",
-    srcs = [
-        "linux/hid.c",
-    ],
+    srcs = ["linux/hid.c"],
+    linkopts = ["-ludev"],
     deps = [
         ":headers",
     ],
@@ -59,6 +51,10 @@ cc_library(
     name = "darwin",
     srcs = ["mac/hid.c"],
     hdrs = ["mac/hidapi_darwin.h"],
+    linkopts = [
+        "-framework IOKit",
+        "-framework CoreFoundation",
+    ],
     visibility = ["//:__subpackages__"],
     deps = [
         ":headers",
