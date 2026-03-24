@@ -19,6 +19,12 @@ int main() {
   // 2. Open Device with corresponding driver to the HID based on HID
   // description and Path
   // Device<Driver>::Open();
+  for (auto &info : deviceInfos) {
+    auto device = Device::open(info);
+    std::cout << std::format("driver used number {}.",
+                             device.value().driver().name())
+              << std::endl;
+  }
 
   return 0;
 }

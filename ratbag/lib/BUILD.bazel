@@ -2,14 +2,13 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
     name = "device",
-    srcs = [
-        "device.cpp",
-    ],
     hdrs = [
         "device.hpp",
     ],
     deps = [
-        "//ratbag/lib/common",
+        "//ratbag/lib/hidapi",
+        "//ratbag/lib/drivers",
+        # "//ratbag/lib/common",
     ],
 )
 

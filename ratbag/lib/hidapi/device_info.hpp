@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "hidapi.h"
+// #include "ratbag/lib/hidapi/hid_device.hpp"
 #include "ratbag/lib/hidapi/detail/hid_bus_type.hpp"
 
 namespace ratbag {
@@ -74,6 +75,9 @@ class HIDDeviceInfo {
 
 public:
   static const HIDDeviceInfoList enumerate_hid_devices();
+
+  // TODO: Should i call open from here or should i create an class that
+  // receives hid device HIDDevice open() const;
 
   /** Platform-specific device path */
   HIDPath path() const;

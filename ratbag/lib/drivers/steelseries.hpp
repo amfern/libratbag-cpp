@@ -6,9 +6,9 @@ namespace ratbag {
 namespace lib {
 namespace drivers {
 
-class HIDPP20 : public Driver {
+class SteelSeries : public Driver {
 public:
-  // HIDPP20(const ratbag::lib::Device &device) : Driver(device) {}
+  // SteelSeries(const ratbag::lib::Device &device) : Driver(device) {}
 
   void probe() const override {
     // TODO: open hid devices and read from it some name
