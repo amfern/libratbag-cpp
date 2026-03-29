@@ -17,8 +17,6 @@
 #include <optional>
 
 #include "ratbag/lib/drivers/driver.hpp"
-#include "ratbag/lib/drivers/hidpp20.hpp"
-#include "ratbag/lib/drivers/steelseries.hpp"
 #include "ratbag/lib/hidapi/device.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 
@@ -39,50 +37,20 @@ class Device {
 
 public:
   // TODO(ask): i want to resolve it in compile time instead of returning
-  // optional Can't because it's i don't know what the hid_device_info during
+  // optional Can't because it's i don't know what the hid_device_info size during
   // runtime
+  // TODO: maybe use exception instead of optional?
   static std::optional<Device> open(hidapi::HIDDeviceInfo &hid_device_info) {
-    std::unique_ptr<ratbag::lib::drivers::Driver> drv_ptr;
-
-    // ratbag::lib::drivers::Driver driver;
-
-    // TODO: i really don't want to write if else for every driver, i wonder if
-    // there is a compile time way to iterate over the drivers
-    if (hid_device_info.device_id().vid() == 0x046d &&
-        hid_device_info.device_id().pid() == 0xc08b) {
-      auto hid_device = ratbag::lib::hidapi::HIDDevice::open(hid_device_info);
-      // auto driver = ratbag::lib::drivers::HIDPP20(hid_device);
-      auto driver = ratbag::lib::drivers::HIDPP20();
-      return Device(hid_device_info, driver);
-      if hid_device_info
-        .device_id().pid() in[] std::ranges::any_of(
-            {0x1384, 0x1392},
-            [&](uint_t &id) { return id == hid_device_info.device_id().pid() })
-            std::ranges::contains({0x1384, 0x1392},
-                                  hid_device_info.device_id().pid());
-    } else if (hid_device_info.device_id().vid() == 0x1038 &&
-               (hid_device_info.device_id().pid() == 0x1384 ||
-                hid_device_info.device_id().pid() == 0x1392)) {
-      // TODO(ask): any pretty way to do any_of to check if the pid() is any of
-      // the supported integers
-      // DeviceMatch=usb:1038:1384;usb:1038:1392;usb:1038:1710;usb:1038:1712;usb:1038:171c;usb:1038:1394;usb:1038:171a;usb:1038:1716;usb:1038:1714;usb:1038:1718
-      auto hid_device = ratbag::lib::hidapi::HIDDevice::open(hid_device_info);
-      // auto driver = ratbag::lib::drivers::SteelSeries(hid_device);
-      driver = ratbag::lib::drivers::SteelSeries();
-      return Device(hid_device_info, driver);
-    } else {
-      return std::nullopt;
+    // TODO: this is not really pretty that i have IDriver::open on the interface and not the Device class
+    auto drv = drivers::IDriver::open(hid_device_info);
+    
+    if (drv) {
+      // TODO(ask): what happens here
+      // how does the Device is converted to std::optional<Device> ?
+      return Device{std::move(drv)};
     }
-
-    return Device(hid_device_info, driver);
-
-    // auto devices = std::vector({});
-    // // TODO: iterate over all available DeviceId and create the appropriate
-    // one for (auto &device : devices_) {
-    //   if (device.device_id == hid_device_info.device_id()) {
-    //     return device.;
-    //   }
-    // }
+    
+    return std::nullopt;
   };
 
 private:
@@ -94,9 +62,9 @@ private:
   //   ratbag::lib::drivers::HIDPP20);
   // };
 
-  explicit Device(ratbag::lib::hidapi::HIDDevice &hid_device);
+  explicit Device(drivers::Driver driver) : driver_(std::move(driver)) {} 
 
-  ratbag::lib::hidapi::DeviceID &device_id_;
+  // ratbag::lib::hidapi::DeviceID &device_id_;
   // With dynamic polymorphsim i have to create a pointer and allocate on the
   // heap, because i don't know the actual size of the object with variant the
   // biggest size among all of the objects will be allocated, which would allow
@@ -104,9 +72,9 @@ private:
   // runtime overheard of pointers, or std::variant. If i try to convert
   // everythiing to a tempalte, i am just pushing the problem to the upper
   // layer, which would have to be aware of the template.
-  std::Variant<ratbag::lib::drivers::HIDPP20, ratbag::lib::drivers::SteelSeries>
-      driver_;
-  ratbag::lib::drivers::Driver driver_;
+  // std::Variant<ratbag::lib::drivers::HIDPP20, ratbag::lib::drivers::SteelSeries>
+  //     driver_;
+  drivers::Driver driver_;
 };
 
 } // namespace lib

@@ -3,6 +3,7 @@
 #include "ratbag/lib/hidapi/device_info.hpp"
 #include <string>
 #include <string_view>
+#include <memory>
 
 namespace ratbag {
 namespace lib {
@@ -14,10 +15,13 @@ namespace drivers {
 // to have which zero cost polymorphisim, which is resolved in compile time.
 // Altough i am not sure how to implement it
 
-class Driver {
-  // Driver(const ratbag::lib::Device &device) : device_(device) {
+class IDriver;
 
-  // }
+using Driver = std::unique_ptr<IDriver>;
+
+class IDriver {
+public:
+  static Driver open(hidapi::HIDDeviceInfo &hid_device_info);
 
   // Callback called while trying to open a device by libratbag.
   // This function should decide whether or not this driver will
@@ -41,6 +45,10 @@ class Driver {
 
   // private:
   //   const ratbag::lib::Device &device_;
+
+  // TODO(ask): For pure interface i also have to define the virtual destructore, so the derived class destructor can be called.
+  //            and if i add virtual destructor here, should i also follow the rule of 3?
+  virtual ~IDriver() = default;
 };
 
 // using DriverName = std::string_view;

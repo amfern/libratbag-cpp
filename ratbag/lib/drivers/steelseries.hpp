@@ -6,7 +6,7 @@ namespace ratbag {
 namespace lib {
 namespace drivers {
 
-class SteelSeries : public Driver {
+class SteelSeries final : public IDriver {
 public:
   // SteelSeries(const ratbag::lib::Device &device) : Driver(device) {}
 
@@ -18,6 +18,23 @@ public:
     // TODO: open hid devices and read from it some name
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // class HIDPP20 : public ratbag::lib::Driver<HIDPP20> {
 // public:

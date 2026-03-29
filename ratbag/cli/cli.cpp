@@ -11,7 +11,7 @@ int main() {
   std::cout << "List of HID devices" << std::endl;
 
   for (auto &info : deviceInfos) {
-    std::cout << std::format("serial number {}.", info) << std::endl;
+    std::cout << std::format("Available: {}.", info) << std::endl;
   }
 
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -19,11 +19,13 @@ int main() {
   // 2. Open Device with corresponding driver to the HID based on HID
   // description and Path
   // Device<Driver>::Open();
+  std::vector<Device> devices;
   for (auto &info : deviceInfos) {
     auto device = Device::open(info);
-    std::cout << std::format("driver used number {}.",
-                             device.value().driver().name())
-              << std::endl;
+    if (device.has_value()) {
+      std::cout << std::format("found device {}.", info) << std::endl;      
+      devices.push_back(std::move(device.value()));
+    }
   }
 
   return 0;

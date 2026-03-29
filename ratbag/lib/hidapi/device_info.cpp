@@ -34,7 +34,7 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *cur_dev;
   cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
 
-  std::vector<HIDDeviceInfo> deviceInfos;
+  HIDDeviceInfoList deviceInfos;
 
   while (cur_dev) {
     deviceInfos.emplace_back(HIDDeviceInfo(*cur_dev));
