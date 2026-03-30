@@ -1,10 +1,10 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "drivers_concepts",
-    # srcs = [
-    #     "driver.cpp",
-    # ],
+    name = "drivers_variant",
+    srcs = [
+        "driver.cpp",
+    ],
     hdrs = [
         "driver.hpp",
         "hidpp20.hpp",

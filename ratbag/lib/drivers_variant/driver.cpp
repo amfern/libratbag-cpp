@@ -1,15 +1,15 @@
-#include "ratbag/lib/drivers_concepts/driver.hpp"
+#include "ratbag/lib/drivers_variant/driver.hpp"
 
 namespace ratbag {
 namespace lib {
-namespace drivers_concepts {
+namespace drivers_variant {
 
 
 // TODO: in C++ polymorphic inheritance is achieved through pointers, which means we are forced to allocate object via new keyword(or make_shared)
 //       Which doesn't work with other aspects of C++ like std::optional, so i haveto use nullptr instead of and rely on the fact that unique can be nullptr
 //       it feels to me like inheritance and std::optional don't play well togather.
 //       in C++ i have these nice abstraction over memory management, but C++ doesn't let me forget for a second that there is still memory bellow the abstractions
-std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info) {
+std::optional<DriverVariants> Driver::open(hidapi::HIDDeviceInfo &hid_device_info) {
 
   // // TODO: i really don't want to write if else for every driver, i wonder if
   // // there is a compile time way to iterate over the drivers

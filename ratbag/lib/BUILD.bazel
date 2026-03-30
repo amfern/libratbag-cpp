@@ -9,6 +9,7 @@ cc_library(
         "//ratbag/lib/hidapi",
         "//ratbag/lib/drivers",
         "//ratbag/lib/drivers_concepts",
+        "//ratbag/lib/drivers_variant",
         # "//ratbag/lib/common",
     ],
 )

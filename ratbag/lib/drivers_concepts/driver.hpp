@@ -21,17 +21,60 @@ namespace drivers_concepts {
 
 using DriverVariants = std::variant<HIDPP20, SteelSeries>;
 
-// TODO: i created the concept by it's not used anywhere...???
+// TODO(ask): i created the concept by it's not used anywhere...???
+//       and deleting it works just as fine.
 template<typename T>
-concept DriverConcept = requires(T t) {
+concept DriverLike = requires(T t) {
     t.probe();
     t.commit();
 };
 
-class Driver {
-public:
-  static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info);
-};
+template <DriverLike TDriverImpl> 
+struct Driver : TDriverImpl {};
+
+// class Driver {
+// public:
+//   static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info);
+
+// };
+
+static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info) {
+  // // TODO: i really don't want to write if else for every driver, i wonder if
+  // // there is a compile time way to iterate over the drivers
+  //   // if hid_device_info
+  //   //   .device_id().pid() in[] std::ranges::any_of(
+  //   //       {0x1384, 0x1392},
+  //   //       [&](uint_t &id) { return id == hid_device_info.device_id().pid()
+  //   })
+  //   //       std::ranges::contains({0x1384, 0x1392},
+  //   //                             hid_device_info.device_id().pid());
+
+  if (hid_device_info.device_id().vid() == 0x046d &&
+      (hid_device_info.device_id().pid() == 0xc08b ||
+       hid_device_info.device_id().pid() == 0xc332)) {
+    // auto hid_device =
+    // ratbag::lib::hidapi::HIDDevice::open(hid_device_info);
+
+    // auto driver = ratbag::lib::drivers::HIDPP20(hid_device);
+    // TODO(ask): what happens here, how is it converted to  optional<DriverVariants>
+    return HIDPP20();
+    // TODO: any pretty way to do any_of to check if the pid() is any of
+    //
+    // the supported integers
+    // DeviceMatch=usb:1038:1384;usb:1038:1392;usb:1038:1710;usb:1038:1712;usb:1038:171c;usb:1038:1394;usb:1038:171a;usb:1038:1716;usb:1038:1714;usb:1038:1718
+  } else if (hid_device_info.device_id().vid() == 0x1038 &&
+             (hid_device_info.device_id().pid() == 0x1384 ||
+              hid_device_info.device_id().pid() == 0x1392)) {
+    return SteelSeries();
+  }
+
+  return {};
+}
+
+template <DriverLike TDriver>
+static void probe(TDriver& driver) {
+  driver.probe();
+}
 
 
 // class Driver {
