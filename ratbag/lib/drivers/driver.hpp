@@ -35,6 +35,7 @@ public:
   // Callback called while trying to open a device by libratbag.
   // This function should decide whether or not this driver will
   // handle the given device.
+  // TODO: throw exception if commit failed?
   virtual void commit() const = 0;
 
   // Callback called while trying to open a device by libratbag.
@@ -50,61 +51,6 @@ public:
   //            and if i add virtual destructor here, should i also follow the rule of 3?
   virtual ~IDriver() = default;
 };
-
-// using DriverName = std::string_view;
-// using DriverID = std::string_view;
-
-// template<typename T>
-// concept DriverInterface = requires(T t) {
-//     { t.probe() } -> std::same_as<bool>;
-//     // { t.name() } -> std::same_as<DriverName>;
-//     // { t.id() } -> std::same_as<DriverID>;
-// };
-
-// class Driver {
-
-// public:
-//   static const Driver open(hidapi::HIDDevice hid_device) {
-//     using DriversTypes = std::variant<HIDPP20>;
-//     std::vector<DriversTypes> drivers;
-
-//     drivers.push_back(HIDPP20());
-//     // shapes.push_back(Square(10));
-
-//     for(const auto& driver : drivers) {
-//         std::visit([&](auto& d) {
-//           std::cout << d.name() << std::endl;
-//           if (d.probe(hid_device)) {
-//             return driver;
-//           }
-//         }, driver);
-//     }
-
-//     // TODO: maybe use optional? or not return const
-//     return nullptr;
-//   };
-// };
-
-// TODO: consider using concepts for polymorphisem
-// https://ppatoria.hashnode.dev/demystifying-polymorphism-in-c
-// https://medium.com/@sagar.necindia/cpp-dynamic-polymorphism-performance-tradeoffs-959d2e8564a0
-// https://en.cppreference.com/w/cpp/language/constraints.html
-// template <typename Derived>
-// class Driver {
-// public:
-//   bool probe() const { return static_cast<const Derived *>(this)->probe(); }
-//   DriverName driver_name() const { return static_cast<const Derived
-//   *>(this)->driver_name(); } DriverID driver_id() const { return
-//   static_cast<const Derived *>(this)->driver_id(); };
-//   // TODO: throw exception if commit failed?
-//   void commit() const { return static_cast<const Derived *>(this)->commit();
-//   }; void set_active_profile()  const { return static_cast<const Derived
-//   *>(this)->set_active_profile(); };
-
-// private:
-//   std::string name_;
-//   std::string driver_id_;
-// };
 
 } // namespace drivers
 } // namespace lib

@@ -19,38 +19,6 @@ public:
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// class HIDPP20 : public ratbag::lib::Driver<HIDPP20> {
-// public:
-//   DriverName driver_name() const;
-//   DriverID driver_id() const;
-//   void commit() const;
-//   void set_active_profile() const;
-
-//   bool probe();
-
-//   HIDPP20(std::string name) : name_(name) {}
-
-// private:
-
-// };
-
 } // namespace drivers
 } // namespace lib
 } // namespace ratbag

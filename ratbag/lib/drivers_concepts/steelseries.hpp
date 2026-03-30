@@ -1,20 +1,18 @@
 #pragma once
 
-#include "ratbag/lib/drivers/driver.hpp"
-
 namespace ratbag {
 namespace lib {
-namespace drivers {
+namespace drivers_concepts {
 
-class HIDPP20 final : public IDriver {
+class SteelSeries final {
 public:
-  // HIDPP20(const ratbag::lib::Device &device) : Driver(device) {}
+  // SteelSeries(const ratbag::lib::Device &device) : Driver(device) {}
 
-  void probe() const override {
+  void probe() const {
     // TODO: open hid devices and read from it some name
   }
 
-  void commit() const override {
+  void commit() const {
     // TODO: open hid devices and read from it some name
   }
 };
