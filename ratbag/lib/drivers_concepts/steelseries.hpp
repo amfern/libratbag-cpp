@@ -7,8 +7,16 @@ namespace drivers_concepts {
 class SteelSeries final {
 public:
 
-  void probe() const {
-    // TODO: open hid devices and read from it some name
+  static bool probe(hidapi::DeviceID id) {
+    if (id.vid() != 0x1038) {
+      return false;
+    }
+
+    switch (id.pid()) {
+    case 0x1384: 
+    case 0x1392: return true;
+    default: return false;
+    }
   }
 
   void commit() const {

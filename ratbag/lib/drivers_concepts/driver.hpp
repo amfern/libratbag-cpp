@@ -19,24 +19,32 @@ namespace drivers_concepts {
 // to have which zero cost polymorphisim, which is resolved in compile time.
 // Altough i am not sure how to implement it
 
-using DriverVariants = std::variant<HIDPP20, SteelSeries>;
 
-// TODO(ask): i created the concept by it's not used anywhere...???
-//       and deleting it works just as fine.
+// TODO(ask): Essentially concepts allow me to create a function that a accepts object with specific signature, and then iterate over the signature
+//            But the concrete object has to be stored anyway, so i can't create inheritance as in a traditional term of base class and derived classes.             
+// template<typename T>
+// concept DriverLike = requires(hidapi::DeviceID &id) {
+//     { T::probe(id) } -> std::same_as<bool>>;
+//     t.commit();
+// };
+
 template<typename T>
-concept DriverLike = requires(T t) {
-    t.probe();
+concept DriverLike = requires(T t, hidapi::DeviceID id) {
+    { T::probe(id) } -> std::same_as<bool>;
     t.commit();
 };
 
+using DriverVariants = std::variant<HIDPP20, SteelSeries>;
+
+// TODO: is this how to use concepts? with static assert?
 static_assert(
     DriverLike<HIDPP20> and
     DriverLike<SteelSeries>
 ); // OK
 
 
-template <DriverLike TDriverImpl> 
-struct Driver : TDriverImpl {};
+// template <DriverLike TDriverImpl> 
+// struct Driver : TDriverImpl {};
 
 // class Driver {
 // public:
@@ -44,89 +52,23 @@ struct Driver : TDriverImpl {};
 
 // };
 
+
+
 static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info) {
-  // // TODO: i really don't want to write if else for every driver, i wonder if
-  // // there is a compile time way to iterate over the drivers
-  //   // if hid_device_info
-  //   //   .device_id().pid() in[] std::ranges::any_of(
-  //   //       {0x1384, 0x1392},
-  //   //       [&](uint_t &id) { return id == hid_device_info.device_id().pid()
-  //   })
-  //   //       std::ranges::contains({0x1384, 0x1392},
-  //   //                             hid_device_info.device_id().pid());
 
-  if (hid_device_info.device_id().vid() == 0x046d &&
-      (hid_device_info.device_id().pid() == 0xc08b ||
-       hid_device_info.device_id().pid() == 0xc332)) {
-    // auto hid_device =
-    // ratbag::lib::hidapi::HIDDevice::open(hid_device_info);
+  // TODO(ask): i don't want to write these ifs by hand, how can i iterate over types and call their probe() funciton?
+  //            what i want to have is an directory of drivers, and i want the "developer" to be able to simply add new "driver" type and have my "core" of the library to iterate over all the "driver type"s
+  if (HIDPP20::probe(hid_device_info.device_id())) {
+    // TODO(ask): what sort of sorcerry is this? how does C++ knows to convert HIDPP20 into std::optional<DriverVariants> ?
+    return HIDPP20();    
+  }
 
-    // auto driver = ratbag::lib::drivers::HIDPP20(hid_device);
-    // TODO(ask): what happens here, how is it converted to  optional<DriverVariants>
-    return HIDPP20();
-    // TODO: any pretty way to do any_of to check if the pid() is any of
-    //
-    // the supported integers
-    // DeviceMatch=usb:1038:1384;usb:1038:1392;usb:1038:1710;usb:1038:1712;usb:1038:171c;usb:1038:1394;usb:1038:171a;usb:1038:1716;usb:1038:1714;usb:1038:1718
-  } else if (hid_device_info.device_id().vid() == 0x1038 &&
-             (hid_device_info.device_id().pid() == 0x1384 ||
-              hid_device_info.device_id().pid() == 0x1392)) {
-    return SteelSeries();
+  if (SteelSeries::probe(hid_device_info.device_id())) {
+    return SteelSeries();    
   }
 
   return {};
 }
-
-template <DriverLike TDriver>
-static void probe(TDriver& driver) {
-  driver.probe();
-}
-
-
-// class Driver {
-
-// public:
-//   static const Driver open(hidapi::HIDDevice hid_device) {
-//     using DriversTypes = std::variant<HIDPP20>;
-//     std::vector<DriversTypes> drivers;
-
-//     drivers.push_back(HIDPP20());
-//     // shapes.push_back(Square(10));
-
-//     for(const auto& driver : drivers) {
-//         std::visit([&](auto& d) {
-//           std::cout << d.name() << std::endl;
-//           if (d.probe(hid_device)) {
-//             return driver;
-//           }
-//         }, driver);
-//     }
-
-//     // TODO: maybe use optional? or not return const
-//     return nullptr;
-//   };
-// };
-
-// TODO: consider using concepts for polymorphisem
-// https://ppatoria.hashnode.dev/demystifying-polymorphism-in-c
-// https://medium.com/@sagar.necindia/cpp-dynamic-polymorphism-performance-tradeoffs-959d2e8564a0
-// https://en.cppreference.com/w/cpp/language/constraints.html
-// template <typename Derived>
-// class Driver {
-// public:
-//   bool probe() const { return static_cast<const Derived *>(this)->probe(); }
-//   DriverName driver_name() const { return static_cast<const Derived
-//   *>(this)->driver_name(); } DriverID driver_id() const { return
-//   static_cast<const Derived *>(this)->driver_id(); };
-
-//   void commit() const { return static_cast<const Derived *>(this)->commit();
-//   }; void set_active_profile()  const { return static_cast<const Derived
-//   *>(this)->set_active_profile(); };
-
-// private:
-//   std::string name_;
-//   std::string driver_id_;
-// };
 
 } // namespace drivers
 } // namespace lib

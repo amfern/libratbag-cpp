@@ -42,7 +42,7 @@ public:
     // TODO(ask): what solution has less pointer manipulation, the concepts or the dynamic inheritance?
     //            what solution would be faster in runtime, std::variant or concepts?
     //            I see that with std::variant i have to call std::visit with anonymouse funciton, which is basically a pointer?
-    std::visit( [&](auto& d) { drivers_concepts::probe(d); }, drv);
+    // std::visit( [&](auto& d) { d->probe(); }, drv);
 
     return Device{drv}; 
   };
@@ -58,6 +58,7 @@ private:
 
   explicit Device(drivers_concepts::DriverVariants driver) : driver_(std::move(driver)) {} 
 
+  
   drivers_concepts::DriverVariants driver_;
 };
 
