@@ -29,6 +29,12 @@ concept DriverLike = requires(T t) {
     t.commit();
 };
 
+static_assert(
+    DriverLike<HIDPP20> and
+    DriverLike<SteelSeries>
+); // OK
+
+
 template <DriverLike TDriverImpl> 
 struct Driver : TDriverImpl {};
 
