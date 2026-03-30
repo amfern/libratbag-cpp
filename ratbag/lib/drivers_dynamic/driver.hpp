@@ -7,7 +7,7 @@
 
 namespace ratbag {
 namespace lib {
-namespace drivers {
+namespace drivers_dynamic {
 
 // TODO(ask): How would i convert this driver to be
 // concepts looks promising, but it's not exactly what i need

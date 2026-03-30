@@ -6,7 +6,6 @@ namespace drivers_concepts {
 
 class SteelSeries final {
 public:
-  // SteelSeries(const ratbag::lib::Device &device) : Driver(device) {}
 
   void probe() const {
     // TODO: open hid devices and read from it some name

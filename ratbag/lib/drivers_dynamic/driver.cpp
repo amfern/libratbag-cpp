@@ -1,6 +1,6 @@
-#include "ratbag/lib/drivers/driver.hpp"
-#include "ratbag/lib/drivers/steelseries.hpp"
-#include "ratbag/lib/drivers/hidpp20.hpp"
+#include "ratbag/lib/drivers_dynamic/driver.hpp"
+#include "ratbag/lib/drivers_dynamic/steelseries.hpp"
+#include "ratbag/lib/drivers_dynamic/hidpp20.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 
 #include <string>
@@ -9,7 +9,7 @@
 
 namespace ratbag {
 namespace lib {
-namespace drivers {
+namespace drivers_dynamic {
 
 
 // TODO: in C++ polymorphic inheritance is achieved through pointers, which means we are forced to allocate object via new keyword(or make_shared)
