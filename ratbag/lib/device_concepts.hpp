@@ -43,20 +43,12 @@ public:
   };
 
 private:
-  // TODO: how to throw compile error when same deviceId is already assigned to
-  // another one How to make this variable unique acrsso all of the devices?
-  // TODO: convert to unique key hash map
-  // static const std::array devices_ = {
-  //   Device(ratbag::lib::hidapi::DeviceID{0x046d, 0xc08b},
-  //   ratbag::lib::drivers::HIDPP20);
-  // };
 
   explicit Device(drivers_concepts::DriverVariants driver) : driver_(std::move(driver)) {} 
 
   
   drivers_concepts::DriverVariants driver_;
 };
-
 
 
 } // namespace lib
