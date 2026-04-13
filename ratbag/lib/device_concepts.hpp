@@ -37,12 +37,7 @@ public:
       return {}; // TODO(ask): {} vs std::nullopt what syntax is prefered here?
     }
 
-
     auto drv = drv_result.value();
-    // TODO(ask): what solution has less pointer manipulation, the concepts or the dynamic inheritance?
-    //            what solution would be faster in runtime, std::variant or concepts?
-    //            I see that with std::variant i have to call std::visit with anonymouse funciton, which is basically a pointer?
-    // std::visit( [&](auto& d) { d->probe(); }, drv);
 
     return Device{drv}; 
   };

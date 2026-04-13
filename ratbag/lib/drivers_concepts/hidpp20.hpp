@@ -16,18 +16,9 @@ public:
     }; 
   }
 
-  // TODO: instead of callling probe function, have a simple VID and PID support
-  // static bool probe(hidapi::DeviceID id) {
-  //   if (id.vid() != 0x046d) {
-  //     return false;
-  //   }
-
-  //   switch (id.pid()) {
-  //   case 0xc08b: 
-  //   case 0xc332: return true;
-  //   default: return false;
-  //   }
-  // }
+  static bool load(hidapi::DeviceID id) {
+    return true;
+  }
 
   void commit() const {
     // TODO: open hid devices and read from it some name

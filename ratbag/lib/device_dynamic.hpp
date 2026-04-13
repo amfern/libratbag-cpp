@@ -27,17 +27,11 @@ namespace lib {
 class Device {
 
 public:
-  // TODO(ask): i want to resolve it in compile time instead of returning
-  // optional Can't because it's i don't know what the hid_device_info size during
-  // runtime
-  // TODO: maybe use exception instead of optional?
   static std::optional<Device> open(hidapi::HIDDeviceInfo &hid_device_info) {
     // // TODO: this is not really pretty that i have IDriver::open on the interface and not the Device class
     auto drv = drivers_dynamic::IDriver::open(hid_device_info);
 
     if (drv) {
-     // TODO(ask): what happens here
-     // how does the Device is converted to std::optional<Device> ?
      drv->probe();
      return Device{std::move(drv)};
    }

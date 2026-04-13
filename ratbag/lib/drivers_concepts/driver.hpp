@@ -31,12 +31,13 @@ using DriverVariants = IDriver<HIDPP20, SteelSeries>;
 
 static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info) {
 
-  // TODO(ask): i don't want to write these ifs by hand, how can i iterate over types and call their probe() funciton?
-  //            what i want to have is an directory of drivers, and i want the "developer" to be able to simply add new "driver" type and have my "core" of the library to iterate over all the "driver type"s
-  //            it is possible to iterate over types by using template expansion
-  //            try to stay whithin the limits of the language, and avoid resorting to doing things outside with the build system, like generation of some C++ files that hold array of each type
-  //            look at the example by anthony typelists(1).cpp in this dir
+  // TODO: i don't want to write these ifs by hand, how can i iterate over types and call their probe() funciton?
+  //       what i want to have is an directory of drivers, and i want the "developer" to be able to simply add new "driver" type and have my "core" of the library to iterate over all the "driver type"s
+  //       it is possible to iterate over types by using template expansion
+  //       try to stay whithin the limits of the language, and avoid resorting to doing things outside with the build system, like generation of some C++ files that hold array of each type
+  //       look at the example by anthony typelists(1).cpp in this dir
 
+  // TODO(ask): i use ranges contains, is this what recomneded in C++23?
   if (std::ranges::contains(HIDPP20::supported_device_ids(),
                             hid_device_info.device_id())) {
     // TODO(ask): what sort of sorcerry is this? how does C++ knows to convert HIDPP20 into std::optional<DriverVariants> ?
