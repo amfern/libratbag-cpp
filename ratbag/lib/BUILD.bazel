@@ -30,6 +30,7 @@ cc_library(
     deps = [
         "//ratbag/lib/hidapi",
         "//ratbag/lib/drivers_concepts",
+        "//ratbag/lib/common",
     ],
 )
 

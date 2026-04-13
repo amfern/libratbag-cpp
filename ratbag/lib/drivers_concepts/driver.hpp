@@ -40,7 +40,6 @@ using IDriver = std::variant<Ts...>;
 
 using DriverVariants = IDriver<HIDPP20, SteelSeries>;
 
-
 static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info) {
 
   // TODO: i don't want to write these ifs by hand, how can i iterate over types and call their probe() funciton?

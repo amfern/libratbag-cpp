@@ -19,6 +19,7 @@
 #include "ratbag/lib/drivers_concepts/driver.hpp"
 #include "ratbag/lib/hidapi/device.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
+#include "ratbag/lib/common/profile.hpp"
 
 namespace ratbag {
 namespace lib {
@@ -43,11 +44,11 @@ public:
   };
 
 private:
-
   explicit Device(drivers_concepts::DriverVariants driver) : driver_(std::move(driver)) {} 
 
-  
   drivers_concepts::DriverVariants driver_;
+
+  ProfileList profiles;
 };
 
 
