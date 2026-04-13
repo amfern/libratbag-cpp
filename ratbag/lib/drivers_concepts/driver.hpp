@@ -8,64 +8,46 @@
 
 #include <optional>
 #include <variant>
+#include <ranges>
+#include <algorithm>
 
 namespace ratbag {
 namespace lib {
 namespace drivers_concepts {
 
-// TODO(ask): How would i convert this driver to be
-// concepts looks promising, but it's not exactly what i need
-// CRTP (Curiously Recurring Template Pattern) looks closer to what i would like
-// to have which zero cost polymorphisim, which is resolved in compile time.
-// Altough i am not sure how to implement it
-
-
-// TODO(ask): Essentially concepts allow me to create a function that a accepts object with specific signature, and then iterate over the signature
-//            But the concrete object has to be stored anyway, so i can't create inheritance as in a traditional term of base class and derived classes.             
-// template<typename T>
-// concept DriverLike = requires(hidapi::DeviceID &id) {
-//     { T::probe(id) } -> std::same_as<bool>>;
-//     t.commit();
-// };
-
-template<typename T>
+template<class T>
 concept DriverLike = requires(T t, hidapi::DeviceID id) {
-    { T::probe(id) } -> std::same_as<bool>;
+    { T::supported_device_ids() } -> std::same_as<hidapi::DeviceIDList>;
+
+    { T::load(id) } -> std::same_as<bool>;
     t.commit();
 };
 
-using DriverVariants = std::variant<HIDPP20, SteelSeries>;
+template <DriverLike... Ts>  
+using IDriver = std::variant<Ts...>;
 
-// TODO: is this how to use concepts? with static assert?
-static_assert(
-    DriverLike<HIDPP20> and
-    DriverLike<SteelSeries>
-); // OK
-
-
-// template <DriverLike TDriverImpl> 
-// struct Driver : TDriverImpl {};
-
-// class Driver {
-// public:
-//   static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info);
-
-// };
-
+using DriverVariants = IDriver<HIDPP20, SteelSeries>;
 
 
 static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info) {
 
   // TODO(ask): i don't want to write these ifs by hand, how can i iterate over types and call their probe() funciton?
   //            what i want to have is an directory of drivers, and i want the "developer" to be able to simply add new "driver" type and have my "core" of the library to iterate over all the "driver type"s
-  if (HIDPP20::probe(hid_device_info.device_id())) {
-    // TODO(ask): what sort of sorcerry is this? how does C++ knows to convert HIDPP20 into std::optional<DriverVariants> ?
-    return HIDPP20();    
-  }
+  //            it is possible to iterate over types by using template expansion
+  //            try to stay whithin the limits of the language, and avoid resorting to doing things outside with the build system, like generation of some C++ files that hold array of each type
+  //            look at the example by anthony typelists(1).cpp in this dir
 
-  if (SteelSeries::probe(hid_device_info.device_id())) {
-    return SteelSeries();    
-  }
+  if (std::ranges::contains(HIDPP20::supported_device_ids(),
+                            hid_device_info.device_id())) {
+    // TODO(ask): what sort of sorcerry is this? how does C++ knows to convert HIDPP20 into std::optional<DriverVariants> ?
+    return HIDPP20();
+  };
+
+  if (std::ranges::contains(SteelSeries::supported_device_ids(),
+                            hid_device_info.device_id())) {
+    // TODO(ask): what sort of sorcerry is this? how does C++ knows to convert HIDPP20 into std::optional<DriverVariants> ?    
+    return SteelSeries();
+  };
 
   return {};
 }
