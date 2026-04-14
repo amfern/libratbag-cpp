@@ -4,6 +4,39 @@ namespace ratbag {
 namespace lib {
 
 using LedIndex = unsigned int;
+using ColorChannel = unsigned int;
+
+struct Color {
+  ColorChannel red;
+  ColorChannel green;
+  ColorChannel blue;
+  ColorChannel brightness;
+};
+
+// TODO(ask): should i use std::chrono::duration<int29, std::milli>;   ?
+//            i don't expect to put large numbers (maybe it's also a good ooportunity to use contrats)
+using ActionDuration = std::chrono::milliseconds;
+
+
+struct Off {
+
+};
+
+struct FixedColor {
+  Color color;
+};
+
+struct CycleColor {
+  Color color;
+  ActionDuration action_duration;
+};
+
+struct BreathingColor {
+  Color color;
+  ActionDuration action_duration;
+};
+
+using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
 
 enum class LedMode {
   // led is now off
@@ -52,19 +85,7 @@ struct SupportedModes : std::bitset<static_cast<std::size_t>(LedMode::Count)> {
   }
 };
 
-using ColorChannel = unsigned int;
 
-struct Color {
-  ColorChannel red;
-  ColorChannel green;
-  ColorChannel blue;
-};
-
-using Brightness = ColorChannel;
-
-// TODO(ask): should i sue std::chrono::duration<int29, std::milli>;   ?
-//            i don't expect to put large numbers (maybe it's also a good ooportunity to use contrats)
-using ActionDuration = std::chrono::milliseconds;
 
 class Led {
 
@@ -73,17 +94,15 @@ public:
     return index_;
   };
 
-  const Color& color() const {
-    return color_;
-  };
-
   // TODO(ask): Perhaps use std::variant for the supported mode, and save values for all variants
   //       Or store an mirror representation in the device, and not try to be smart about things.
   //       should i design it, like an second twin, so the data in this library will match exactly the data storedin the HID(mouse) device?
   //       eg. when i create an empty new profile i imidiatly store it into the device. And then allow allow the user to change the colors, and modes..
   //           Or i create the profile, allow user to change the values, and then write to the device(the appraoch taken by current libratbag implementation)
-  LedMode current_mode() const {
-    return current_mode_;
+  //       so instead of storing the LedMode we will store the variant with the correct, instead of enum and the variables outside... which means switching moes will lose their data. 
+  //       Otherwise we store values for all modes, and just chose the correct one. 
+  const Mode& mode() const {
+    return mode_;
   };
 
   SupportedModes supported_modes() const {
@@ -94,26 +113,14 @@ public:
     return supported_color_depth_;
   };
 
-  ActionDuration action_duration() const {
-    return action_duration_;
-  };
-
-  Brightness brightness() const {
-    return brightness_;
-  };
-
 private:
   LedIndex index_;
-  Color color_;
-  LedMode current_mode_;
-  
+
+  Mode mode_;
+
+  // TODO: maybe create something like LEDInfo, to store such meta-data about the LED
   SupportedModes supported_modes_;
-
   LedColorDepth supported_color_depth_;
-
-  ActionDuration action_duration_;
-
-  Brightness brightness_;
 };
 
 } // namespace lib
