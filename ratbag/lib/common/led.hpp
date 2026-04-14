@@ -4,13 +4,12 @@ namespace ratbag {
 namespace lib {
 
 using LedIndex = unsigned int;
-using ColorChannel = unsigned int;
+using ColorChannel = unsigned char;
 
 struct Color {
   ColorChannel red;
   ColorChannel green;
   ColorChannel blue;
-  ColorChannel brightness;
 };
 
 // TODO(ask): should i use std::chrono::duration<int29, std::milli>;   ?
@@ -29,11 +28,13 @@ struct FixedColor {
 struct CycleColor {
   Color color;
   ActionDuration action_duration;
+  ColorChannel brightness;
 };
 
 struct BreathingColor {
   Color color;
   ActionDuration action_duration;
+  ColorChannel brightness;
 };
 
 using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
@@ -120,6 +121,8 @@ private:
 
   // TODO: maybe create something like LEDInfo, to store such meta-data about the LED
   SupportedModes supported_modes_;
+
+  // TODO: maybe create variation for colors struct, 
   LedColorDepth supported_color_depth_;
 };
 
