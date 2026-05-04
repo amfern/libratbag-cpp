@@ -9,12 +9,6 @@ namespace ratbag {
 namespace lib {
 namespace drivers_dynamic {
 
-// TODO(ask): How would i convert this driver to be
-// concepts looks promising, but it's not exactly what i need
-// CRTP (Curiously Recurring Template Pattern) looks closer to what i would like
-// to have which zero cost polymorphisim, which is resolved in compile time.
-// Altough i am not sure how to implement it
-
 class IDriver;
 
 using Driver = std::unique_ptr<IDriver>;

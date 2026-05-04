@@ -1,4 +1,10 @@
+# pragma once
+
 #include <chrono>
+#include <variant>
+
+#include "ratbag/lib/utils/bitmask_operators.hpp"
+
 
 namespace ratbag {
 namespace lib {
@@ -12,8 +18,6 @@ struct Color {
   ColorChannel blue;
 };
 
-// TODO(ask): should i use std::chrono::duration<int29, std::milli>;   ?
-//            i don't expect to put large numbers (maybe it's also a good ooportunity to use contrats)
 using ActionDuration = std::chrono::milliseconds;
 
 
@@ -41,7 +45,7 @@ using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
 
 enum class LedMode {
   // led is now off
-  Off = 0,
+  Off,
 
   // led is on with fixed color
   Fixed,
@@ -51,8 +55,6 @@ enum class LedMode {
 
   // led is pulsating with static color
   Breathing,
-
-  Count,
 };
 
 enum class LedColorDepth {
@@ -66,26 +68,6 @@ enum class LedColorDepth {
   // The device supports RBG colors with 1 bit per color.
   RGB_111,
 };
-
-// TODO(ask): what do you think about this class to hold flags of supported modes?
-struct SupportedModes : std::bitset<static_cast<std::size_t>(LedMode::Count)> {
-  const bool is_off_supported() const {
-    return test(static_cast<std::size_t>(LedMode::Off));
-  }
-
-  const bool is_fixed_supported() const {
-    return test(static_cast<std::size_t>(LedMode::Fixed));
-  }
-
-  const bool is_cycle_supported() const {
-    return test(static_cast<std::size_t>(LedMode::Cycle));
-  }
-
-  const bool is_breathing_supported() const {
-    return test(static_cast<std::size_t>(LedMode::Breathing));
-  }
-};
-
 
 
 class Led {
@@ -106,7 +88,7 @@ public:
     return mode_;
   };
 
-  SupportedModes supported_modes() const {
+  LedMode supported_modes() const {
     return supported_modes_;
   };
 
@@ -120,7 +102,7 @@ private:
   Mode mode_;
 
   // TODO: maybe create something like LEDInfo, to store such meta-data about the LED
-  SupportedModes supported_modes_;
+  LedMode supported_modes_;
 
   // TODO: maybe create variation for colors struct, 
   LedColorDepth supported_color_depth_;
@@ -129,3 +111,14 @@ private:
 } // namespace lib
 
 } // namespace ratbag
+
+template<>
+struct enable_bitmask_operators<ratbag::lib::LedMode>{
+    static const bool enable=true;
+};
+
+
+template<>
+struct enable_bitmask_operators<ratbag::lib::LedColorDepth>{
+    static const bool enable=true;
+};

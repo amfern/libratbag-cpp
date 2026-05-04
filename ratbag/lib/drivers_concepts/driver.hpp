@@ -48,16 +48,21 @@ static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info
   //       try to stay whithin the limits of the language, and avoid resorting to doing things outside with the build system, like generation of some C++ files that hold array of each type
   //       look at the example by anthony typelists(1).cpp in this dir
 
-  // TODO(ask): i use ranges contains, is this what recomneded in C++23?
+  // TODO(ask): i use ranges contains, is this what recomneded in C++23? there is also alternatives like find
+  //            yes
   if (std::ranges::contains(HIDPP20::supported_device_ids(),
                             hid_device_info.device_id())) {
+
     // TODO(ask): what sort of sorcerry is this? how does C++ knows to convert HIDPP20 into std::optional<DriverVariants> ?
+    //            1. convert to return type if it can, eg float to int, int to float
+    //            2. srd::optional has constructor of argumnets that can construct the DriverVariants type
+    //             std::optional constructor -> DriverVariants constructor -> call the hidpp20 move constructor
+    //           first it will construct temporary and then call the move oncstructor of hidpp20, through the constructor of DriverVariants and then through std::optional
     return HIDPP20();
   };
 
   if (std::ranges::contains(SteelSeries::supported_device_ids(),
                             hid_device_info.device_id())) {
-    // TODO(ask): what sort of sorcerry is this? how does C++ knows to convert HIDPP20 into std::optional<DriverVariants> ?    
     return SteelSeries();
   };
 
