@@ -43,18 +43,19 @@ struct BreathingColor {
 
 using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
 
+
 enum class LedMode {
   // led is now off
-  Off,
+  Off = 0,
 
   // led is on with fixed color
-  Fixed,
+  Fixed = 1 << 0,
 
   // led is cycling between all colors
-  Cycle,
+  Cycle = 1 << 1,
 
   // led is pulsating with static color
-  Breathing,
+  Breathing = 1 << 2,
 };
 
 enum class LedColorDepth {
@@ -108,17 +109,20 @@ private:
   LedColorDepth supported_color_depth_;
 };
 
+constexpr bool enable_bitmask_operators(LedMode);
+constexpr bool enable_bitmask_operators(LedColorDepth);
+
 } // namespace lib
 
 } // namespace ratbag
 
-template<>
-struct enable_bitmask_operators<ratbag::lib::LedMode>{
-    static const bool enable=true;
-};
+// template<>
+// struct enable_bitmask_operators<ratbag::lib::LedMode>{
+//     static const bool enable=true;
+// };
 
 
-template<>
-struct enable_bitmask_operators<ratbag::lib::LedColorDepth>{
-    static const bool enable=true;
-};
+// template<>
+// struct enable_bitmask_operators<ratbag::lib::LedColorDepth>{
+//     static const bool enable=true;
+// };
