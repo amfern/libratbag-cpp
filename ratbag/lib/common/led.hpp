@@ -44,6 +44,7 @@ struct BreathingColor {
 using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
 
 
+// TODO(ask): is there a way to automatically assign value like 1 << 2 
 enum class LedMode {
   // led is now off
   Off = 0,
@@ -58,12 +59,14 @@ enum class LedMode {
   Breathing = 1 << 2,
 };
 
+constexpr bool enable_bitmask_operators(LedMode);
+
 enum class LedColorDepth {
   /**
    * The device only supports a single color.
    * All color components should be set to 255.
    */
-  MONOCHROME = 0,
+  MONOCHROME,
   // The device supports RBG color with 8 bits per color.
   RGB_888,
   // The device supports RBG colors with 1 bit per color.
@@ -109,20 +112,6 @@ private:
   LedColorDepth supported_color_depth_;
 };
 
-constexpr bool enable_bitmask_operators(LedMode);
-constexpr bool enable_bitmask_operators(LedColorDepth);
-
 } // namespace lib
 
 } // namespace ratbag
-
-// template<>
-// struct enable_bitmask_operators<ratbag::lib::LedMode>{
-//     static const bool enable=true;
-// };
-
-
-// template<>
-// struct enable_bitmask_operators<ratbag::lib::LedColorDepth>{
-//     static const bool enable=true;
-// };
