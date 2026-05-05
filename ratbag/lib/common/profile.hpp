@@ -20,7 +20,6 @@ private:
 // using ProfileList = std::vector<Profile>;
 // int active_profile;
 
-// TODO(ask): how to represent multiple profiles, but one of them active, should
 class ProfileList {
 
 private:
@@ -42,7 +41,7 @@ private:
   // TODO: create a strong type def https://www.justsoftwaresolutions.co.uk/cplusplus/strong_typedef.html
   //       https://github.com/PeterSommerlad/PSsst
   // This active_profile is manged by ProfileList, so there is no need to do more checks.  
-  unsigned int active_profile;
+  // unsigned int active_profile;
 };
 
 

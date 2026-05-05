@@ -45,7 +45,8 @@ using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
 
 
 // TODO(ask): is there a way to automatically assign value like 1 << 2 
-enum class LedMode {
+// TODO(ask): LedModeFlag is connected to the Mode variant above, how do i make sure adding Mode Flag also forces to add Variant type? static_assert?
+enum class LedModeFlag {
   // led is now off
   Off = 0,
 
@@ -59,7 +60,7 @@ enum class LedMode {
   Breathing = 1 << 2,
 };
 
-constexpr bool enable_bitmask_operators(LedMode);
+constexpr bool enable_bitmask_operators(LedModeFlag);
 
 enum class LedColorDepth {
   /**
@@ -92,7 +93,7 @@ public:
     return mode_;
   };
 
-  LedMode supported_modes() const {
+  LedModeFlag supported_modes() const {
     return supported_modes_;
   };
 
@@ -106,7 +107,7 @@ private:
   Mode mode_;
 
   // TODO: maybe create something like LEDInfo, to store such meta-data about the LED
-  LedMode supported_modes_;
+  LedModeFlag supported_modes_;
 
   // TODO: maybe create variation for colors struct, 
   LedColorDepth supported_color_depth_;

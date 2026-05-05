@@ -41,14 +41,22 @@ public:
 
     // TODO(ask): i like to do these early exists to avoid long nested code in the if clasue, what do you thin about?
     // yes
-    if (!drv_resultp) {
+    if (!drv_result) {
       // TODO(ask): prefer {}
       return {};
     }
 
     auto drv = drv_result.value();
 
-    return Device{drv}; 
+    
+    Device device{drv};
+    device.load_profiles();
+
+    return device;
+  };
+
+  void load_profiles() {
+    std::visit([&](auto& d) { d.load(profiles); }, driver_);
   };
 
 private:

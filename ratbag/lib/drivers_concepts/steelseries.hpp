@@ -1,5 +1,8 @@
 #pragma once
 
+#include "ratbag/lib/common/profile.hpp"
+#include "ratbag/lib/hidapi/device_info.hpp"
+
 namespace ratbag {
 namespace lib {
 namespace drivers_concepts {
@@ -14,11 +17,11 @@ public:
     }; 
   }
 
-  static bool load(hidapi::DeviceID id) {
+  static bool load(ProfileList &profiles) {
     return true;
   }
 
-  void commit() const {
+  void commit(const ProfileList &profiles) const {
     // TODO: open hid devices and read from it some name
   }
 };
