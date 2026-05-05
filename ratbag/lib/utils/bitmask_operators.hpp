@@ -34,13 +34,16 @@
 
 
 // binary operators are not defined by default on enum class, solution is here https://www.justsoftwaresolutions.co.uk/cplusplus/using-enum-classes-as-bitfields.html
-// https://stackoverflow.com/questions/42481154/how-to-use-bitmask-operators-hpp-with-namespace-and-classes
 // https://stackoverflow.com/questions/45541760/c-enum-flags-vs-bitset
+// https://stackoverflow.com/questions/42481154/how-to-use-bitmask-operators-hpp-with-namespace-and-classes
 // https://github.com/Dalzhim/ArticleEnumClass-v2/blob/master/Readme.md
-// https://andreasfertig.com/blog/2024/01/cpp20-concepts-applied/
+// Adapt the orignial solution to C++23 with concepts  https://andreasfertig.com/blog/2024/01/cpp20-concepts-applied/
 
 #include <type_traits>
 #include <utility>
+
+// TODO(ask): What do you think about boost? 
+// TODO(ask): I feel strange that i have to implement it it by myslef, is there nothing from the c++ standart library we can use? 
 
 template<typename T>
 requires(std::is_enum_v<T>and requires(T e) {
