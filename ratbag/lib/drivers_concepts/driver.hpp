@@ -16,7 +16,7 @@ namespace lib {
 namespace drivers_concepts {
 
 template <class T>
-concept DriverLike = requires(T t, ProfileList& load_profiles, const ProfileList& commit_profiles) {
+concept DriverLike = requires(T t, const ProfileList& commit_profiles) {
   // TODO: how to throw compile error when same deviceId is already assigned to
   // another one How to make this variable unique accross all of the devices?
   // i would like it to fail on compile time when there is an overlap in the
@@ -31,7 +31,7 @@ concept DriverLike = requires(T t, ProfileList& load_profiles, const ProfileList
 
   { T::supported_device_ids() } -> std::same_as<hidapi::DeviceIDList>;
 
-  { T::load(load_profiles) } -> std::same_as<bool>;
+  { t.load() } -> std::same_as<ProfileList>;
   t.commit(commit_profiles);
 };
 

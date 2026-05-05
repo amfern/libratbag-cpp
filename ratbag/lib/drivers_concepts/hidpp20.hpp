@@ -12,6 +12,7 @@ namespace drivers_concepts {
 class HIDPP20 final {
 public:
 
+  // TODO: how to prevent double assigning of hid api, so another driver by mistake uses the same DeviceID
   static constexpr hidapi::DeviceIDList supported_device_ids() {
     return {
       {0x046d, 0xc332},
@@ -19,11 +20,13 @@ public:
     }; 
   }
 
-  static bool load(ProfileList &profiles) {
+  ProfileList load() {
     // TODO: open hid devices and read from it some name
-    return true;
+    // return true;
+    return {};
   }
 
+  // TODO(ask): i can pass by const &, but the nested memebers of ProfileList can still be accessed and modified?
   void commit(const ProfileList &profiles) const {
     // TODO: write profiles
   }

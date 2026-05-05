@@ -17,8 +17,8 @@ public:
     }; 
   }
 
-  static bool load(ProfileList &profiles) {
-    return true;
+  ProfileList load() {
+    return {}; 
   }
 
   void commit(const ProfileList &profiles) const {

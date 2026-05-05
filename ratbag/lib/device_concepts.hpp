@@ -47,24 +47,19 @@ public:
     }
 
     auto drv = drv_result.value();
+    auto profiles = std::visit([&](auto& d) { return d.load(); }, drv);
 
-    
-    Device device{drv};
-    device.load_profiles();
+    Device device{drv, profiles};
 
     return device;
   };
 
-  void load_profiles() {
-    std::visit([&](auto& d) { d.load(profiles); }, driver_);
-  };
-
 private:
-  explicit Device(drivers_concepts::DriverVariants driver) : driver_(std::move(driver)) {} 
+  explicit Device(drivers_concepts::DriverVariants driver, ProfileList profiles) : driver_(std::move(driver)), profiles_(std::move(profiles)) {} 
 
   drivers_concepts::DriverVariants driver_;
 
-  ProfileList profiles;
+  ProfileList profiles_;
 };
 
 
