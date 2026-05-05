@@ -29,7 +29,7 @@ namespace lib {
 class Device {
 
 public:
-  // TODO(ask): maybe use exception instead of optional?
+  // TODO: maybe use exception instead of optional?
   //            use std::expected to return error what went wrong
   //            philosophical debate, either use exception of std::expected, but stay consistent.
   //            constructor can't return std::expected, so we can have a factory functions like here.
@@ -39,10 +39,10 @@ public:
   static std::optional<Device> open(hidapi::HIDDeviceInfo &hid_device_info) {
     auto drv_result = drivers_concepts::open(hid_device_info);
 
-    // TODO(ask): i like to do these early exists to avoid long nested code in the if clasue, what do you thin about?
+    // TODO: i like to do these early exists to avoid long nested code in the if clasue, what do you thin about?
     // yes
     if (!drv_result) {
-      // TODO(ask): prefer {}
+      // TODO: prefer {}
       return {};
     }
 
