@@ -49,9 +49,7 @@ public:
     auto drv = drv_result.value();
     auto profiles = std::visit([&](auto& d) { return d.load(); }, drv);
 
-    Device device{drv, profiles};
-
-    return device;
+    return Device{drv, profiles};
   };
 
 private:
