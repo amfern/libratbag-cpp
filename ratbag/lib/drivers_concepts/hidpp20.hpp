@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ratbag/lib/drivers_concepts/driver_like.hpp"
 #include "ratbag/lib/common/profile.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 
@@ -8,7 +9,6 @@ namespace lib {
 namespace drivers_concepts {
 
 // This class implements the DriverLike concept
-// TODO(ask): Is there a n C++ language way to say: "This class must satisfy the DriverLike concept concept"
 class HIDPP20 final {
 public:
 
@@ -26,11 +26,15 @@ public:
     return {};
   }
 
-  // TODO(ask): i can pass by const &, but the nested memebers of ProfileList can still be accessed and modified?
+  // TODO: i can pass by const &, but the nested memebers of ProfileList can still be accessed and modified?
+  // const propogates to the memebers, and even for vector memebres because of the way it's implement.
+  // unless there is a pointer inside that can be derefenced
   void commit(const ProfileList &profiles) const {
     // TODO: write profiles
   }
 };
+
+static_assert(DriverLike<HIDPP20>);
 
 } // namespace drivers
 } // namespace lib

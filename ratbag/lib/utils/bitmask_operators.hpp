@@ -37,18 +37,35 @@
 // https://stackoverflow.com/questions/45541760/c-enum-flags-vs-bitset
 // https://stackoverflow.com/questions/42481154/how-to-use-bitmask-operators-hpp-with-namespace-and-classes
 // https://github.com/Dalzhim/ArticleEnumClass-v2/blob/master/Readme.md
-// Adapt the orignial solution to C++23 with concepts  https://andreasfertig.com/blog/2024/01/cpp20-concepts-applied/
+// Adapt the original solution to C++23 with concepts https://andreasfertig.com/blog/2024/01/cpp20-concepts-applied/
 
 #include <type_traits>
 #include <utility>
 
-// TODO(ask): What do you think about boost? 
-// TODO(ask): I feel strange that i have to implement it it by myslef, is there nothing from the c++ standart library we can use? 
+// TODO: What do you think about boost?
+// Initially were for prototyping new features that are candidates for std
+// The direction is now more of a "is useful library", Thread library started in boost. License is really permissive.
+// Now we have the https://bemanproject.org/ for prototyping
+// The quality of the code is still good
+
+// TODO: I feel strange that i have to implement it it by myslef, is there nothing from the c++ standart library we can use? 
+// Draft a proposal to add this to C++, how come such a basic thing is not part of C++ yet?
+// Library Evolution group LEWG(do we want to add it to C++) -> LWG(how do we add it?, is the wording right)
+// Approval from evolution group
+// Get expert in C++ proposal wording
+// Official proposal guideline  https://isocpp.org/std/submit-a-proposal
+//   probably don't need to float the idea, because it been on the internet for a while
+//   Technical Specifications is the precise library wording, it doesn't need to be in the initial proposal
+//   post meeting https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/#mailing2026-04
+//   Disscuss via zoom with the commiette
 
 template<typename T>
-requires(std::is_enum_v<T>and requires(T e) {
+concept BitmaskLike = std::is_enum_v<T> and requires(T e) {
   enable_bitmask_operators(e);
-}) constexpr auto
+};
+
+template<BitmaskLike T>
+constexpr auto
 operator|(const T lhs, const T rhs)
 {
   return static_cast<T>(std::to_underlying(lhs) |

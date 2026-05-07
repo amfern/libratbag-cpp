@@ -30,8 +30,9 @@ TEST(LedBitmaskOperators, All) {
 }
 
 
-// TODO(ask): how to test for this thing shouldn't work?
+// TODO: how to test for this thing shouldn't work?
 //            how to test we get a compile error?
+//            Look in arene-base, use the build system and expect error return code and grep for error
 // TEST(LedBitmaskOperators, ShouldFailToBuild) {
 //     C c1=C::x | C::y;
 //     C c2=c1&C::y;

@@ -44,8 +44,10 @@ struct BreathingColor {
 using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
 
 
-// TODO(ask): is there a way to automatically assign value like 1 << 2 
-// TODO(ask): LedModeFlag is connected to the Mode variant above, how do i make sure adding Mode Flag also forces to add Variant type? static_assert?
+// TODO: is there a way to automatically assign value like 1 << 2
+  // in C++ 26 with refelection i can, in compile time that the values are all powers of two
+// TODO: LedModeFlag is connected to the Mode variant above, how do i make sure adding Mode Flag also forces to add Variant type? static_assert?
+//            Yes, with reflection. and even check that the names match. And in C++ 29 reflection can even generate code
 enum class LedModeFlag {
   // led is now off
   Off = 0,
@@ -58,6 +60,8 @@ enum class LedModeFlag {
 
   // led is pulsating with static color
   Breathing = 1 << 2,
+  
+  NewTyp = 1 << 3,
 };
 
 constexpr bool enable_bitmask_operators(LedModeFlag);
@@ -82,7 +86,7 @@ public:
     return index_;
   };
 
-  // TODO(ask): Perhaps use std::variant for the supported mode, and save values for all variants
+  // TODO: Perhaps use std::variant for the supported mode, and save values for all variants
   //       Or store an mirror representation in the device, and not try to be smart about things.
   //       should i design it, like an second twin, so the data in this library will match exactly the data storedin the HID(mouse) device?
   //       eg. when i create an empty new profile i imidiatly store it into the device. And then allow allow the user to change the colors, and modes..

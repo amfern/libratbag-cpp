@@ -41,8 +41,8 @@ cc_library(
     ],
     visibility = ["//ratbag/cli:__pkg__"],
     deps = [
-        ":device_dynamic",
-        ":device_variant",
+        # ":device_dynamic",
+        # ":device_variant",
         ":device_concepts",
         "//ratbag/lib/hidapi",
     ],

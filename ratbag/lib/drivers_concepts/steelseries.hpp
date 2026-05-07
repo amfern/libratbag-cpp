@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ratbag/lib/drivers_concepts/driver_like.hpp"
 #include "ratbag/lib/common/profile.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 
@@ -25,6 +26,8 @@ public:
     // TODO: open hid devices and read from it some name
   }
 };
+
+static_assert(DriverLike<SteelSeries>);
 
 } // namespace drivers
 } // namespace lib

@@ -7,7 +7,8 @@ using ratbag::lib::LedMode;
 
 TEST(LedTestSuit, CreateNewLed) {
   Led someLed;
-  // TODO(ask): i really would like to be able to just do: if (someLed.supported_modes() & LedMode::Off) {...}
+  // TODO: i really would like to be able to just do: if (someLed.supported_modes() & LedMode::Off) {...}
+  // yes, but it's maybe not a good idea.
   ASSERT_TRUE((someLed.supported_modes() & LedMode::Off) == LedMode::Off);
   ASSERT_FALSE((someLed.supported_modes() & LedMode::Fixed) == LedMode::Fixed);
   ASSERT_FALSE((someLed.supported_modes() & LedMode::Cycle) == LedMode::Cycle);
