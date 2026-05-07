@@ -717,7 +717,7 @@
     },
     "@@rules_shellcheck+//internal:extensions.bzl%shellcheck_dependencies": {
       "general": {
-        "bzlTransitiveDigest": "0CGrZn0w83thasyxBfT7RLvHDQ68uL5td6c2rix3338=",
+        "bzlTransitiveDigest": "iUPLDi22BCm8cEXVZCuPLFuXBZG7QPDa4TxAk7LwX8s=",
         "usagesDigest": "dB1tqxp4QomnAlt2Na7AnDC2qZdvV3Sjc3OCSEyzwdQ=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
