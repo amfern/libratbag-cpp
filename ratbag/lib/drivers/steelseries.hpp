@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ratbag/lib/drivers_concepts/driver_like.hpp"
+#include "ratbag/lib/drivers/driver_like.hpp"
 #include "ratbag/lib/common/profile.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 

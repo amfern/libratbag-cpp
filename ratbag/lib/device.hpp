@@ -11,12 +11,10 @@
 // There is no need to probe the driver for supported devices, because that
 // would be known ahead of time.
 
-// #include "ratbag/lib/common/profile.hpp"
-
 #include <memory>
 #include <optional>
 
-#include "ratbag/lib/drivers_concepts/driver.hpp"
+#include "ratbag/lib/drivers/driver.hpp"
 #include "ratbag/lib/hidapi/device.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 #include "ratbag/lib/common/profile.hpp"

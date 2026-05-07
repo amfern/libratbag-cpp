@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ratbag/lib/drivers_concepts/driver_like.hpp"
-#include "ratbag/lib/drivers_concepts/steelseries.hpp"
-#include "ratbag/lib/drivers_concepts/hidpp20.hpp"
+#include "ratbag/lib/drivers/driver_like.hpp"
+#include "ratbag/lib/drivers/steelseries.hpp"
+#include "ratbag/lib/drivers/hidpp20.hpp"
 
 
 #include <optional>
