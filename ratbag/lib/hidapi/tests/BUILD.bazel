@@ -4,6 +4,7 @@ cc_test(
     name = "hidapi_test",
     srcs = ["device_info_test.cpp"],
     cxxopts = [
+        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
         "-Wno-deprecated-declarations",
     ],
     deps = [

@@ -11,6 +11,7 @@ cc_library(
         "device_info.hpp",
     ],
     cxxopts = [
+        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
         "-Wno-deprecated-declarations",
     ],
     visibility = ["//ratbag/lib:__subpackages__"],

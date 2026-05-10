@@ -3,11 +3,17 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 cc_test(
     name = "led_test",
     srcs = ["led_test.cpp"],
-    cxxopts = [
-        "-Wno-deprecated-declarations",
-    ],
     deps = [
         "//ratbag/lib/profile:led",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "profile_test",
+    srcs = ["profile_test.cpp"],
+    deps = [
+        "//ratbag/lib/profile",
         "@googletest//:gtest_main",
     ],
 )
