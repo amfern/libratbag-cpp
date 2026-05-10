@@ -1,0 +1,30 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "driver",
+    hdrs = [
+        "driver.hpp",
+    ],
+    visibility = [
+        "//ratbag/lib:__pkg__",
+        "//ratbag/lib/driver/tests:__pkg__",
+    ],
+    deps = [
+        ":driver_like",
+        "//ratbag/lib/driver/drivers/hidpp20",
+        "//ratbag/lib/driver/drivers/steelseries",
+        "//ratbag/lib/driver/drivers/test_dummy",
+    ],
+)
+
+cc_library(
+    name = "driver_like",
+    hdrs = [
+        "driver_like.hpp"
+    ],
+    visibility = ["//ratbag/lib/driver:__subpackages__"],
+    deps = [
+        "//ratbag/lib/hidapi",
+        "//ratbag/lib/profile",
+    ],
+)

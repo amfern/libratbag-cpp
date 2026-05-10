@@ -1,12 +1,13 @@
 #pragma once
 
-#include "ratbag/lib/drivers/driver_like.hpp"
-#include "ratbag/lib/common/profile.hpp"
+#include "ratbag/lib/driver/driver_like.hpp"
+#include "ratbag/lib/profile/profile.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 
 namespace ratbag {
 namespace lib {
-namespace drivers_concepts {
+namespace driver {
+namespace hidpp20 {
 
 // This class implements the DriverLike concept
 class HIDPP20 final {
@@ -23,6 +24,7 @@ public:
   ProfileList load() {
     // TODO: open hid devices and read from it some name
     // return true;
+
     return {};
   }
 
@@ -36,6 +38,7 @@ public:
 
 static_assert(DriverLike<HIDPP20>);
 
+}
 } // namespace drivers
 } // namespace lib
 } // namespace ratbag

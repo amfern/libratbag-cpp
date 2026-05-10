@@ -14,10 +14,10 @@
 #include <memory>
 #include <optional>
 
-#include "ratbag/lib/drivers/driver.hpp"
+#include "ratbag/lib/driver/driver.hpp"
 #include "ratbag/lib/hidapi/device.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
-#include "ratbag/lib/common/profile.hpp"
+#include "ratbag/lib/profile/profile.hpp"
 
 namespace ratbag {
 namespace lib {
@@ -35,12 +35,11 @@ public:
   //            Maybe rename this function to "find", and then let the user call device.open()?
   //            if it's always find + open then maybe have single function.
   static std::optional<Device> open(hidapi::HIDDeviceInfo &hid_device_info) {
-    auto drv_result = drivers_concepts::open(hid_device_info);
+    auto drv_result = driver::open(hid_device_info);
 
-    // TODO: i like to do these early exists to avoid long nested code in the if clasue, what do you thin about?
-    // yes
+    // prefer early exists
     if (!drv_result) {
-      // TODO: prefer {}
+      // prefer {}
       return {};
     }
 
@@ -50,12 +49,23 @@ public:
     return Device{drv, profiles};
   };
 
-private:
-  explicit Device(drivers_concepts::DriverVariants driver, ProfileList profiles) : driver_(std::move(driver)), profiles_(std::move(profiles)) {} 
+  ProfileList& profiles() {
+    return profiles_;
+  }
 
-  drivers_concepts::DriverVariants driver_;
+private:
+  explicit Device(driver::DriverVariants driver, ProfileList profiles) : driver_(std::move(driver)), profiles_(std::move(profiles)) {} 
+
+  driver::DriverVariants driver_;
 
   ProfileList profiles_;
+
+  // std::vector<Profile>::iter active_profile; // erase or insert invalidates the iterator, so it's better to use some external index. we don't tend to hold iterator for long time
+  // So how do i create an relationship between the profiles and that unsigned int called active_profile
+  // Well the Device class create the relationship
+  // TODO: create a strong type def https://www.justsoftwaresolutions.co.uk/cplusplus/strong_typedef.html
+  //       https://github.com/PeterSommerlad/PSsst
+  // unsigned int active_profile;
 };
 
 

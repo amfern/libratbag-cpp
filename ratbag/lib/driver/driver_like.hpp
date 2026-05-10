@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ratbag/lib/hidapi/device_info.hpp"
-#include "ratbag/lib/common/profile.hpp"
+#include "ratbag/lib/profile/profile.hpp"
 
 #include <optional>
 #include <variant>
@@ -10,7 +10,7 @@
 
 namespace ratbag {
 namespace lib {
-namespace drivers_concepts {
+namespace driver {
 
 template <typename T>
 concept DriverLike = requires(T t, const ProfileList& commit_profiles) {

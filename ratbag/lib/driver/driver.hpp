@@ -1,8 +1,10 @@
 #pragma once
 
-#include "ratbag/lib/drivers/driver_like.hpp"
-#include "ratbag/lib/drivers/steelseries.hpp"
-#include "ratbag/lib/drivers/hidpp20.hpp"
+#include "ratbag/lib/driver/driver_like.hpp"
+#include "ratbag/lib/driver/drivers/hidpp20/hidpp20.hpp"
+#include "ratbag/lib/driver/drivers/steelseries/steelseries.hpp"
+#include "ratbag/lib/driver/drivers/test_dummy/test_dummy.hpp"
+
 
 
 #include <optional>
@@ -12,12 +14,21 @@
 
 namespace ratbag {
 namespace lib {
-namespace drivers_concepts {
+namespace driver {
 
+using HIDPP20 = hidpp20::HIDPP20;
+using SteelSeries = steelseries::SteelSeries;
+using TestDummy = testdummy::TestDummy;
+
+
+// TODO(ask): i really don't like changing the runtime just for the sake of being able to test... maybe there is a way to mock DriverVariants
+//            maybe i can put the function into details, or provide the variants as an input, so i can create a separate test for it.
+//            Like create a class that accepts DriverVariants as a template argument 
 template <DriverLike... Ts>
 using IDriver = std::variant<Ts...>;
-using DriverVariants = IDriver<HIDPP20, SteelSeries>;
+using DriverVariants = IDriver<HIDPP20, SteelSeries, TestDummy>;
 
+//  TODO(ask): should i put such factory functions under a class as static function or under a namespace?
 static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info) {
 
   // TODO: i don't want to write these ifs by hand, how can i iterate over types and call their probe() funciton?
@@ -44,6 +55,11 @@ static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info
   if (std::ranges::contains(SteelSeries::supported_device_ids(),
                             hid_device_info.device_id())) {
     return SteelSeries();
+  };
+
+  if (std::ranges::contains(TestDummy::supported_device_ids(),
+                            hid_device_info.device_id())) {
+    return TestDummy();
   };
 
   return {};

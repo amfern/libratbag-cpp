@@ -211,7 +211,7 @@
   "moduleExtensions": {
     "//:extension.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "pqwGW6P8c/YthscvwLLFi2eiHuQw3Q+Dgj6D7Fb2yrg=",
+        "bzlTransitiveDigest": "T0lphnisYiaW7T6Q17UNYS4qDvwqwHhHt3JFc58zOGo=",
         "usagesDigest": "nD2QyeU+RwqgUaa4hECr/LM2XOe6d6YCdP8TiSGMXD0=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -238,7 +238,7 @@
     },
     "@@buildifier_prebuilt+//:defs.bzl%buildifier_prebuilt_deps_extension": {
       "general": {
-        "bzlTransitiveDigest": "2VLU0vfIfLYEfA28e/dMivs5am5uoVDFM+uSLrzDrj8=",
+        "bzlTransitiveDigest": "0+2h5SsJxEIsmpXw8Whv4P/+yhAGQc19sTwmOArPMDQ=",
         "usagesDigest": "N8lrm0ZTaWWFCLsIgGbyzX0cw5SlZ1DQ1u+U1dzVpw0=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -377,7 +377,7 @@
     },
     "@@rules_kotlin+//src/main/starlark/core/repositories:bzlmod_setup.bzl%rules_kotlin_extensions": {
       "general": {
-        "bzlTransitiveDigest": "nvW/NrBXlAmiQw99EMGKkLaD2KbNp2mQDlxdfpr+0Ls=",
+        "bzlTransitiveDigest": "03Qju4tW0vE+0RBuZGuV2A4Hx6AiSkdNahYvworx2aM=",
         "usagesDigest": "QI2z8ZUR+mqtbwsf2fLqYdJAkPOHdOV+tF2yVAUgRzw=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -441,7 +441,7 @@
     },
     "@@rules_python+//python/extensions:config.bzl%config": {
       "general": {
-        "bzlTransitiveDigest": "TRGIl0CDmorwyNiblOYyhWuyKzi/kWFHT2uIofq7o9Y=",
+        "bzlTransitiveDigest": "EcMcbtKZvYmd5Mi1Fpg4EeBBztLHEE5tjO5tLDBYDuU=",
         "usagesDigest": "JoEJaFGCJXAu2aMckzsVrS0Gz9dIhMnc0PEav88G7ew=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},

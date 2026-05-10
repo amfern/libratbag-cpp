@@ -2,9 +2,9 @@
 
 #include <chrono>
 #include <variant>
+#include <vector>
 
 #include "ratbag/lib/utils/bitmask_operators.hpp"
-
 
 namespace ratbag {
 namespace lib {
@@ -82,6 +82,10 @@ enum class LedColorDepth {
 class Led {
 
 public:
+  // Led(LedIndex &index, Mode& mode, supported): {
+
+  // };
+
   LedIndex index() const {
     return index_;
   };
@@ -116,6 +120,8 @@ private:
   // TODO: maybe create variation for colors struct, 
   LedColorDepth supported_color_depth_;
 };
+
+using LedList = std::vector<Led>;
 
 } // namespace lib
 

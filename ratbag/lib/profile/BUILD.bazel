@@ -1,0 +1,32 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "profile",
+    hdrs = [
+        "button.hpp",
+        "macro.hpp",
+        "profile.hpp",
+        "resolution.hpp",
+    ],
+    deps = [
+        ":led"
+    ],
+    visibility = [
+        "//ratbag/lib/profile/tests:__pkg__",
+        "//ratbag/lib/driver:__pkg__",
+        "//ratbag/lib:__pkg__",
+    ],
+)
+
+cc_library(
+    name = "led",
+    hdrs = [
+        "led.hpp",
+    ],
+    deps = [
+        "//ratbag/lib/utils:bitmask_operators"
+    ],
+    visibility = [
+        "//ratbag/lib/profile/tests:__pkg__",
+    ],
+)

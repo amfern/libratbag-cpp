@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "test_dummy",
+    hdrs = [
+        "test_dummy.hpp",
+    ],
+    visibility = ["//ratbag/lib/driver:__pkg__"],
+    deps = [
+        "//ratbag/lib/driver:driver_like",
+        "//ratbag/lib/hidapi",
+    ],
+)

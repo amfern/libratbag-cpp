@@ -1,0 +1,12 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "hidpp20",
+    hdrs = [
+        "hidpp20.hpp",
+    ],
+    visibility = ["//ratbag/lib/driver:__pkg__"],
+    deps = [
+        "//ratbag/lib/driver:driver_like",
+    ],
+)

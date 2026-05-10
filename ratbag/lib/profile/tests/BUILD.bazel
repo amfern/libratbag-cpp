@@ -7,7 +7,7 @@ cc_test(
         "-Wno-deprecated-declarations",
     ],
     deps = [
-        "//ratbag/lib/common:common",
+        "//ratbag/lib/profile:led",
         "@googletest//:gtest_main",
     ],
 )

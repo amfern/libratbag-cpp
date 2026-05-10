@@ -1,12 +1,13 @@
 #pragma once
 
-#include "ratbag/lib/drivers/driver_like.hpp"
-#include "ratbag/lib/common/profile.hpp"
+#include "ratbag/lib/driver/driver_like.hpp"
+#include "ratbag/lib/profile/profile.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
 
 namespace ratbag {
 namespace lib {
-namespace drivers_concepts {
+namespace driver {
+namespace steelseries {
 
 class SteelSeries final {
 public:
@@ -19,7 +20,7 @@ public:
   }
 
   ProfileList load() {
-    return {}; 
+    return {};
   }
 
   void commit(const ProfileList &profiles) const {
@@ -29,6 +30,7 @@ public:
 
 static_assert(DriverLike<SteelSeries>);
 
+}
 } // namespace drivers
 } // namespace lib
 } // namespace ratbag

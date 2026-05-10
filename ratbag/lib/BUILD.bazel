@@ -1,18 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "device",
-    hdrs = [
-        "device.hpp",
-    ],
-    deps = [
-        "//ratbag/lib/hidapi",
-        "//ratbag/lib/drivers",
-        "//ratbag/lib/common",
-    ],
-)
-
-cc_library(
     name = "lib",
     hdrs = [
         "libratbag.hpp",
@@ -20,6 +8,19 @@ cc_library(
     visibility = ["//ratbag/cli:__pkg__"],
     deps = [
         ":device",
-        "//ratbag/lib/hidapi",
+    ],
+)
+
+cc_library(
+    name = "device",
+    hdrs = [
+        "device.hpp",
+    ],
+    visibility = [
+        "//ratbag/lib/tests:__pkg__",
+    ],
+    deps = [
+        "//ratbag/lib/driver",
+        "//ratbag/lib/profile",
     ],
 )
