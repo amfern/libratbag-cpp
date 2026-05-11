@@ -1,5 +1,8 @@
 # pragma once
 
+
+#include <stdint.h>  // uint32_t
+
 #include <chrono>
 #include <variant>
 #include <vector>
@@ -8,47 +11,76 @@
 
 namespace ratbag {
 namespace lib {
+namespace led {
 
-using LedIndex = unsigned int;
-using ColorChannel = unsigned char;
+// using Index = unsigned int;
+using ColorChannel = uint8_t;
 
-struct Color {
-  ColorChannel red;
-  ColorChannel green;
-  ColorChannel blue;
+// TODO(ask): what is the difference btween the two approaches
+// typedef std::array<std::uint8_t, 3> uint24_tttt;
+// using uint24_ttttt = std::array<std::uint8_t, 3>;
+
+
+// TODO: consider using a color library https://github.com/dmilos/color
+union Color {
+  using uint24_t = unsigned _BitInt(24);
+
+  uint24_t hex;
+  struct alignas(uint24_t) {
+    ColorChannel red;
+    ColorChannel green;
+    ColorChannel blue;
+  };
+
+  // Default constructor
+  Color(const uint24_t new_hex = 0XFFFFFF) : hex(new_hex) {}
+  Color(ColorChannel new_red, ColorChannel new_green, ColorChannel new_blue)
+      : red(new_red), green(new_green), blue(new_blue) {}
+
+  Color &operator=(const uint24_t new_hex) {
+    hex = new_hex;
+    return *this;
+  }
+
+  // Compiler automatically generates equality logic for all members
+  bool operator==(const uint24_t &other) const {
+    return hex == other; 
+  };
 };
 
 using ActionDuration = std::chrono::milliseconds;
 
-
-struct Off {
+struct ModeOff {
 
 };
 
-struct FixedColor {
+struct ModeFixedColor {
   Color color;
 };
 
-struct CycleColor {
-  Color color;
-  ActionDuration action_duration;
-  ColorChannel brightness;
-};
-
-struct BreathingColor {
+struct ModeCycleColor {
   Color color;
   ActionDuration action_duration;
   ColorChannel brightness;
 };
 
-using Mode = std::variant<Off, FixedColor, CycleColor, BreathingColor>;
+struct ModeBreathingColor {
+  Color color;
+  ActionDuration action_duration;
+  ColorChannel brightness;
+};
 
+using Mode = std::variant<ModeOff, ModeFixedColor, ModeCycleColor, ModeBreathingColor>;
+
+// helper type for the visitor
+template<class... Ts>
+struct mode_visitor : Ts... { using Ts::operator()...; };
 
 // TODO: is there a way to automatically assign value like 1 << 2
   // in C++ 26 with refelection i can, in compile time that the values are all powers of two
 // TODO: LedModeFlag is connected to the Mode variant above, how do i make sure adding Mode Flag also forces to add Variant type? static_assert?
 //            Yes, with reflection. and even check that the names match. And in C++ 29 reflection can even generate code
-enum class LedModeFlag {
+enum class ModeFlag {
   // led is now off
   Off = 0,
 
@@ -60,35 +92,67 @@ enum class LedModeFlag {
 
   // led is pulsating with static color
   Breathing = 1 << 2,
-  
-  NewTyp = 1 << 3,
 };
 
-constexpr bool enable_bitmask_operators(LedModeFlag);
+constexpr bool enable_bitmask_operators(ModeFlag);
 
-enum class LedColorDepth {
+enum class ColorDepth {
   /**
    * The device only supports a single color.
    * All color components should be set to 255.
    */
-  MONOCHROME,
+  Monochrome,
   // The device supports RBG color with 8 bits per color.
   RGB_888,
   // The device supports RBG colors with 1 bit per color.
   RGB_111,
 };
 
+} // namespace led
 
 class Led {
 
 public:
-  // Led(LedIndex &index, Mode& mode, supported): {
+  // TODO: maybe don't let define the number of lights, just let it be set to fixed number, same as the mouse and in the off state... or some other default state.
+  // TODO(ask): should i use use && in the arguments, or just normal value, and let the compiler do copy ellision?
+  Led(led::ModeFlag supported_modes = led::ModeFlag::Off, led::ColorDepth supported_color_depth = led::ColorDepth::Monochrome, led::Mode&& current_mode = led::ModeOff()) :
+    supported_modes_(supported_modes), supported_color_depth_(supported_color_depth), mode_(current_mode) {
 
+    // TODO: i should rename it to light... instead of LED, led is light emitting diode which is too specific.
+    const auto visitor = led::mode_visitor{
+        [&](const led::ModeOff &m) {
+
+        },
+        [&](const led::ModeFixedColor &m) {
+          if ((supported_modes_ & led::ModeFlag::Fixed) != led::ModeFlag::Fixed) {
+            throw std::runtime_error("Fixed mode is not supported by this LED");
+          }
+        },
+        [&](const led::ModeCycleColor &m) {
+          if ((supported_modes_ & led::ModeFlag::Cycle) != led::ModeFlag::Cycle) {
+            throw std::runtime_error("Cycle mode is not supported by this LED");
+          }
+        },
+        [&](const led::ModeBreathingColor &m) {
+          if ((supported_modes_ & led::ModeFlag::Breathing) != led::ModeFlag::Breathing) {
+            throw std::runtime_error("Breathing mode is not supported by this LED");
+          }
+        },
+    };
+
+    std::visit(visitor, current_mode);
+    
+    // TODO: assert check if the mode is whithin the supported modes 
+  };
+
+  // // TODO: what do you think about this style of setter and getter, i wonder if i can just  do led.index = 11; 
+  // led::Index index() const {
+  //   return index_;
   // };
 
-  LedIndex index() const {
-    return index_;
-  };
+  // void set_index(led::Index index) {
+  //   index_ = index;
+  // }
 
   // TODO: Perhaps use std::variant for the supported mode, and save values for all variants
   //       Or store an mirror representation in the device, and not try to be smart about things.
@@ -97,28 +161,33 @@ public:
   //           Or i create the profile, allow user to change the values, and then write to the device(the appraoch taken by current libratbag implementation)
   //       so instead of storing the LedMode we will store the variant with the correct, instead of enum and the variables outside... which means switching moes will lose their data. 
   //       Otherwise we store values for all modes, and just chose the correct one. 
-  const Mode& mode() const {
+  const led::Mode& mode() const {
     return mode_;
   };
 
-  LedModeFlag supported_modes() const {
+  void set_mode(led::Mode&& mode) {
+    mode_ = std::move(mode);
+  }
+
+  led::ModeFlag supported_modes() const {
     return supported_modes_;
   };
 
-  LedColorDepth supported_color_depth() const {
+  led::ColorDepth supported_color_depth() const {
     return supported_color_depth_;
   };
 
 private:
-  LedIndex index_;
-
-  Mode mode_;
+  // led::Index index_;
 
   // TODO: maybe create something like LEDInfo, to store such meta-data about the LED
-  LedModeFlag supported_modes_;
+  led::ModeFlag supported_modes_;
 
   // TODO: maybe create variation for colors struct, 
-  LedColorDepth supported_color_depth_;
+  led::ColorDepth supported_color_depth_;
+
+  led::Mode mode_;
+
 };
 
 using LedList = std::vector<Led>;

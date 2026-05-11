@@ -56,3 +56,7 @@ common --@rules_python//python/config_settings:bootstrap_impl=script
 common:pre-commit --ui_event_filters=-info,-stdout,-stderr
 common:pre-commit --noshow_progress
 common:pre-commit --lockfile_mode=off
+
+
+# TODO: https://clang.llvm.org/extra/clang-tidy/checks/modernize/use-using.html
+# implement clang tidy
