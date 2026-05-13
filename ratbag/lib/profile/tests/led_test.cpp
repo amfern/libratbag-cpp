@@ -48,12 +48,12 @@ TEST(LedTestSuit, SetLedValues) {
 }
 
 TEST(LedTestSuit, LedConstructor) {
-  Led someLed{ModeFlag::Fixed | ModeFlag::Cycle, ColorDepth::RGB_888,
-              ModeCycleColor{
+  auto myColorMode = ModeCycleColor{
                   .color = {0xFEFDFC},
                   .action_duration = 10ms,
                   .brightness = 245,
-              }};
+  };
+  Led someLed{ModeFlag::Fixed | ModeFlag::Cycle, ColorDepth::RGB_888, std::move(myColorMode)};
 
   ASSERT_TRUE((someLed.supported_modes() & ModeFlag::Cycle) == ModeFlag::Cycle);
   ASSERT_EQ(someLed.supported_modes(), ModeFlag::Fixed | ModeFlag::Cycle);

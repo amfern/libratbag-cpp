@@ -44,7 +44,11 @@ public:
     }
 
     auto drv = drv_result.value();
-    // TODO(ask): on the return it will move? how can i validate that it's actually what happens?
+    // TODO: auto doesn't forward reference(&), so it may endup calling the copy constructor.
+    // auto& profiles2 = std::visit( []() -> ProfileList& { return Profiles; } );
+    // I can delete the copy constructor to make sure things are not copied by mistake, but i don't have to worry, because C++ will do the sensible thing
+    // TODO: on the return it will move? how can i validate that it's actually what happens?
+    // conseptually it's a 3-4 stage move(constructor), but in practice because it's return by value, it will probabbly construct in the destination
     auto profiles = std::visit([&](auto& d) { return d.load(); }, drv);
 
     return Device{drv, profiles};

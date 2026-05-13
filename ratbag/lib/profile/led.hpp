@@ -16,10 +16,10 @@ namespace led {
 // using Index = unsigned int;
 using ColorChannel = uint8_t;
 
-// TODO(ask): what is the difference btween the two approaches
-// typedef std::array<std::uint8_t, 3> uint24_tttt;
-// using uint24_ttttt = std::array<std::uint8_t, 3>;
-
+// TODO: what is the difference between the two approaches
+// typedef char myname[5]; // the typedef name is in the middle, so for more complex examples it's hard to understand what is being defined
+// typedef std::array<std::uint8_t, 3> uint24_tttt; // C feature and has a C syntax, which is differ. First introduced in C
+// using uint24_ttttt = std::array<std::uint8_t, 3>; // Using is easier to read, because it the name is i the middle. I should use using because it's new
 
 // TODO: consider using a color library https://github.com/dmilos/color
 union Color {
@@ -114,9 +114,17 @@ class Led {
 
 public:
   // TODO: maybe don't let define the number of lights, just let it be set to fixed number, same as the mouse and in the off state... or some other default state.
-  // TODO(ask): should i use use && in the arguments, or just normal value, and let the compiler do copy ellision?
-  Led(led::ModeFlag supported_modes = led::ModeFlag::Off, led::ColorDepth supported_color_depth = led::ColorDepth::Monochrome, led::Mode&& current_mode = led::ModeOff()) :
-    supported_modes_(supported_modes), supported_color_depth_(supported_color_depth), mode_(current_mode) {
+
+  // TODO: should i use use && in the arguments, or just normal value, and let the compiler do copy ellision?
+  // this tell that i want to take only temporary objects, but that's not what i want.
+  // avoiding uncessary copies is a good thing, but don't try to force it, because it makes the code harder to use.
+  // From usiblity perspective it's better to allow people to copy thing, don't worry about the excesive copies, because most of them will go away.
+  // people will discover that copying is slow, and will be able to fix it.
+  // most of the time the performance is good enough whithout us doing anything special, and it's better to optimize for readiblity, usibility and correctness of the code. Optimize for the programmer.
+  // and if it's easy to read, and then if there is a perf problem, only then optimize for performance.copying few 10 bytes object doesn't matter, but 10k objects can matter.
+  // const & if i am going to processs it but not store it.
+  Led(led::ModeFlag supported_modes = led::ModeFlag::Off, led::ColorDepth supported_color_depth = led::ColorDepth::Monochrome, led::Mode current_mode = led::ModeOff()) :
+    supported_modes_(supported_modes), supported_color_depth_(supported_color_depth), mode_(std::move(current_mode)) {
 
     // TODO: i should rename it to light... instead of LED, led is light emitting diode which is too specific.
     const auto visitor = led::mode_visitor{
