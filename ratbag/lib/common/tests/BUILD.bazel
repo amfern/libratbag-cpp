@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "led_test",
+    srcs = ["led_test.cpp"],
+    cxxopts = [
+        "-Wno-deprecated-declarations",
+    ],
+    deps = [
+        "//ratbag/lib/common:common",
+        "@googletest//:gtest_main",
+    ],
+)

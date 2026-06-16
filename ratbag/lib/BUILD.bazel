@@ -1,14 +1,35 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "device",
-    srcs = [
-        "device.cpp",
-    ],
+    name = "device_dynamic",
     hdrs = [
-        "device.hpp",
+        "device_dynamic.hpp",
     ],
     deps = [
+        "//ratbag/lib/hidapi",
+        "//ratbag/lib/drivers_dynamic",
+    ],
+)
+
+cc_library(
+    name = "device_variant",
+    hdrs = [
+        "device_variant.hpp",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi",
+        "//ratbag/lib/drivers_variant",
+    ],
+)
+
+cc_library(
+    name = "device_concepts",
+    hdrs = [
+        "device_concepts.hpp",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi",
+        "//ratbag/lib/drivers_concepts",
         "//ratbag/lib/common",
     ],
 )
@@ -20,7 +41,9 @@ cc_library(
     ],
     visibility = ["//ratbag/cli:__pkg__"],
     deps = [
-        ":device",
+        ":device_dynamic",
+        ":device_variant",
+        ":device_concepts",
         "//ratbag/lib/hidapi",
     ],
 )

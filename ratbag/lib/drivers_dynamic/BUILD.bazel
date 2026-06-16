@@ -1,0 +1,17 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "drivers_dynamic",
+    srcs = [
+        "driver.cpp",
+    ],
+    hdrs = [
+        "driver.hpp",
+        "hidpp20.hpp",
+        "steelseries.hpp",
+    ],
+    visibility = ["//ratbag/lib:__subpackages__"],
+    deps = [
+        "//ratbag/lib/hidapi",
+    ],
+)

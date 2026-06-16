@@ -9,5 +9,6 @@ cc_library(
         "profile.hpp",
         "resolution.hpp",
     ],
+    deps = ["//ratbag/lib/utils:bitmask_operators"],
     visibility = ["//ratbag/lib:__subpackages__"],
 )

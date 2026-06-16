@@ -211,7 +211,7 @@
   "moduleExtensions": {
     "//:extension.bzl%non_module_deps": {
       "general": {
-        "bzlTransitiveDigest": "4OsFKLN3Ff+cgLb5fU0llSFjStzF03iGVnScaw4I934=",
+        "bzlTransitiveDigest": "pqwGW6P8c/YthscvwLLFi2eiHuQw3Q+Dgj6D7Fb2yrg=",
         "usagesDigest": "nD2QyeU+RwqgUaa4hECr/LM2XOe6d6YCdP8TiSGMXD0=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -238,7 +238,7 @@
     },
     "@@buildifier_prebuilt+//:defs.bzl%buildifier_prebuilt_deps_extension": {
       "general": {
-        "bzlTransitiveDigest": "WST3Sr53t8DVGPg0yK+Lz7/N5dXHhB/xscym0Wc99AM=",
+        "bzlTransitiveDigest": "2VLU0vfIfLYEfA28e/dMivs5am5uoVDFM+uSLrzDrj8=",
         "usagesDigest": "N8lrm0ZTaWWFCLsIgGbyzX0cw5SlZ1DQ1u+U1dzVpw0=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -377,7 +377,7 @@
     },
     "@@rules_kotlin+//src/main/starlark/core/repositories:bzlmod_setup.bzl%rules_kotlin_extensions": {
       "general": {
-        "bzlTransitiveDigest": "rL/34P1aFDq2GqVC2zCFgQ8nTuOC6ziogocpvG50Qz8=",
+        "bzlTransitiveDigest": "nvW/NrBXlAmiQw99EMGKkLaD2KbNp2mQDlxdfpr+0Ls=",
         "usagesDigest": "QI2z8ZUR+mqtbwsf2fLqYdJAkPOHdOV+tF2yVAUgRzw=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -441,7 +441,7 @@
     },
     "@@rules_python+//python/extensions:config.bzl%config": {
       "general": {
-        "bzlTransitiveDigest": "uo49IDITNsksO4x76pZ7eYlLKomkU77mK8VTrbCHXZM=",
+        "bzlTransitiveDigest": "TRGIl0CDmorwyNiblOYyhWuyKzi/kWFHT2uIofq7o9Y=",
         "usagesDigest": "JoEJaFGCJXAu2aMckzsVrS0Gz9dIhMnc0PEav88G7ew=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
@@ -676,7 +676,7 @@
     },
     "@@rules_python+//python/uv:uv.bzl%uv": {
       "general": {
-        "bzlTransitiveDigest": "zyNsrbgVKwpA0B3zI84imAfuC424VSzYNPgjr/HJy5M=",
+        "bzlTransitiveDigest": "ijW9KS7qsIY+yBVvJ+Nr1mzwQox09j13DnE3iIwaeTM=",
         "usagesDigest": "B/mAxYlrftJu4GYJNA3xazmr/pQLkAoZ3GdTzNQIzyo=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},

@@ -12,6 +12,12 @@ cc_test(
     ],
 )
 
+# TODO(ask): Help me make sense of what happens here.
+#            I was able to overwrite hid_enumerate symbol from from hidapi.so with my own... and there was no error.
+#            Shouldn't i get an ODR violation of redeclarion of a symbol.
+#            I wasn't able to overwrite with linker --wrap, it seems like all
+#            "hid_enumerate" symbol was resolved and stripped in
+#            bazel-bin/ratbag/lib/hidapi/libhidapi.so
 cc_test(
     name = "hidapi_test_mocked",
     srcs = [

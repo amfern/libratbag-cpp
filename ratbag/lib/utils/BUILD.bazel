@@ -1,0 +1,5 @@
+cc_library(
+    name = "bitmask_operators",
+    hdrs = ["bitmask_operators.hpp"],
+    visibility = ["//ratbag/lib:__subpackages__"],
+)

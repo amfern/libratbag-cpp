@@ -1,5 +1,5 @@
 #include <format>
-#include <iostream>
+#include <print>
 
 #include "ratbag/lib/libratbag.hpp"
 
@@ -8,10 +8,10 @@ using ratbag::lib::hidapi::HIDDeviceInfo;
 
 int main() {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-  std::cout << "List of HID devices" << std::endl;
+  std::println("List of HID devices");
 
   for (auto &info : deviceInfos) {
-    std::cout << std::format("serial number {}.", info) << std::endl;
+    std::println("Available: {}.", info);
   }
 
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
@@ -19,6 +19,14 @@ int main() {
   // 2. Open Device with corresponding driver to the HID based on HID
   // description and Path
   // Device<Driver>::Open();
+  std::vector<Device> devices;
+  for (auto &info : deviceInfos) {
+    auto device = Device::open(info);
+    if (device.has_value()) {
+      std::println("found device {}.", info);
+      devices.push_back(std::move(device.value()));
+    }
+  }
 
   return 0;
 }
