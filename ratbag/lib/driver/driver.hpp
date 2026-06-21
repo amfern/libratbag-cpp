@@ -20,6 +20,13 @@ using HIDPP20 = hidpp20::HIDPP20;
 using SteelSeries = steelseries::SteelSeries;
 using TestDummy = testdummy::TestDummy;
 
+// TODO: read good books about tempates https://github.com/xuchen-tech/Books/blob/main/C%2B%2B%20Templates%20The%20Complete%20Guide%2C%202nd%20Edition%20%5BBooxRack%5D.pdf
+// https://en.cppreference.com/cpp/language/variable_template
+// read cpp templates cpp_templates(2)
+
+// template <auto V> struct Derive { };
+// template <auto V> inline constexpr Derive<V> derive;
+// derive<Bitmask> = Derive<V>();
 
 // TODO(ask): i really don't like changing the runtime just for the sake of being able to test... maybe there is a way to mock DriverVariants
 //            maybe i can put the function into details, or provide the variants as an input, so i can create a separate test for it.

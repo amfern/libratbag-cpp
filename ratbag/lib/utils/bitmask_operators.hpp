@@ -59,6 +59,9 @@
 //   post meeting https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/#mailing2026-04
 //   Disscuss via zoom with the commiette
 
+// template https://github.com/mpark/wg21
+// example paper https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2026/p3411r5.html
+
 template<typename T>
 concept BitmaskLike = std::is_enum_v<T> and requires(T e) {
   enable_bitmask_operators(e);
@@ -72,20 +75,16 @@ operator|(const T lhs, const T rhs)
                         std::to_underlying(rhs));
 }
 
-template<typename T>
-requires(std::is_enum_v<T>and requires(T e) {
-  enable_bitmask_operators(e);
-}) constexpr auto
+template<BitmaskLike T>
+constexpr auto
 operator&(const T lhs, const T rhs)
 {
   return static_cast<T>(std::to_underlying(lhs) &
                         std::to_underlying(rhs));
 }
 
-template<typename T>
-requires(std::is_enum_v<T>and requires(T e) {
-  enable_bitmask_operators(e);
-}) constexpr auto
+template<BitmaskLike T>
+constexpr auto
 operator^(const T lhs, const T rhs)
 {
   return static_cast<T>(std::to_underlying(lhs) ^
@@ -93,20 +92,16 @@ operator^(const T lhs, const T rhs)
 }
 
 
-template<typename T>
-requires(std::is_enum_v<T>and requires(T e) {
-  enable_bitmask_operators(e);
-}) constexpr auto
+template<BitmaskLike T>
+ constexpr auto
 operator~(const T lhs)
 {
   return static_cast<T>(~std::to_underlying(lhs));
 }
 
 
-template<typename T>
-requires(std::is_enum_v<T>and requires(T e) {
-  enable_bitmask_operators(e);
-}) constexpr auto
+template<BitmaskLike T>
+ constexpr auto
 operator|=(const T &lhs, const T rhs)
 {
   lhs = static_cast<T>(std::to_underlying(lhs) |
@@ -114,10 +109,8 @@ operator|=(const T &lhs, const T rhs)
   return lhs;
 }
 
-template<typename T>
-requires(std::is_enum_v<T>and requires(T e) {
-  enable_bitmask_operators(e);
-}) constexpr auto
+template<BitmaskLike T>
+ constexpr auto
 operator&=(const T &lhs, const T rhs)
 {
   lhs = static_cast<T>(std::to_underlying(lhs) &
@@ -126,10 +119,8 @@ operator&=(const T &lhs, const T rhs)
 }
 
 
-template<typename T>
-requires(std::is_enum_v<T>and requires(T e) {
-  enable_bitmask_operators(e);
-}) constexpr auto
+template<BitmaskLike T>
+ constexpr auto
 operator^=(T &lhs, const T rhs)
 {
   lhs = static_cast<T>(std::to_underlying(lhs) ^
