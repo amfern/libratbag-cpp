@@ -1,6 +1,7 @@
 module(name = "libratbag")
 
-bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+# bazel_dep(name = "toolchains_llvm", version = "1.6.0")
+bazel_dep(name = "llvm", version = "0.8.6")
 bazel_dep(name = "googletest", version = "1.17.0")
 bazel_dep(name = "rules_cc", version = "0.2.16")
 
@@ -27,8 +28,40 @@ llvm.toolchain(
     },
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
+# TODO: try https://github.com/hermeticbuild/hermetic-llvm
+# llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm")
+# llvm.toolchain(
+#     name = "llvm_toolchain",
+#     cxx_standard = {"": "c++23"},
+#     llvm_versions = {
+#         "": "latest",
+#         "darwin-aarch64": "20.1.4",
+#     },
+# )
+# use_repo(llvm, "llvm_toolchain")
 
-register_toolchains("@llvm_toolchain//:all")
+# register_toolchains("@llvm_toolchain//:all")
+toolchain = use_extension("@llvm//extensions:toolchain.bzl", "toolchain")
+toolchain.exec(
+    arch = "x86_64",
+    os = "linux",
+)
+toolchain.exec(
+    arch = "aarch64",
+    os = "linux",
+)
+toolchain.target(
+    arch = "x86_64",
+    os = "linux",
+)
+toolchain.target(
+    arch = "aarch64",
+    os = "linux",
+)
+use_repo(toolchain, "llvm_toolchains")
+
+register_toolchains("@llvm_toolchains//:all")
+
 ############################################################################
 
 ############################################################################
