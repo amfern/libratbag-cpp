@@ -8,7 +8,6 @@ constexpr bool enable_bitmask_operators(A);
 enum class B : unsigned long { x = 0x80000000, y = 0x40000000 };
 constexpr bool enable_bitmask_operators(B);
 
-
 TEST(LedBitmaskOperators, All) {
     A a1=A::x | A::y;
     A a2=a1&A::y; // Turn on A::y only
