@@ -3,13 +3,11 @@
 #include "gtest/gtest.h"
 
 enum class A { x = 1, y = 2 };
+constexpr bool enable_bitmask_operators(A);
 
 enum class B : unsigned long { x = 0x80000000, y = 0x40000000 };
-
-constexpr bool enable_bitmask_operators(A);
 constexpr bool enable_bitmask_operators(B);
 
-enum class C{x,y};
 
 TEST(LedBitmaskOperators, All) {
     A a1=A::x | A::y;
@@ -28,3 +26,4 @@ TEST(LedBitmaskOperators, All) {
     B b3=b1&~B::x;
     ASSERT_EQ(B::y, b3);
 }
+
