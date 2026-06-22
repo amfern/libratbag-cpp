@@ -55,7 +55,9 @@ static std::optional<DriverVariants> open(hidapi::HIDDeviceInfo &hid_device_info
     //            2. srd::optional has constructor of argumnets that can construct the DriverVariants type
     //             std::optional constructor -> DriverVariants constructor -> call the hidpp20 move constructor
     //           first it will construct temporary and then call the move oncstructor of hidpp20, through the constructor of DriverVariants and then through std::optional
-    
+
+    // TODO: Open the hid_device and pass it to the driver
+    // HIDDevice =
     return HIDPP20();
   };
 
