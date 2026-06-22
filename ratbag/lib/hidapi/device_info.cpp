@@ -34,10 +34,10 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *cur_dev;
   cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
 
-  std::vector<HIDDeviceInfo> deviceInfos;
+  HIDDeviceInfoList deviceInfos;
 
   while (cur_dev) {
-    deviceInfos.emplace_back(HIDDeviceInfo(*cur_dev));
+    deviceInfos.emplace_back(HIDDeviceInfo(cur_dev));
     cur_dev = cur_dev->next;
   }
 
@@ -51,12 +51,12 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
 // braces will be elements.
 // 3. MyClass{} will call constructor as if ()
 // 4. {} It's a C++ things, uniform initialization feature.
-HIDDeviceInfo::HIDDeviceInfo(hid_device_info &device_info)
-    : device_info_(&device_info), HIDPath_(device_info_->path),
-      DeviceID_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
-      SerialNumber_(device_info_->serial_number),
-      ManufacturerString_(device_info_->manufacturer_string),
-      ProductString_(device_info_->product_string) {}
+HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
+    : device_info_(device_info), hid_path_(device_info_->path),
+      device_id_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
+      serial_number_(device_info_->serial_number),
+      manufacturer_string_(device_info_->manufacturer_string),
+      product_string_(device_info_->product_string) {}
 
 HIDDeviceInfo::~HIDDeviceInfo() {
   if (device_info_) {
@@ -71,21 +71,22 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 
 // move constructor
 HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
-    : device_info_(other.device_info_), HIDPath_(other.HIDPath_),
-      DeviceID_(std::move(other.DeviceID_)),
-      SerialNumber_(std::move(other.SerialNumber_)),
-      ManufacturerString_(std::move(other.ManufacturerString_)),
-      ProductString_(std::move(other.ProductString_)) {
+    : device_info_(other.device_info_), hid_path_(other.hid_path_),
+      device_id_(std::move(other.device_id_)),
+      serial_number_(std::move(other.serial_number_)),
+      manufacturer_string_(std::move(other.manufacturer_string_)),
+      product_string_(std::move(other.product_string_)) {
 
   other.device_info_ = nullptr;
 
-  other.DeviceID_ = DeviceID{0, 0};
-  other.HIDPath_ = HIDPath{};
-  other.SerialNumber_ = HIDAPIString{};
-  other.ManufacturerString_ = HIDAPIString{};
-  other.ProductString_ = HIDAPIString{};
+  other.device_id_ = DeviceID{0, 0};
+  other.hid_path_ = HIDPath{};
+  other.serial_number_ = HIDAPIString{};
+  other.manufacturer_string_ = HIDAPIString{};
+  other.product_string_ = HIDAPIString{};
 }
 
+// move operator
 HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   if (this != &rhs) {
 
@@ -101,42 +102,42 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
     this->device_info_ = rhs.device_info_;
     rhs.device_info_ = nullptr;
 
-    this->HIDPath_ = rhs.HIDPath_;
-    this->DeviceID_ = std::move(rhs.DeviceID_);
-    this->SerialNumber_ = std::move(rhs.SerialNumber_);
-    this->ManufacturerString_ = std::move(rhs.ManufacturerString_);
-    this->ProductString_ = std::move(rhs.ProductString_);
+    this->hid_path_ = rhs.hid_path_;
+    this->device_id_ = std::move(rhs.device_id_);
+    this->serial_number_ = std::move(rhs.serial_number_);
+    this->manufacturer_string_ = std::move(rhs.manufacturer_string_);
+    this->product_string_ = std::move(rhs.product_string_);
 
     // should i also nullify the string views? it will add more overhead
-    // but we will prevent leaky abstraction? rhs.HIDPath_ = std::string_view{};
+    // but we will prevent leaky abstraction? rhs.hid_path_ = std::string_view{};
     // Better to start with the conceptually correct thing, and then make it
     // fast and correct. The overheard is neglegable
 
-    rhs.DeviceID_ = DeviceID{0, 0};
-    rhs.HIDPath_ = HIDPath{};
-    rhs.SerialNumber_ = HIDAPIString{};
-    rhs.ManufacturerString_ = HIDAPIString{};
-    rhs.ProductString_ = HIDAPIString{};
+    rhs.device_id_ = DeviceID{0, 0};
+    rhs.hid_path_ = HIDPath{};
+    rhs.serial_number_ = HIDAPIString{};
+    rhs.manufacturer_string_ = HIDAPIString{};
+    rhs.product_string_ = HIDAPIString{};
   }
 
   return *this;
 }
 
-HIDPath HIDDeviceInfo::path() const { return HIDPath_; }
+HIDPath HIDDeviceInfo::path() const { return hid_path_; }
 
-DeviceID HIDDeviceInfo::device_id() const { return DeviceID_; }
+DeviceID HIDDeviceInfo::device_id() const { return device_id_; }
 
-HIDAPIString HIDDeviceInfo::serial_number() const { return SerialNumber_; }
+HIDAPIString HIDDeviceInfo::serial_number() const { return serial_number_; }
 
 ReleaseNumber HIDDeviceInfo::release_number() const {
   return static_cast<const ReleaseNumber &>(device_info_->release_number);
 }
 
 HIDAPIString HIDDeviceInfo::manufacturer_string() const {
-  return ManufacturerString_;
+  return manufacturer_string_;
 }
 
-HIDAPIString HIDDeviceInfo::product_string() const { return ProductString_; }
+HIDAPIString HIDDeviceInfo::product_string() const { return product_string_; }
 
 UsagePage HIDDeviceInfo::usage_page() const {
   return static_cast<const UsagePage &>(device_info_->usage_page);

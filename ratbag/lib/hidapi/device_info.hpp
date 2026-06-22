@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "hidapi.h"
+// #include "ratbag/lib/hidapi/hid_device.hpp"
 #include "ratbag/lib/hidapi/detail/hid_bus_type.hpp"
 
 namespace ratbag {
@@ -19,18 +20,22 @@ using VendorID = uint16_t;
 class DeviceID {
 
 public:
+  DeviceID(ProductID vid, VendorID pid);
+
   VendorID vid() const;
   ProductID pid() const;
+
+  bool operator==(const DeviceID&) const = default;
 
 private:
   VendorID vid_;
   ProductID pid_;
 
-  explicit DeviceID(ProductID vid, VendorID pid);
-
   friend std::ostream &operator<<(std::ostream &os, const DeviceID &di);
   friend class HIDDeviceInfo;
 };
+
+using DeviceIDList = std::vector<DeviceID>;
 
 class HIDDeviceInfo;
 
@@ -75,6 +80,9 @@ class HIDDeviceInfo {
 public:
   static const HIDDeviceInfoList enumerate_hid_devices();
 
+  // TODO: Should i call open from here or should i create an class that
+  // receives hid device HIDDevice open() const;
+
   /** Platform-specific device path */
   HIDPath path() const;
   DeviceID device_id() const;
@@ -104,15 +112,15 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info);
 
 private:
-  explicit HIDDeviceInfo(hid_device_info &device_info);
+  explicit HIDDeviceInfo(hid_device_info *device_info);
 
   struct hid_device_info *device_info_;
 
-  HIDPath HIDPath_;
-  DeviceID DeviceID_;
-  HIDAPIString SerialNumber_;
-  HIDAPIString ManufacturerString_;
-  HIDAPIString ProductString_;
+  HIDPath hid_path_;
+  DeviceID device_id_;
+  HIDAPIString serial_number_;
+  HIDAPIString manufacturer_string_;
+  HIDAPIString product_string_;
 };
 
 } // namespace hidapi
