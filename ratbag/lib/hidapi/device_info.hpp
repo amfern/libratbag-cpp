@@ -112,15 +112,15 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info);
 
 private:
-  explicit HIDDeviceInfo(hid_device_info &device_info);
+  explicit HIDDeviceInfo(hid_device_info *device_info);
 
   struct hid_device_info *device_info_;
 
-  HIDPath HIDPath_;
-  DeviceID DeviceID_;
-  HIDAPIString SerialNumber_;
-  HIDAPIString ManufacturerString_;
-  HIDAPIString ProductString_;
+  HIDPath hid_path_;
+  DeviceID device_id_;
+  HIDAPIString serial_number_;
+  HIDAPIString manufacturer_string_;
+  HIDAPIString product_string_;
 };
 
 } // namespace hidapi
