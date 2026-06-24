@@ -34,3 +34,16 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+cc_test(
+    name = "device_test",
+    srcs = ["device_test.cpp"],
+    cxxopts = [
+        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
+        "-Wno-deprecated-declarations",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi",
+        "@googletest//:gtest_main",
+    ],
+)
