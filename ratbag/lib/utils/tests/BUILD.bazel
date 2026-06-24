@@ -1,4 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
+
 load("@rules_build_error//lang/cc:defs.bzl", "cc_build_error_test")
 load("@rules_build_error//matcher:defs.bzl", "matcher")
 

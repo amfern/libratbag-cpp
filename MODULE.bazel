@@ -25,6 +25,7 @@ llvm.toolchain(
     cxx_standard = {"": "c++23"},
     llvm_versions = {
         "": "latest",
+        "darwin-aarch64": "20.1.4",
     },
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")

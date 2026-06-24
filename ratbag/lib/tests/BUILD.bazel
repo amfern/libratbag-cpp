@@ -1,0 +1,13 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "device_test",
+    srcs = [
+        "device_test.cpp",
+        "hid_mocked.c",
+    ],
+    deps = [
+        "//ratbag/lib:device",
+        "@googletest//:gtest_main",
+    ],
+)

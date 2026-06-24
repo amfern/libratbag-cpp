@@ -1,5 +1,5 @@
 #include <format>
-#include <iostream>
+#include <print>
 
 #include "ratbag/lib/libratbag.hpp"
 
@@ -19,6 +19,14 @@ int main() {
   // 2. Open Device with corresponding driver to the HID based on HID
   // description and Path
   // Device<Driver>::Open();
+  std::vector<Device> devices;
+  for (auto &info : deviceInfos) {
+    auto device = Device::open(info);
+    if (device.has_value()) {
+      std::println("found device {}.", info);
+      devices.push_back(std::move(device.value()));
+    }
+  }
 
   return 0;
 }

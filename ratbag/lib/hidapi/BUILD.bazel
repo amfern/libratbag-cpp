@@ -3,9 +3,11 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 cc_library(
     name = "hidapi",
     srcs = [
+        "device.cpp",
         "device_info.cpp",
     ],
     hdrs = [
+        "device.hpp",
         "device_info.hpp",
     ],
     cxxopts = [

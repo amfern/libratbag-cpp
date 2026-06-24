@@ -1,0 +1,14 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "driver_test",
+    srcs = [
+        "driver_test.cpp",
+        "hid_mocked.c",
+    ],
+    deps = [
+        "//ratbag/lib/driver",
+        "//ratbag/lib/hidapi",
+        "@googletest//:gtest_main",
+    ],
+)
