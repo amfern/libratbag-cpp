@@ -3,13 +3,10 @@
 #include "gtest/gtest.h"
 
 enum class A { x = 1, y = 2 };
+constexpr bool enable_bitmask_operators(A);
 
 enum class B : unsigned long { x = 0x80000000, y = 0x40000000 };
-
-constexpr bool enable_bitmask_operators(A);
 constexpr bool enable_bitmask_operators(B);
-
-enum class C{x,y};
 
 TEST(LedBitmaskOperators, All) {
     A a1=A::x | A::y;
@@ -29,13 +26,3 @@ TEST(LedBitmaskOperators, All) {
     ASSERT_EQ(B::y, b3);
 }
 
-
-// TODO: how to test for this thing shouldn't work?
-//            how to test we get a compile error?
-//            Look in arene-base, use the build system and expect error return code and grep for error
-// TEST(LedBitmaskOperators, ShouldFailToBuild) {
-//     C c1=C::x | C::y;
-//     C c2=c1&C::y;
-//     c2^=C::x;
-//     C c3=~c1;
-// }

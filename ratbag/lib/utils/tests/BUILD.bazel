@@ -1,5 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
+load("@rules_build_error//lang/cc:defs.bzl", "cc_build_error_test")
+load("@rules_build_error//matcher:defs.bzl", "matcher")
 
 cc_test(
     name = "test_bitmask_operators",
@@ -8,4 +10,10 @@ cc_test(
         "//ratbag/lib/utils:bitmask_operators",
         "@googletest//:gtest_main",
     ],
+)
+
+cc_build_error_test(
+    name = "test_bitmask_operators_compile_error",
+    src = "test_bitmask_operators_death.cpp",
+    compile_stderr = matcher.has_substr("invalid operands to binary expression ('C' and 'C')"),
 )
