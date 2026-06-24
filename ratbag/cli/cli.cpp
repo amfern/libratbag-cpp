@@ -8,10 +8,10 @@ using ratbag::lib::hidapi::HIDDeviceInfo;
 
 int main() {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-  std::cout << "List of HID devices" << std::endl;
+  std::println("List of HID devices");
 
   for (auto &info : deviceInfos) {
-    std::cout << std::format("serial number {}.", info) << std::endl;
+    std::println("Available: {}.", info);
   }
 
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
