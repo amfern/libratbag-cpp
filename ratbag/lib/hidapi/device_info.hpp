@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "hidapi.h"
-// #include "ratbag/lib/hidapi/hid_device.hpp"
 #include "ratbag/lib/hidapi/detail/hid_bus_type.hpp"
 
 namespace ratbag {
