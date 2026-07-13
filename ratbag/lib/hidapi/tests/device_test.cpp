@@ -13,7 +13,6 @@ TEST(DeviceTestSuit, OpenDevice) {
 
   auto device = HIDDevice::open(std::move(deviceInfos[1]));
 
-
   // struct hid_device_info *devs, *cur_dev;
   // devs = hid_enumerate(0, 0); // 0,0 = find all devices
   // cur_dev = devs;

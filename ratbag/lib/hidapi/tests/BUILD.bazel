@@ -35,6 +35,8 @@ cc_test(
     ],
 )
 
+# TODO(ask): it's not possible to know which device is available on the target PC
+#            i can't compare two devices, because i don't even know if there is an avaiable device by default, so it may even fail to open
 # cc_test(
 #     name = "device_test",
 #     srcs = ["device_test.cpp"],
