@@ -35,14 +35,30 @@ cc_test(
     ],
 )
 
+# cc_test(
+#     name = "device_test",
+#     srcs = ["device_test.cpp"],
+#     cxxopts = [
+#         # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
+#         "-Wno-deprecated-declarations",
+#     ],
+#     deps = [
+#         "//ratbag/lib/hidapi",
+#         "@googletest//:gtest_main",
+#     ],
+# )
+
 cc_test(
-    name = "device_test",
-    srcs = ["device_test.cpp"],
-    cxxopts = [
-        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
-        "-Wno-deprecated-declarations",
+    name = "device_test_mocked",
+    srcs = [
+        "device_test_mock.cpp",
+        "hid_mocked.c",
     ],
+    # linkopts = [
+    #     "-Wl,--wrap,hid_enumerate",
+    # ],
     deps = [
+        # ":mocked_hidapi",
         "//ratbag/lib/hidapi",
         "@googletest//:gtest_main",
     ],

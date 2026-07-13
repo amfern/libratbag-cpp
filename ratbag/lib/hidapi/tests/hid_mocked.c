@@ -32,3 +32,39 @@ hid_enumerate(unsigned short vendor_id, unsigned short product_id) {
 void HID_API_EXPORT hid_free_enumeration(struct hid_device_info *devs) {
   free(devs);
 }
+
+// TODO: this test will work on linux only, maybe i should create a special variant for the mock in BUILD.bazel.hidapi
+struct hid_device_ {
+	int device_handle;
+	int blocking;
+	wchar_t *last_error_str;
+	wchar_t *last_read_error_str;
+	struct hid_device_info* device_info;
+};
+
+HID_API_EXPORT hid_device *HID_API_CALL hid_open_path(const char *path) {
+  hid_device *dev = (hid_device *)calloc(1, sizeof(hid_device));
+
+  if (dev == NULL) {
+    return NULL;
+  }
+  dev->device_handle = -1;
+
+  return dev;
+}
+
+int HID_API_EXPORT HID_API_CALL hid_write(hid_device *dev, const unsigned char *data, size_t length) {
+  return length;
+}
+
+int HID_API_EXPORT HID_API_CALL hid_read(hid_device *dev, unsigned char *data, size_t length) {
+  for (int i = 0; i < length; i++) {
+    data[i] = i;
+  }
+
+  return length;
+}
+
+HID_API_EXPORT const wchar_t * HID_API_CALL hid_error(hid_device *dev) {
+  return  L"Success";
+}

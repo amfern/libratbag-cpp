@@ -2,12 +2,15 @@
 
 #include "hidapi.h"
 #include "ratbag/lib/hidapi/device_info.hpp"
+#include <vector>
 
 namespace ratbag {
 namespace lib {
 namespace hidapi {
 
 // using HIDDeviceHandle = hid_device;
+
+using HIDBuffer = std::vector<std::byte>;
 
 // TODO: Create proper wrapper class for hid_device
 // https://github.com/libusb/hidapi/blob/657b9fa147722ad59d045965e625d3972fa1264c/hidapi/hidapi.h#L284
@@ -19,13 +22,14 @@ public:
   //            Which can caught the user of this function off guard, because the device_info moved.
   //            So is it good to explicity ask for rvalue(HIDDeviceInfo &&device_info)?
   //            or should i use "static HIDDevice popen(HIDDeviceInfo device_info) {"
+  // TODO: return const & is okay, but never return const because it will lead to wierd things and copy constructor to be called.
+  // TODO: read https://github.com/xuchen-tech/Books/blob/main/C%2B%2B%20Templates%20The%20Complete%20Guide%2C%202nd%20Edition%20[BooxRack].pdf
+  // ussually we copy pass by const &, but
+  // clang tidy catches use after move
   template<typename T>
-  static HIDDevice open(T &&device_info) {
-    auto vid = device_info.device_id().vid();
-    auto pid = device_info.device_id().pid();
-    auto serial_number = device_info.serial_number();
+  static HIDDevice open(T device_info) {
 
-    hid_device* handle = hid_open(vid, pid, serial_number.data());
+    hid_device* handle = hid_open_path(device_info.path().data());
 	if (handle == nullptr) {
         throw std::runtime_error("Unable to open device");
 	}
@@ -33,11 +37,8 @@ public:
     return HIDDevice(handle, std::forward<T>(device_info));
   };
 
-  // std::array<std::byte, 3> byteArray{ std::byte{0x01}, std::byte{0x0A}, std::byte{0xFF} };
-  // TODO(ask): should i use span here? or vector?
-  //           with span i assume the storage is managed by the caller, the caller can create alot of coppies by not using std::move
-  // void hid_write(std::vector<std::byte> bytes);
-  // void hid_read();
+  void write(HIDBuffer buf);
+  std::optional<HIDBuffer> read(size_t length);
 
   ~HIDDevice(); // destructor
 

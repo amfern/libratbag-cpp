@@ -14,6 +14,9 @@ int main() {
     std::println("Available: {}.", info);
   }
 
+  auto device = HIDDevice::open(std::move(deviceInfos[1]));
+  auto read_res = device.read();
+
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
   // 2. Open Device with corresponding driver to the HID based on HID
