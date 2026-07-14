@@ -38,17 +38,42 @@ std::optional<HIDBuffer> HIDDevice::read(size_t length, ReadTimeoutMilli timeout
   auto res_length = hid_read_timeout(handle_, buf_ptr, buf.size(), hid_timeout);
 
   // the read is non-blocking and there was nothing to read from the hid device
-  if (res_length == 0) {
+  if (bytes_read == 0) {
     return {};
   }
 
-  if (res_length == -1) {
+  if (bytes_read == -1) {
     HIDAPIString err(hid_error(handle_));
-
     throw std::runtime_error(std::format("HID read error: {}", err));
   }
 
   return buf;
+}
+
+void HIDDevice::send_feature_report(HIDReport report) {
+  auto buf_ptr = reinterpret_cast<unsigned char*>(report.data_.data());
+  auto bytes_written = hid_send_feature_report(handle_, buf_ptr, report.data.size());
+  if (bytes_written != report.data.size()) {
+    throw std::runtime_error(std::format(
+        "Actual number of writen bytes({}) doesn't match the expected({})",
+        bytes_written, report.data.size()));
+  }
+}
+
+std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, std::size_t length) {
+  HIDReport report(report_id, length);
+
+  auto buf_ptr = reinterpret_cast<unsigned char*>(report.data_.data());
+  auto bytes_read = hid_get_feature_report(handle_, buf_ptr, report.data_.size());
+
+  if (bytes_read == -1) {
+    HIDAPIString err(hid_error(handle_));
+    throw std::runtime_error(std::format("HID read error: {}", err));
+  }
+
+  report.data = std::span<std::byte>{report.data_}.subspan(1, bytes_read - 1);
+
+  return report;
 }
 
 HIDDevice::HIDDevice(hid_device* handle, HIDDeviceInfo device_info)

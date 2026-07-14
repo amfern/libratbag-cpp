@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <vector>
 #include <chrono>
+#include <span>
 
 namespace ratbag {
 namespace lib {
@@ -16,6 +17,22 @@ using namespace std::chrono_literals;
 
 using HIDBuffer = std::vector<std::byte>;
 using ReadTimeoutMilli = std::chrono::milliseconds;
+using ReportID = std::byte;
+
+class HIDReport {
+friend class HIDDevice;
+private:
+  // TODO: use std::array instead of std::vector
+  std::vector<std::byte> data_;
+    
+public:
+  ReportID &report = data_[0];
+  std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
+
+  HIDReport(ReportID report, std::size_t count) : data_(count + 1) {
+    this->report = report; 
+  }
+};
 
 // TODO: Create proper wrapper class for hid_device
 // https://github.com/libusb/hidapi/blob/657b9fa147722ad59d045965e625d3972fa1264c/hidapi/hidapi.h#L284
@@ -43,7 +60,10 @@ public:
   };
 
   void write(HIDBuffer buf);
-  std::optional<HIDBuffer> read(size_t length, ReadTimeoutMilli timeout = ReadTimeoutNone);
+  std::optional<HIDBuffer> read(std::size_t length, ReadTimeoutMilli timeout = ReadTimeoutNone);
+  
+  void send_feature_report(HIDReport report);
+  std::optional<HIDReport> receive_feature_report(ReportID report_id, std::size_t length);
 
   ~HIDDevice(); // destructor
 
