@@ -13,12 +13,12 @@ namespace hidapi {
 void HIDDevice::write(HIDBuffer buf) {
   auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
 
-  auto res_length = hid_write(handle_, buf_ptr, buf.size());
+  auto bytes_written = hid_write(handle_, buf_ptr, buf.size());
 
-  if (res_length != buf.size()) {
+  if (bytes_written != buf.size()) {
     throw std::runtime_error(std::format(
         "Actual number of writen bytes({}) doesn't match the expected({})",
-        res_length, buf.size()));
+        bytes_written, buf.size()));
   }
 }
 
@@ -27,7 +27,7 @@ void HIDDevice::write(HIDBuffer buf) {
 //  ReadTimeoutBlock - Block return
 //  ReadTimeoutNone - read and return immididatly
 //  ReadTimeoutMilli{<value>} - timeout to wait
-std::optional<HIDBuffer> HIDDevice::read(size_t length, ReadTimeoutMilli timeout) {
+std::optional<HIDBuffer> HIDDevice::read(std::size_t length, ReadTimeoutMilli timeout) {
   HIDBuffer buf(length);
 
   auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
@@ -35,7 +35,7 @@ std::optional<HIDBuffer> HIDDevice::read(size_t length, ReadTimeoutMilli timeout
   auto hid_timeout = timeout == ReadTimeoutBlock ? -1 : static_cast<int>(timeout.count());
  
   // Read requested state
-  auto res_length = hid_read_timeout(handle_, buf_ptr, buf.size(), hid_timeout);
+  auto bytes_read = hid_read_timeout(handle_, buf_ptr, buf.size(), hid_timeout);
 
   // the read is non-blocking and there was nothing to read from the hid device
   if (bytes_read == 0) {
