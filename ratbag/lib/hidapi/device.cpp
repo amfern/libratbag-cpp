@@ -22,12 +22,20 @@ void HIDDevice::write(HIDBuffer buf) {
   }
 }
 
-std::optional<HIDBuffer> HIDDevice::read(size_t length) {
+// TODO(ask): what do you think about magic values that have meaning? or should i use something like std::variant instead. Or just a simple bool
+//  timeout can be either
+//  ReadTimeoutBlock - Block return
+//  ReadTimeoutNone - read and return immididatly
+//  ReadTimeoutMilli{<value>} - timeout to wait
+std::optional<HIDBuffer> HIDDevice::read(size_t length, ReadTimeoutMilli timeout) {
   HIDBuffer buf(length);
 
   auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
+  // TODO(ask): what do you thin about t
+  auto hid_timeout = timeout == ReadTimeoutBlock ? -1 : static_cast<int>(timeout.count());
+ 
   // Read requested state
-  auto res_length = hid_read(handle_, buf_ptr, buf.size());
+  auto res_length = hid_read_timeout(handle_, buf_ptr, buf.size(), hid_timeout);
 
   // the read is non-blocking and there was nothing to read from the hid device
   if (res_length == 0) {
@@ -38,12 +46,6 @@ std::optional<HIDBuffer> HIDDevice::read(size_t length) {
     HIDAPIString err(hid_error(handle_));
 
     throw std::runtime_error(std::format("HID read error: {}", err));
-  }
-
-  if (res_length != length) {
-    throw std::runtime_error(std::format(
-        "Received response length({}) doesn't match the expected({})",
-        res_length, length));
   }
 
   return buf;

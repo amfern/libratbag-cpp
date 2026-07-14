@@ -2,20 +2,25 @@
 
 #include "hidapi.h"
 #include "ratbag/lib/hidapi/device_info.hpp"
+#include <cstddef>
 #include <vector>
+#include <chrono>
 
 namespace ratbag {
 namespace lib {
 namespace hidapi {
 
+using namespace std::chrono_literals;
+
 // using HIDDeviceHandle = hid_device;
 
 using HIDBuffer = std::vector<std::byte>;
+using ReadTimeoutMilli = std::chrono::milliseconds;
 
 // TODO: Create proper wrapper class for hid_device
 // https://github.com/libusb/hidapi/blob/657b9fa147722ad59d045965e625d3972fa1264c/hidapi/hidapi.h#L284
 class HIDDevice {
-
+ 
 public:
 
   // TODO(ask): inside this function i will call std::move(device_info).
@@ -38,7 +43,7 @@ public:
   };
 
   void write(HIDBuffer buf);
-  std::optional<HIDBuffer> read(size_t length);
+  std::optional<HIDBuffer> read(size_t length, ReadTimeoutMilli timeout = ReadTimeoutNone);
 
   ~HIDDevice(); // destructor
 
@@ -46,6 +51,10 @@ public:
   HIDDevice(HIDDevice &&other) noexcept;      // move constructor
   HIDDevice &operator=(const HIDDevice &rhs) = delete; // copy operator
   HIDDevice &operator=(HIDDevice &&rhs) noexcept;      // move operator
+
+  // TODO(ask): what do you thin about such magic constant
+  static constexpr ReadTimeoutMilli ReadTimeoutBlock{-1};
+  static constexpr ReadTimeoutMilli ReadTimeoutNone{0};
 
 private:
   explicit HIDDevice(hid_device* handle, HIDDeviceInfo device_info);

@@ -57,7 +57,7 @@ int HID_API_EXPORT HID_API_CALL hid_write(hid_device *dev, const unsigned char *
   return length;
 }
 
-int HID_API_EXPORT HID_API_CALL hid_read(hid_device *dev, unsigned char *data, size_t length) {
+int HID_API_EXPORT HID_API_CALL hid_read_timeout(hid_device *dev, unsigned char *data, size_t length, int milliseconds) {
   for (int i = 0; i < length; i++) {
     data[i] = i;
   }
