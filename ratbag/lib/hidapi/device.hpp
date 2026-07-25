@@ -11,6 +11,9 @@ namespace ratbag {
 namespace lib {
 namespace hidapi {
 
+template <typename T, typename B>
+concept DerivedFrom = std::is_base_of_v<B, T> or std::same_as<B, T>;
+
 using namespace std::chrono_literals;
 
 // using HIDDeviceHandle = hid_device;
@@ -23,15 +26,32 @@ class HIDReport {
 friend class HIDDevice;
 private:
   // TODO: use std::array instead of std::vector
-  std::vector<std::byte> data_;
+  HIDBuffer data_;
     
 public:
+  // TODO: this should be private, maybe with detail subfolder
   ReportID &report = data_[0];
   std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
+
+  // HIDReport(const HIDBuffer& data) : data_(data.begin() +1, data.end()) {
+  //   this->report = report;
+  // }
+
+  // TODO: this will copy the data... i wonder if there is a btter way of not copying the data
+  // Is there a way to use some kind in-place optimization?
+  // How about using templated vargs
+  // template <typename ...Ts>
+  // requires std::same_as<std::common_type_t<Ts...>, std::byte>
+  // HIDReport(ReportID report, Ts&&... data) : data_{data...} {  }
+
+
+  template <DerivedFrom<std::byte>... Ts>
+  HIDReport(ReportID report, Ts&&... data) : data_{report, data...} {  }
 
   HIDReport(ReportID report, std::size_t count) : data_(count + 1) {
     this->report = report; 
   }
+
 };
 
 // TODO: Create proper wrapper class for hid_device
@@ -40,7 +60,7 @@ class HIDDevice {
  
 public:
 
-  // TODO(ask): inside this function i will call std::move(device_info).
+  // TODO: inside this function i will call std::move(device_info).
   //            Which can caught the user of this function off guard, because the device_info moved.
   //            So is it good to explicity ask for rvalue(HIDDeviceInfo &&device_info)?
   //            or should i use "static HIDDevice popen(HIDDeviceInfo device_info) {"

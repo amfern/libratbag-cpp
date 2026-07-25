@@ -69,7 +69,13 @@ int HID_API_EXPORT HID_API_CALL hid_send_feature_report(hid_device *dev, const u
   return 16;
 }
 
-/* int HID_API_EXPORT HID_API_CALL hid_get_feature_report(hid_device *dev, unsigned char *data, size_t length); */
+int HID_API_EXPORT HID_API_CALL hid_get_feature_report(hid_device *dev, unsigned char *data, size_t length) {
+  for (int i = 1; i < length; i++) {
+    data[i] = i - 1; 
+  }
+  
+  return length;
+}
 
 HID_API_EXPORT const wchar_t * HID_API_CALL hid_error(hid_device *dev) {
   return  L"Success";
