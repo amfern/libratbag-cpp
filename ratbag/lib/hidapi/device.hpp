@@ -16,7 +16,7 @@ using namespace std::chrono_literals;
 // using HIDDeviceHandle = hid_device;
 
 using HIDBuffer = std::vector<std::byte>;
-using ReadTimeoutMilli = std::chrono::milliseconds;
+using ReadTimeoutMilli = std::chrono::duration<uint64_t, std::milli>;
 using ReportID = std::byte;
 
 class HIDReport {
@@ -60,7 +60,12 @@ public:
   };
 
   void write(HIDBuffer buf);
-  std::optional<HIDBuffer> read(std::size_t length, ReadTimeoutMilli timeout = ReadTimeoutNone);
+
+  // - read max_length
+  // - read untile timeout is reached
+  // - timeout of 0, will read max_length and exit imidiatly
+  // note: We dont' support block from wait C hipapi, as it may result in deadlock and not something an api should get into even by mistake
+  std::optional<HIDBuffer> read(std::size_t max_length, ReadTimeoutMilli timeout = ReadTimeoutMilli{0});
   
   void send_feature_report(HIDReport report);
   std::optional<HIDReport> receive_feature_report(ReportID report_id, std::size_t length);
@@ -71,10 +76,6 @@ public:
   HIDDevice(HIDDevice &&other) noexcept;      // move constructor
   HIDDevice &operator=(const HIDDevice &rhs) = delete; // copy operator
   HIDDevice &operator=(HIDDevice &&rhs) noexcept;      // move operator
-
-  // TODO(ask): what do you thin about such magic constant
-  static constexpr ReadTimeoutMilli ReadTimeoutBlock{-1};
-  static constexpr ReadTimeoutMilli ReadTimeoutNone{0};
 
 private:
   explicit HIDDevice(hid_device* handle, HIDDeviceInfo device_info);

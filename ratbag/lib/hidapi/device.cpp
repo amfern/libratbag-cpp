@@ -22,20 +22,13 @@ void HIDDevice::write(HIDBuffer buf) {
   }
 }
 
-// TODO(ask): what do you think about magic values that have meaning? or should i use something like std::variant instead. Or just a simple bool
-//  timeout can be either
-//  ReadTimeoutBlock - Block return
-//  ReadTimeoutNone - read and return immididatly
-//  ReadTimeoutMilli{<value>} - timeout to wait
-std::optional<HIDBuffer> HIDDevice::read(std::size_t length, ReadTimeoutMilli timeout) {
-  HIDBuffer buf(length);
+std::optional<HIDBuffer> HIDDevice::read(std::size_t max_length, ReadTimeoutMilli timeout) {
+  HIDBuffer buf(max_length);
 
   auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
-  // TODO(ask): what do you thin about t
-  auto hid_timeout = timeout == ReadTimeoutBlock ? -1 : static_cast<int>(timeout.count());
  
   // Read requested state
-  auto bytes_read = hid_read_timeout(handle_, buf_ptr, buf.size(), hid_timeout);
+  auto bytes_read = hid_read_timeout(handle_, buf_ptr, buf.size(), static_cast<int>(timeout.count()));
 
   // the read is non-blocking and there was nothing to read from the hid device
   if (bytes_read == 0) {
