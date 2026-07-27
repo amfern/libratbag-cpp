@@ -2,6 +2,7 @@
 
 #include "gtest/gtest.h"
 
+#include <memory>
 #include <ranges>
 #include <algorithm>
 
@@ -16,22 +17,27 @@ using ratbag::lib::hidapi::HIDReport;
 using ratbag::lib::hidapi::ReportID;
 
 
-TEST(DeviceTestSuit, DeviceWrite) {
-  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
+// TODO: negative fail tests
 
-  auto device = HIDDevice::open(std::move(deviceInfos[0]));
+class DeviceTestSuit : public ::testing::Test {
+protected:
+  std::shared_ptr<HIDDevice> device_ptr;
 
+  DeviceTestSuit() {
+    // TODO: just do a get mock device, and work on that.
+    auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
+    device_ptr = std::make_shared<HIDDevice>(HIDDevice::open(std::move(deviceInfos[0])));
+  }
+};
+
+TEST_F(DeviceTestSuit, DeviceWrite) {
   HIDBuffer buf(64);
 
-  device.write(buf);
+  device_ptr->write(buf);
 }
 
-TEST(DeviceTestSuit, DeviceRead) {
-  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-
-  auto device = HIDDevice::open(std::move(deviceInfos[0]));
-
-  auto buf = device.read(64);
+TEST_F(DeviceTestSuit, DeviceRead) {
+  auto buf = device_ptr->read(64);
 
   // TODO(ask): why i can't do HIDBuffer expected{{0}, {0}, {0}};?
   HIDBuffer expected{
@@ -53,11 +59,7 @@ TEST(DeviceTestSuit, DeviceRead) {
   ASSERT_EQ(buf, expected);
 }
 
-TEST(DeviceTestSuit, DeviceReportSend) {
-  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-
-  auto device = HIDDevice::open(std::move(deviceInfos[0]));
-
+TEST_F(DeviceTestSuit, DeviceReportSend) {
   HIDReport report(ReportID{0x77}, std::size_t{16});
   report.data[0] = {0}; 
   report.data[1] = {1};
@@ -67,16 +69,12 @@ TEST(DeviceTestSuit, DeviceReportSend) {
   report.data[5] = {5};
   report.data[6] = {6};
 
-  device.send_feature_report(report);
+  device_ptr->send_feature_report(report);
 }
 
-TEST(DeviceTestSuit, DeviceReportRead) {
-  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-
-  auto device = HIDDevice::open(std::move(deviceInfos[0]));
-
+TEST_F(DeviceTestSuit, DeviceReportRead) {
   auto report_received =
-      device.receive_feature_report(ReportID{0x77}, std::size_t{16});
+      device_ptr->receive_feature_report(ReportID{0x77}, std::size_t{16});
 
   HIDReport expected_report(
       ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2}, std::byte{3},

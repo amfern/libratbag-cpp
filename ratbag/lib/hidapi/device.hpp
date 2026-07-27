@@ -1,7 +1,10 @@
 #pragma once
 
 #include "hidapi.h"
+#include "ratbag/lib/hidapi/common.hpp"
 #include "ratbag/lib/hidapi/device_info.hpp"
+#include "ratbag/lib/hidapi/hid_report.hpp"
+
 #include <cstddef>
 #include <vector>
 #include <chrono>
@@ -11,48 +14,10 @@ namespace ratbag {
 namespace lib {
 namespace hidapi {
 
-template <typename T, typename B>
-concept DerivedFrom = std::is_base_of_v<B, T> or std::same_as<B, T>;
-
 using namespace std::chrono_literals;
 
-// using HIDDeviceHandle = hid_device;
-
-using HIDBuffer = std::vector<std::byte>;
 using ReadTimeoutMilli = std::chrono::duration<uint64_t, std::milli>;
-using ReportID = std::byte;
 
-class HIDReport {
-friend class HIDDevice;
-private:
-  // TODO: use std::array instead of std::vector
-  HIDBuffer data_;
-    
-public:
-  // TODO: this should be private, maybe with detail subfolder
-  ReportID &report = data_[0];
-  std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
-
-  // HIDReport(const HIDBuffer& data) : data_(data.begin() +1, data.end()) {
-  //   this->report = report;
-  // }
-
-  // TODO: this will copy the data... i wonder if there is a btter way of not copying the data
-  // Is there a way to use some kind in-place optimization?
-  // How about using templated vargs
-  // template <typename ...Ts>
-  // requires std::same_as<std::common_type_t<Ts...>, std::byte>
-  // HIDReport(ReportID report, Ts&&... data) : data_{data...} {  }
-
-
-  template <DerivedFrom<std::byte>... Ts>
-  HIDReport(ReportID report, Ts&&... data) : data_{report, data...} {  }
-
-  HIDReport(ReportID report, std::size_t count) : data_(count + 1) {
-    this->report = report; 
-  }
-
-};
 
 // TODO: Create proper wrapper class for hid_device
 // https://github.com/libusb/hidapi/blob/657b9fa147722ad59d045965e625d3972fa1264c/hidapi/hidapi.h#L284
@@ -103,6 +68,7 @@ private:
   hid_device* handle_;
   HIDDeviceInfo device_info_;
 };
+
 
 } // namespace hidapi
 

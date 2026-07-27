@@ -107,7 +107,6 @@ HIDDevice &HIDDevice::operator=(HIDDevice &&rhs) noexcept {
   return *this;
 }
 
-
 } // namespace hidapi
 } // namespace lib
 } // namespace ratbag

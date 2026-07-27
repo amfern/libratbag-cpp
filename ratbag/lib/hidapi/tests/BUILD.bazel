@@ -1,6 +1,17 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
+    name = "hid_report",
+    srcs = [
+        "hid_report_test.cpp",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi:hid_report",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
     name = "device_info_test",
     srcs = ["device_info_test.cpp"],
     cxxopts = [
@@ -8,7 +19,7 @@ cc_test(
         "-Wno-deprecated-declarations",
     ],
     deps = [
-        "//ratbag/lib/hidapi",
+        "//ratbag/lib/hidapi:device_info",
         "@googletest//:gtest_main",
     ],
 )
@@ -30,7 +41,7 @@ cc_test(
     # ],
     deps = [
         # ":mocked_hidapi",
-        "//ratbag/lib/hidapi",
+        "//ratbag/lib/hidapi:device_info",
         "@googletest//:gtest_main",
     ],
 )
