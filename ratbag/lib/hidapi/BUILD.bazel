@@ -6,6 +6,9 @@ cc_library(
         "common.hpp",
         "hid_report.hpp",
     ],
+    srcs = [
+        "hid_report.cpp",
+    ],
     visibility = ["//ratbag/lib/hidapi:__subpackages__"],
 )
 

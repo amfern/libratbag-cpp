@@ -45,11 +45,11 @@ std::optional<HIDBuffer> HIDDevice::read(std::size_t max_length, ReadTimeoutMill
 
 void HIDDevice::send_feature_report(HIDReport report) {
   auto buf_ptr = reinterpret_cast<unsigned char*>(report.data_.data());
-  auto bytes_written = hid_send_feature_report(handle_, buf_ptr, report.data.size());
-  if (bytes_written != report.data.size()) {
+  auto bytes_written = hid_send_feature_report(handle_, buf_ptr, report.data_.size());
+  if (bytes_written != report.data_.size()) {
     throw std::runtime_error(std::format(
         "Actual number of writen bytes({}) doesn't match the expected({})",
-        bytes_written, report.data.size()));
+                                         bytes_written, report.data_.size()));
   }
 }
 
@@ -63,8 +63,6 @@ std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, s
     HIDAPIString err(hid_error(handle_));
     throw std::runtime_error(std::format("HID read error: {}", err));
   }
-
-  report.data = std::span<std::byte>{report.data_}.subspan(1, bytes_read - 1);
 
   return report;
 }

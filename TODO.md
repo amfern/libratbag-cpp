@@ -35,3 +35,12 @@ yes! the reason for using reference
 2. To make sure the returned values stays synced if something changes whithin the class
 string_view is an alredy and reference, so we cna return it by value. It's
 cheap to copy. cheaper than dereferencing an address
+
+3. if the underlying type is an premetive type, like int, byte..etc. It's trivial to copy and doesnt't worth the overheard of pointer of the same size...
+4. code writing flow
+  1. Write the code how i want to do
+  2. The see if it's possible to optimize
+  3. Profile, if the speed is actually important for that function, if it's called many times a second or impact the latency of the program
+5. things that are refernce types, even just pointers, even that doesn't own the object, It's up to the user to treat the reference they received with approproiate care for life of the source object. The user needs to be aware that this is a reference and it points to something in this HIDReport, so if it this hid report goes out of scope, this referfence becomes invalid 
+  1. Have reference only as a parameter type, so you know it will outlive the entierly of the function call
+  2. As a local variable where you can see the scope it reffering to, And that's the limit, unless i write my own view.

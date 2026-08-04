@@ -39,7 +39,8 @@ TEST_F(DeviceTestSuit, DeviceWrite) {
 TEST_F(DeviceTestSuit, DeviceRead) {
   auto buf = device_ptr->read(64);
 
-  // TODO(ask): why i can't do HIDBuffer expected{{0}, {0}, {0}};?
+  // TODO: why i can't do HIDBuffer expected{{0}, {0}, {0}};?
+  //  ANS: because std::byte doesn't have default constructor from int
   HIDBuffer expected{
       std::byte{0},  std::byte{1},  std::byte{2},  std::byte{3},  std::byte{4},
       std::byte{5},  std::byte{6},  std::byte{7},  std::byte{8},  std::byte{9},
@@ -61,13 +62,15 @@ TEST_F(DeviceTestSuit, DeviceRead) {
 
 TEST_F(DeviceTestSuit, DeviceReportSend) {
   HIDReport report(ReportID{0x77}, std::size_t{16});
-  report.data[0] = {0}; 
-  report.data[1] = {1};
-  report.data[2] = {2};
-  report.data[3] = {3};
-  report.data[4] = {4};
-  report.data[5] = {5};
-  report.data[6] = {6};
+  auto data = report.data();
+  // TODO: maybe i can override the operator [] to make it transperant to set and get the bytes??
+  data[0] = {0}; 
+  data[1] = {1};
+  data[2] = {2};
+  data[3] = {3};
+  data[4] = {4};
+  data[5] = {5};
+  data[6] = {6};
 
   device_ptr->send_feature_report(report);
 }
@@ -83,6 +86,6 @@ TEST_F(DeviceTestSuit, DeviceReportRead) {
       std::byte{14}, std::byte{15});
 
   // TODO: the comparison should be implemented in the HIDReport
-  ASSERT_EQ(report_received.value().report, expected_report.report);
-  ASSERT_TRUE(std::ranges::equal(report_received.value().data, expected_report.data));
+  ASSERT_EQ(report_received.value().report(), expected_report.report());
+  ASSERT_TRUE(std::ranges::equal(report_received.value().data(), expected_report.data()));
 }

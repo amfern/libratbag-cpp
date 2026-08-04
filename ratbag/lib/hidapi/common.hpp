@@ -7,7 +7,7 @@ namespace hidapi {
 
 class HIDDevice;
 class DeviceID;
-class HIDReport
+class HIDReport;
 
 } // namespace hidapi
 
