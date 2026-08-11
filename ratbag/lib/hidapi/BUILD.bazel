@@ -1,7 +1,19 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "hidapi",
+    name = "hid_report",
+    hdrs = [
+        "common.hpp",
+        "hid_report.hpp",
+    ],
+    srcs = [
+        "hid_report.cpp",
+    ],
+    visibility = ["//ratbag/lib/hidapi:__subpackages__"],
+)
+
+cc_library(
+    name = "device_info",
     srcs = [
         "device_info.cpp",
     ],
@@ -16,5 +28,39 @@ cc_library(
     deps = [
         "//ratbag/lib/hidapi/detail:hid_bus_type",
         "@hidapi",
+    ],
+)
+
+cc_library(
+    name = "device",
+    srcs = [
+        "device.cpp",
+    ],
+    hdrs = [
+        "common.hpp",
+        "device.hpp",
+    ],
+    cxxopts = [
+        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
+        "-Wno-deprecated-declarations",
+    ],
+    visibility = ["//ratbag/lib/hidapi:__subpackages__"],
+    deps = [
+        ":device_info",
+        ":hid_report",
+        "@hidapi",
+    ],
+)
+
+cc_library(
+    name = "hidapi",
+    hdrs = [
+        "hidapi.hpp",
+    ],
+    visibility = ["//ratbag/lib:__subpackages__"],
+    deps = [
+        ":device_info",
+        ":device",
+        ":hid_report",
     ],
 )

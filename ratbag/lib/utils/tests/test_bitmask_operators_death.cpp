@@ -1,5 +1,3 @@
-#include "gtest/gtest.h"
-
 enum class C{x,y};
 
 C c1 = C::x | C::y;

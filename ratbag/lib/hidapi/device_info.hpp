@@ -12,6 +12,7 @@ namespace ratbag {
 namespace lib {
 namespace hidapi {
 
+  // TODO: should i put those using under related class? like DeviceID
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
 using VendorID = uint16_t;

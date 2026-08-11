@@ -19,7 +19,7 @@ build --linkopt=-Werror
 
 # To debug: lldb bazel-bin/ratbag/cli/cli
 # build:debug --spawn_strategy=local
-build:debug --sandbox_debug
+# build:debug --sandbox_debug
 build:debug --strip=never
 build:debug --features=oso_prefix_is_pwd
 build:debug -c dbg
