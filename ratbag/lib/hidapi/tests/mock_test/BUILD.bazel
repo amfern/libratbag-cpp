@@ -1,28 +1,6 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
-cc_test(
-    name = "hid_report",
-    srcs = [
-        "hid_report_test.cpp",
-    ],
-    deps = [
-        "//ratbag/lib/hidapi:hid_report",
-        "@googletest//:gtest_main",
-    ],
-)
-
-cc_test(
-    name = "device_info_test",
-    srcs = ["device_info_test.cpp"],
-    cxxopts = [
-        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
-        "-Wno-deprecated-declarations",
-    ],
-    deps = [
-        "//ratbag/lib/hidapi:device_info",
-        "@googletest//:gtest_main",
-    ],
-)
+# TODO: also test the failure of hid_mocked.c, create a way validate it's failing correctly
 
 # TODO(ask): Help me make sense of what happens here.
 #            I was able to overwrite hid_enumerate symbol from from hidapi.so with my own... and there was no error.
@@ -46,21 +24,16 @@ cc_test(
     ],
 )
 
-# TODO(ask): it's not possible to know which device is available on the target PC
-#            i can't compare two devices, because i don't even know if there is an avaiable device by default, so it may even fail to open
-#            Is there a way to test things without mocking?
-# cc_test(
-#     name = "device_test",
-#     srcs = ["device_test.cpp"],
-#     cxxopts = [
-#         # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
-#         "-Wno-deprecated-declarations",
-#     ],
-#     deps = [
-#         "//ratbag/lib/hidapi",
-#         "@googletest//:gtest_main",
-#     ],
-# )
+cc_test(
+    name = "hid_report",
+    srcs = [
+        "hid_report_test.cpp",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi:hid_report",
+        "@googletest//:gtest_main",
+    ],
+)
 
 cc_test(
     name = "device_test_mocked",
@@ -77,3 +50,5 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
+
+

@@ -1,0 +1,14 @@
+load("@rules_cc//cc:defs.bzl", "cc_test")
+
+cc_test(
+    name = "device_info_test",
+    srcs = ["device_info_test.cpp"],
+    cxxopts = [
+        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
+        "-Wno-deprecated-declarations",
+    ],
+    deps = [
+        "//ratbag/lib/hidapi:device_info",
+        "@googletest//:gtest_main",
+    ],
+)

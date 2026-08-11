@@ -71,7 +71,6 @@ public:
 
   HIDReport(ReportID report, std::vector<std::byte> data) : data_{std::move(data)} {
     data_.insert(data_.begin(), report);
-
   }
 
   HIDReport(ReportID report, std::size_t count) : data_(count + 1) {
