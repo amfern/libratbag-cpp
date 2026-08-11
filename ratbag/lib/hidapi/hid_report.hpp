@@ -13,9 +13,6 @@ namespace ratbag {
 namespace lib {
 namespace hidapi {
 
-template <typename T, typename B>
-concept DerivedFrom = std::is_base_of_v<B, T> or std::same_as<B, T>;
-
 using HIDBuffer = std::vector<std::byte>;
 using ReportID = std::byte;
 
@@ -25,14 +22,13 @@ friend class std::formatter<HIDReport>;
 friend class HidReportTest;
 
 private:
-  // TODO: maybe use std::array instead of std::vector
+  // TODO: maybe use std::array instead of std::vector, and make all HIDBuffer static_size
   HIDBuffer data_;
 
 public:
   // direct access to the underlying contiguous storage 
   // TODO(ask): I want my device.hpp class to assign directly to this data_ raw data() but i don't want to expose to outside..., how can i test it?
-  //            1. or maybe it's okay to allow to expose it to outside
-  //            2. 
+  //            1. Or maybe it's okay to allow to expose it to outside
   HIDBuffer::value_type* data() {
     return data_.data();
   };
@@ -55,21 +51,13 @@ public:
     return std::span<std::byte>{data_}.subspan(1);  
   };
   
-  // HIDReport(const HIDBuffer& data) : data_(data.begin() +1, data.end()) {
-  //   this->report = report;
-  // }
-
-  // TODO: this will copy the data... i wonder if there is a btter way of not
-  // copying the data Is there a way to use some kind in-place optimization? How
-  // about using templated vargs template <typename ...Ts> requires
-  // std::same_as<std::common_type_t<Ts...>, std::byte> HIDReport(ReportID
-  // report, Ts&&... data) : data_{data...} {  }
-
   template <std::same_as<std::byte>... Ts>
   HIDReport(ReportID report, Ts ...data) : data_{report, data...} {}
 
   // TODO: do i even need this function
   //       it can be provided, instead of exposing the internal data_ memeber
+  // TODO: this will copy the data... i wonder if there is a btter way of not
+  // copying the data Is there a way to use some kind in-place optimization? How
   // HIDReport(ReportID report, std::vector<std::byte> data) : data_{std::move(data)} {
   //   data_.insert(data_.begin(), report);
   // }
