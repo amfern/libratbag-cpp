@@ -2,7 +2,7 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 
 # TODO: also test the failure of hid_mocked.c, create a way validate it's failing correctly
 
-# TODO(ask): Help me make sense of what happens here.
+# TODO: Help me make sense of what happens here.
 #            I was able to overwrite hid_enumerate symbol from from hidapi.so with my own... and there was no error.
 #            Shouldn't i get an ODR violation of redeclarion of a symbol.
 #            I wasn't able to overwrite with linker --wrap, it seems like all

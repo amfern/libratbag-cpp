@@ -27,7 +27,8 @@ friend class HidReportTest;
 private:
 
 public:
-  // TODO(ask): i want my device.hpp class to asign directly to this data_ raw data() but i don't want to expose to outside..., how can i test it?
+  // TODO(ask): I want my device.hpp class to assign directly to this data_ raw data() but i don't want to expose to outside..., how can i test it?
+  //            or maybe it's okay to allow to expose it to outside
   HIDBuffer data_;
   // TODO: use std::array instead of std::vector
   // TODO: how to hide this data_ only to be accesiable to the friend class Device
@@ -61,18 +62,16 @@ public:
   // std::same_as<std::common_type_t<Ts...>, std::byte> HIDReport(ReportID
   // report, Ts&&... data) : data_{data...} {  }
 
-  // TODO: what do you think about this approach, i want a function that
-  // allows to pass reportID, and all of the elements of the data. And i don't
-  // want to create intermidate vector or array contains to avoid the copy paste
-  // I used DerivedFrom "concept" there
-  // it's good, it's correct
   template <std::same_as<std::byte>... Ts>
   HIDReport(ReportID report, Ts ...data) : data_{report, data...} {}
 
-  HIDReport(ReportID report, std::vector<std::byte> data) : data_{std::move(data)} {
-    data_.insert(data_.begin(), report);
-  }
+  // TODO: do i even need this function
+  //       it can be provided, instead of exposing the internal data_ memeber
+  // HIDReport(ReportID report, std::vector<std::byte> data) : data_{std::move(data)} {
+  //   data_.insert(data_.begin(), report);
+  // }
 
+  // This will resize the vector and preallocte empty values
   HIDReport(ReportID report, std::size_t count) : data_(count + 1) {
     setReport(report);
   }
@@ -80,27 +79,6 @@ public:
   HIDReport() { }
 
 };
-
-// TODO(ask): i want to be able to create HIDReport out of buffer received from hidapi.c api
-// So i want to wrap around pre-allocated memory bufferi receive from the C API.
-// But also i want to initialize a container of my own to pass to the C api.
-// And i want it to be the same class, not possible because the user needs to be aware that it's a view.
-// the user wouldn't be abel to know if they got the data, or the refernece. and they wouldn't be able to make decision about the lifecycle of the object.
-
-// Or maybe i can have the read return this HIDReportView which is readonly.
-// Is there a way to make it a single class, that sometimes is const? maybe with std::variant
-// Or maybe i can use concept to operate on an interface, without knowin the actual container underneath?? sort of HIDReportLike....
-// class HIDReportView {
-//   std::span<std::byte> data_view_;
-
-// public:
-//   const ReportID &report = data_view_[0];
-//   const std::span<std::byte> data = std::span<std::byte>{data_view_}.subspan(1);
-
-//   // TODO(ask): This constuctor is used internally by HIDDevice class, how to make it private and still be able to test it. I can create a factory in the detail folder?
-//   HIDReportView(std::span<std::byte> data_view): data_view_(data_view) {
-//   }
-// };
 
 } // namespace hidapi
 } // namespace lib

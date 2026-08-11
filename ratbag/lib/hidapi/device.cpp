@@ -54,6 +54,9 @@ void HIDDevice::send_feature_report(HIDReport report) {
 }
 
 std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, std::size_t length) {
+  // TODO(ask): This will initialize the elements of length size.
+  // I want to avoid the overhead of zeroing out memory, because it will be overwritten anyway, in the next C-API to do the initialization funciton call.
+  // can i do it with std::vector, i see that creating custom allocator is a possible solution, is it a good one?
   HIDReport report(report_id, length);
 
   auto buf_ptr = reinterpret_cast<unsigned char*>(report.data_.data());

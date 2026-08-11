@@ -4,7 +4,7 @@
 
 #include "hidapi.h"
 
-// TODO(ask): why am i able to overwrite the symbol? shouldn't it complain?
+// TODO: why am i able to overwrite the symbol? shouldn't it complain?
 // there was no redifinition error.
 //            I wasn't able to overwrite with linker --wrap, it seems like all
 //            "hid_enumerate" symbol was resolved and stripped in
