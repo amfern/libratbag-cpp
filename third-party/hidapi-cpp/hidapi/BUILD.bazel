@@ -1,0 +1,69 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "hid_report",
+    hdrs = [
+        "common.hpp",
+        "hid_report.hpp",
+    ],
+    srcs = [
+        "hid_report.cpp",
+    ],
+    visibility = ["//hidapi:__subpackages__"],
+)
+
+cc_library(
+    name = "device_info",
+    srcs = [
+        "device_info.cpp",
+    ],
+    hdrs = [
+        "device_info.hpp",
+    ],
+    cxxopts = [
+        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
+        "-Wno-deprecated-declarations",
+    ],
+    visibility = [
+        "//hidapi:__subpackages__",
+        "//tests:__subpackages__"
+    ],
+    deps = [
+        "//hidapi/detail:hid_bus_type",
+        "@hidapi",
+    ],
+)
+
+cc_library(
+    name = "device",
+    srcs = [
+        "device.cpp",
+    ],
+    hdrs = [
+        "common.hpp",
+        "device.hpp",
+    ],
+    cxxopts = [
+        # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
+        "-Wno-deprecated-declarations",
+    ],
+    visibility = [
+        "//hidapi:__subpackages__",
+        "//tests:__subpackages__"
+    ],
+    deps = [
+        ":device_info",
+        ":hid_report",
+        "@hidapi",
+    ],
+)
+
+cc_library(
+    name = "hidapi",
+    visibility = ["//hidapi:__subpackages__"],
+    deps = [
+        ":device_info",
+        ":device",
+        ":hid_report",
+    ],
+)
