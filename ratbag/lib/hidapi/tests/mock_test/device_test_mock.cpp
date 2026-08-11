@@ -62,7 +62,7 @@ TEST_F(DeviceTestSuit, DeviceRead) {
 
 TEST_F(DeviceTestSuit, DeviceReportSend) {
   HIDReport report(ReportID{0x77}, std::size_t{16});
-  auto data = report.data();
+  auto data = report.report_data();
   // TODO: maybe i can override the operator [] to make it transperant to set and get the bytes??
   data[0] = {0}; 
   data[1] = {1};
@@ -85,7 +85,5 @@ TEST_F(DeviceTestSuit, DeviceReportRead) {
       std::byte{9}, std::byte{10}, std::byte{11}, std::byte{12}, std::byte{13},
       std::byte{14}, std::byte{15});
 
-  // TODO: the comparison should be implemented in the HIDReport
-  ASSERT_EQ(report_received.value().report(), expected_report.report());
-  ASSERT_TRUE(std::ranges::equal(report_received.value().data(), expected_report.data()));
+  ASSERT_EQ(report_received, expected_report);
 }

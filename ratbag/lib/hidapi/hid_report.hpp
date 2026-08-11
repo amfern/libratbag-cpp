@@ -25,15 +25,18 @@ friend class std::formatter<HIDReport>;
 friend class HidReportTest;
 
 private:
+  // TODO: maybe use std::array instead of std::vector
+  HIDBuffer data_;
 
 public:
+  // direct access to the underlying contiguous storage 
   // TODO(ask): I want my device.hpp class to assign directly to this data_ raw data() but i don't want to expose to outside..., how can i test it?
-  //            or maybe it's okay to allow to expose it to outside
-  HIDBuffer data_;
-  // TODO: use std::array instead of std::vector
-  // TODO: how to hide this data_ only to be accesiable to the friend class Device
+  //            1. or maybe it's okay to allow to expose it to outside
+  //            2. 
+  HIDBuffer::value_type* data() {
+    return data_.data();
+  };
 
-  // TODO: use a member function to return the refefnce to report
   ReportID report() const;
   void setReport(ReportID report_id);
 
@@ -48,7 +51,7 @@ public:
   // span is also short lived, as it referes to internal memory of vector.
   // std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
   
-  std::span<std::byte> data() {
+  std::span<std::byte> report_data() {
     return std::span<std::byte>{data_}.subspan(1);  
   };
   
@@ -76,8 +79,14 @@ public:
     setReport(report);
   }
 
-  HIDReport() { }
+  // 1. Custom Equality (only check serial numbers)
+  bool operator==(const HIDReport& rhs) const {
+    return data_ == rhs.data_;
+  }
 
+  std::strong_ordering operator<=>(const HIDReport& rhs) const {
+    return data_ <=> rhs.data_;
+  };
 };
 
 } // namespace hidapi
