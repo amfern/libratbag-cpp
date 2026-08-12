@@ -23,12 +23,12 @@ void HIDReportInternal::setReport(ReportID report_id) {
 namespace std {
 using namespace hidapi;
 
-template <> struct formatter<HIDReportInternal> : formatter<string_view> {
+template <> struct formatter<HIDReport> : formatter<string_view> {
 
   template <class FormatContext>
-  typename FormatContext::iterator format(const HIDReportInternal &report,
+  typename FormatContext::iterator format(HIDReport &report,
                                           FormatContext &ctx) const {
-    return format_to(ctx.out(), "{}", report.data_);
+    return format_to(ctx.out(), "report_id: {}, report_data: {}", report.report(), report.report_data());
   }
 };
 } // namespace std
