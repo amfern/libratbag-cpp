@@ -10,6 +10,8 @@
 using hidapi::HIDReportInternal;
 using hidapi::ReportID;
 
+// TODO: move those tests to /detail directory
+
 
 // TODO: how do i know this will not be optimization out
 // ANS:  the compiler will do the full validation and generate the code and then optimized that code out. and will probabbly write the code if it had side effects.
