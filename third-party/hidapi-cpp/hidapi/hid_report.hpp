@@ -14,22 +14,14 @@ namespace hidapi {
 using HIDBuffer = std::vector<std::byte>;
 using ReportID = std::byte;
 
-class HIDReport {
+
+class HIDReportInternal {
 friend class HIDDevice;
 friend class std::formatter<HIDReport>;
-friend class HidReportTest;
-
-private:
-  // TODO: maybe use std::array instead of std::vector, and make all HIDBuffer static_size
-  HIDBuffer data_;
 
 public:
-  // direct access to the underlying contiguous storage 
-  // TODO(ask): I want my device.hpp class to assign directly to this data_ raw data() but i don't want to expose to outside..., how can i test it?
-  //            1. Or maybe it's okay to allow to expose it to outside
-  HIDBuffer::value_type* data() {
-    return data_.data();
-  };
+  // TODO: maybe use std::array instead of std::vector, and make all HIDBuffer static_size
+  HIDBuffer data_;
 
   ReportID report() const;
   void setReport(ReportID report_id);
@@ -50,7 +42,7 @@ public:
   };
   
   template <std::same_as<std::byte>... Ts>
-  HIDReport(ReportID report, Ts ...data) : data_{report, data...} {}
+  HIDReportInternal(ReportID report, Ts ...data) : data_{report, data...} {}
 
   // TODO: do i even need this function
   //       it can be provided, instead of exposing the internal data_ memeber
@@ -61,18 +53,35 @@ public:
   // }
 
   // This will resize the vector and preallocte empty values
-  HIDReport(ReportID report, std::size_t count) : data_(count + 1) {
+  // We assume the buffers are small and OS+compiler can handle zeroing out in the cache line even before reaching the memory
+  HIDReportInternal(ReportID report, std::size_t count) : data_(count + 1) {
     setReport(report);
   }
 
   // 1. Custom Equality (only check serial numbers)
-  bool operator==(const HIDReport& rhs) const {
+  bool operator==(const HIDReportInternal& rhs) const {
     return data_ == rhs.data_;
   }
 
-  std::strong_ordering operator<=>(const HIDReport& rhs) const {
+  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const {
     return data_ <=> rhs.data_;
   };
 };
+
+class HIDReport : private HIDReportInternal {
+friend class HIDDevice;
+
+public:
+  using HIDReportInternal::report_data;
+  using HIDReportInternal::report;
+  using HIDReportInternal::setReport;
+
+  // forward the constructors from base class
+  using HIDReportInternal::HIDReportInternal;
+
+  bool operator==(const HIDReport& rhs) const = default; 
+  std::strong_ordering operator<=>(const HIDReport& rhs) const = default;
+};
+
 
 } // namespace hidapi

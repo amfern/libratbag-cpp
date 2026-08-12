@@ -11,15 +11,15 @@ class HidReportTest : public ::testing::Test {
 };
 
 
-using hidapi::HIDReport;
+using hidapi::HIDReportInternal;
 using hidapi::ReportID;
 
 
 // TODO: how do i know this will not be optimization out
 // ANS:  the compiler will do the full validation and generate the code and then optimized that code out. and will probabbly write the code if it had side effects.
 //       So the compiler will validate the code, even if it's going to be optimized later. And if it has side effects like assert, it will aslo run the code.
-TEST(HidReportTest, CanInitialize) {
-  HIDReport report(ReportID{0x77}, std::size_t{16});
+TEST_F(HidReportTest, CanInitialize) {
+  HIDReportInternal report(ReportID{0x77}, std::size_t{16});
   auto data = report.report_data();
   data[0] = {0};
   data[1] = {1};
@@ -33,22 +33,22 @@ TEST(HidReportTest, CanInitialize) {
   assert(data[6] == std::byte{6});
 }
 
-TEST(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
-  HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
+TEST_F(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
+  HIDReportInternal report(ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
                    std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6},
                    std::byte{7}, std::byte{8}, std::byte{9}, std::byte{10},
                    std::byte{11}, std::byte{12}, std::byte{13}, std::byte{14},
                    std::byte{15});
 }
 
-TEST(HidReportTest, CanInitializeFromBuffer) {
+TEST_F(HidReportTest, CanInitializeFromBuffer) {
   unsigned char c_api_fill_raw_data[] = {0x77, 1,2,3,4,5,6};
 
   // preallocate report object
-  HIDReport report(ReportID{}, std::ssize(c_api_fill_raw_data));
+  HIDReportInternal report(ReportID{}, std::ssize(c_api_fill_raw_data));
 
   // mimic C-API populating the storage
-  std::ranges::copy(c_api_fill_raw_data, reinterpret_cast<unsigned char*>(report.data()));
+  std::ranges::copy(c_api_fill_raw_data, reinterpret_cast<unsigned char*>(report.data_.data()));
 
   auto data = report.report_data();
 

@@ -5,14 +5,15 @@
 #include <format>
 
 #include "hidapi/hid_report.hpp"
+#include "hid_report.hpp"
 
 namespace hidapi {
 
-ReportID HIDReport::report() const {
+ReportID HIDReportInternal::report() const {
   return data_[0];
 };
 
-void HIDReport::setReport(ReportID report_id) {
+void HIDReportInternal::setReport(ReportID report_id) {
   data_[0] = report_id;
 };
 
@@ -22,10 +23,10 @@ void HIDReport::setReport(ReportID report_id) {
 namespace std {
 using namespace hidapi;
 
-template <> struct formatter<HIDReport> : formatter<string_view> {
+template <> struct formatter<HIDReportInternal> : formatter<string_view> {
 
   template <class FormatContext>
-  typename FormatContext::iterator format(const HIDReport &report,
+  typename FormatContext::iterator format(const HIDReportInternal &report,
                                           FormatContext &ctx) const {
     return format_to(ctx.out(), "{}", report.data_);
   }

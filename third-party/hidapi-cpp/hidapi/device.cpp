@@ -1,10 +1,12 @@
 #include "hidapi/device.hpp"
 
 #include <codecvt>
+#include <cstdint>
 #include <format>
 #include <optional>
 #include <ostream>
 #include <string_view>
+#include <vector>
 
 namespace hidapi {
 
@@ -56,6 +58,8 @@ std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, s
   // I want to avoid the overhead of zeroing out memory, because it will be overwritten anyway, in the next C-API to do the initialization funciton call.
   // can i do it with std::vector, i see that creating custom allocator is a possible solution, is it a good one?
   HIDReport report(report_id, length);
+  // TODO: read about std::start_life_time_as if they are trivially copyable
+  // TODO: read about https://www.sandordargo.com/blog/2025/02/05/cpp26-erroneous-behaviour
 
   auto buf_ptr = reinterpret_cast<unsigned char*>(report.data_.data());
   auto bytes_read = hid_get_feature_report(handle_, buf_ptr, report.data_.size());
