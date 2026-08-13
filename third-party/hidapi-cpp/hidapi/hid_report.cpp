@@ -5,7 +5,6 @@
 #include <format>
 
 #include "hidapi/hid_report.hpp"
-#include "hid_report.hpp"
 
 namespace hidapi {
 
