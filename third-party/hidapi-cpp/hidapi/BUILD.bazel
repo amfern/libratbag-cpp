@@ -3,11 +3,14 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 cc_library(
     name = "hid_report",
     hdrs = [
-        "common.hpp",
         "hid_report.hpp",
     ],
     srcs = [
         "hid_report.cpp",
+    ],
+    deps = [
+        "//hidapi/detail:hid_report_internal",
+        "@hidapi",
     ],
     visibility = ["//hidapi:__subpackages__"],
 )
@@ -40,7 +43,6 @@ cc_library(
         "device.cpp",
     ],
     hdrs = [
-        "common.hpp",
         "device.hpp",
     ],
     cxxopts = [

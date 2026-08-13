@@ -12,3 +12,20 @@ cc_library(
         "@hidapi",
     ],
 )
+
+
+cc_library(
+    name = "hid_report_internal",
+    hdrs = [
+        "hid_report_internal.hpp",
+    ],
+    srcs = [
+        "hid_report_internal.cpp",
+    ],
+    visibility = [
+        "//hidapi:__subpackages__",
+    ],
+    deps = [
+        "@hidapi",
+    ],
+)

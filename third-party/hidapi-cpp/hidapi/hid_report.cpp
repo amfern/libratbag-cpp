@@ -6,19 +6,6 @@
 
 #include "hidapi/hid_report.hpp"
 
-namespace hidapi {
-
-ReportID HIDReportInternal::report() const {
-  return data_[0];
-};
-
-void HIDReportInternal::setReport(ReportID report_id) {
-  data_[0] = report_id;
-};
-
-
-} // namespace hidapi
-
 namespace std {
 using namespace hidapi;
 
