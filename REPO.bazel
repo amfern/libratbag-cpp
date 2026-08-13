@@ -1,0 +1,4 @@
+# 1. Ignore specific directories from being watched or parsed by Bazel
+ignore_directories([
+    "third-party",
+])
