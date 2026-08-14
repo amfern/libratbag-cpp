@@ -24,16 +24,16 @@ cc_test(
     ],
 )
 
-# cc_test(
-#     name = "hid_report",
-#     srcs = [
-#         "hid_report_test.cpp",
-#     ],
-#     deps = [
-#         "//hidapi:hid_report",
-#         "@googletest//:gtest_main",
-#     ],
-# )
+cc_test(
+    name = "hid_report",
+    srcs = [
+        "hid_report_test.cpp",
+    ],
+    deps = [
+        "//hidapi:hid_report",
+        "@googletest//:gtest_main",
+    ],
+)
 
 cc_test(
     name = "device_test_mocked",
