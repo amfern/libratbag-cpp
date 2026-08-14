@@ -5,7 +5,8 @@
 #include <sys/types.h>
 #include <vector>
 #include <span>
-// #include <format>
+#include <format>
+#include <ranges>
 
 namespace hidapi {
 namespace detail {
@@ -34,7 +35,8 @@ public:
   // It's up to the user to treat the reference they received with approproiate care for life of the source object
   // span is also short lived, as it referes to internal memory of vector.
   // std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
-  
+
+  // TODO: this should be a dedicated type instead of std::span
   std::span<std::byte> report_data() {
     return std::span<std::byte>{data_}.subspan(1);  
   };
@@ -56,15 +58,35 @@ public:
     setReport(report);
   }
 
-  // 1. Custom Equality (only check serial numbers)
-  bool operator==(const HIDReportInternal& rhs) const {
-    return data_ == rhs.data_;
-  }
-
-  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const {
-    return data_ <=> rhs.data_;
-  };
+  // TODO(ask): why do i need to tell c++ to use default comparator, why can't it just be the deafult behavior?
+  //            I assume the default would just compare all members?
+  bool operator==(const HIDReportInternal& rhs) const = default;
+  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const = default;
 };
 
 } // namespace detail
 } // namespace hidapi
+
+namespace std {
+
+using namespace hidapi::detail;
+
+template <> struct formatter<HIDReportInternal> : formatter<string_view> {
+
+  template <class FormatContext>
+  typename FormatContext::iterator format(HIDReportInternal &report,
+                                          FormatContext &ctx) const {
+    std::string report_data_str =
+        std::format("{::#04x}", report.report_data() |
+                                    std::views::transform([](std::byte b) {
+                                      return std::to_integer<unsigned char>(b);
+                                    }));
+
+    return format_to(ctx.out(),
+                     "HIDReportInternal(report_id: {:#04x}, report_data: {})",
+                     static_cast<unsigned char>(report.report()), report_data_str);
+  }
+};
+
+} // namespace std
+

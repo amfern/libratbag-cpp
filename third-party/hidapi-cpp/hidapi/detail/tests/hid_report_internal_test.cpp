@@ -61,11 +61,13 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
 }
 
 TEST(HidReportInternalTest, formatting) {
-  // HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
-  //                  std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6});
+  HIDReportInternal report(ReportID{0x77}, std::byte{0}, std::byte{1},
+                           std::byte{2}, std::byte{3}, std::byte{4},
+                           std::byte{5}, std::byte{6});
 
-  // TODO: write test for formatting
-  // EXPECT_EQ(std::format("{}", static_cast<uint8_t>(std::byte{3})), "adasds");
+  EXPECT_EQ(std::format("{}", report),
+            "HIDReportInternal(report_id: 0x77, report_data: [0x00, 0x01, "
+            "0x02, 0x03, 0x04, 0x05, 0x06])");
 }
 
 
