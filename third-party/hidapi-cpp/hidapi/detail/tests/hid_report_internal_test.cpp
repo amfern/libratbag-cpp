@@ -60,14 +60,6 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
   ASSERT_EQ(data[5], std::byte{6});
 }
 
-TEST(HidReportInternalTest, formatting) {
-  // HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
-  //                  std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6});
-
-  // TODO: write test for formatting
-  // EXPECT_EQ(std::format("{}", static_cast<uint8_t>(std::byte{3})), "adasds");
-}
-
 
 // TEST(HidReportInternalTest, CanInitializeFromBuffer) {
 //   unsigned char data_raw[] = {0x77, 1,2,3,4,5,6};

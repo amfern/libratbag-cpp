@@ -5,13 +5,15 @@
 #include <sys/types.h>
 #include <vector>
 #include <span>
-// #include <format>
+#include <format>
+#include <ranges>
 
 namespace hidapi {
 namespace detail {
 
 using HIDBuffer = std::vector<std::byte>;
 using ReportID = std::byte;
+using ReportData = std::span<std::byte>;
 
 
 class HIDReportInternal {
@@ -34,9 +36,10 @@ public:
   // It's up to the user to treat the reference they received with approproiate care for life of the source object
   // span is also short lived, as it referes to internal memory of vector.
   // std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
-  
-  std::span<std::byte> report_data() {
-    return std::span<std::byte>{data_}.subspan(1);  
+
+  // TODO: this should be a dedicated type instead of std::span
+  ReportData report_data() {
+    return ReportData{data_}.subspan(1);  
   };
   
   template <std::same_as<std::byte>... Ts>
@@ -56,14 +59,10 @@ public:
     setReport(report);
   }
 
-  // 1. Custom Equality (only check serial numbers)
-  bool operator==(const HIDReportInternal& rhs) const {
-    return data_ == rhs.data_;
-  }
-
-  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const {
-    return data_ <=> rhs.data_;
-  };
+  // TODO(ask): why do i need to tell c++ to use default comparator, why can't it just be the deafult behavior?
+  //            I assume the default would just compare all members?
+  bool operator==(const HIDReportInternal& rhs) const = default;
+  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const = default;
 };
 
 } // namespace detail
