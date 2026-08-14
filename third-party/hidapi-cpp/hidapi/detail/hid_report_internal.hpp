@@ -13,6 +13,7 @@ namespace detail {
 
 using HIDBuffer = std::vector<std::byte>;
 using ReportID = std::byte;
+using ReportData = std::span<std::byte>;
 
 
 class HIDReportInternal {
@@ -37,8 +38,8 @@ public:
   // std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
 
   // TODO: this should be a dedicated type instead of std::span
-  std::span<std::byte> report_data() {
-    return std::span<std::byte>{data_}.subspan(1);  
+  ReportData report_data() {
+    return ReportData{data_}.subspan(1);  
   };
   
   template <std::same_as<std::byte>... Ts>
@@ -71,20 +72,33 @@ namespace std {
 
 using namespace hidapi::detail;
 
+template <> struct formatter<ReportID> : formatter<string_view> {
+  template <class FormatContext>
+  typename FormatContext::iterator format(ReportID &report_id,
+                                          FormatContext &ctx) const {
+    return format_to(ctx.out(), "{:#04x}", static_cast<unsigned char>(report_id));
+  }
+};
+
+template <> struct formatter<ReportData> : formatter<string_view> {
+  template <class FormatContext>
+  typename FormatContext::iterator format(ReportData &report_data,
+                                          FormatContext &ctx) const {
+    return format_to(ctx.out(), "{::#04x}",
+                     report_data | std::views::transform([](std::byte b) {
+                       return std::to_integer<unsigned char>(b);
+                     }));
+  }
+};
+
 template <> struct formatter<HIDReportInternal> : formatter<string_view> {
 
   template <class FormatContext>
   typename FormatContext::iterator format(HIDReportInternal &report,
                                           FormatContext &ctx) const {
-    std::string report_data_str =
-        std::format("{::#04x}", report.report_data() |
-                                    std::views::transform([](std::byte b) {
-                                      return std::to_integer<unsigned char>(b);
-                                    }));
-
     return format_to(ctx.out(),
-                     "HIDReportInternal(report_id: {:#04x}, report_data: {})",
-                     static_cast<unsigned char>(report.report()), report_data_str);
+                     "HIDReportInternal(report_id: {}, report_data: {})",
+                     report.report(), report.report_data());
   }
 };
 
