@@ -10,11 +10,11 @@ namespace hidapi {
 namespace detail {
 
 ReportID HIDReportInternal::report() const {
-  return data_[0];
+  return front();
 };
 
 void HIDReportInternal::setReport(ReportID report_id) {
-  data_[0] = report_id;
+  front() = report_id;
 };
 
 } // namespace detail

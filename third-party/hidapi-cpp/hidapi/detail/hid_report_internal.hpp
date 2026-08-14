@@ -10,16 +10,19 @@
 namespace hidapi {
 namespace detail {
 
-using HIDBuffer = std::vector<std::byte>;
+using HIDBuffer = std::vector<std::byte>; // TODO: this should be in some common type, because it's also used by device.cpp
 using ReportID = std::byte;
 
 
-class HIDReportInternal {
+class HIDReportInternal : private HIDBuffer {
 // friend class std::formatter<HIDReportInternal>;
+private:
+  using HIDBuffer::begin;
+  using HIDBuffer::end;
 
 public:
   // TODO: maybe use std::array instead of std::vector, and make all HIDBuffer static_size
-  HIDBuffer data_;
+  // HIDBuffer data_;
 
   ReportID report() const;
   void setReport(ReportID report_id);
@@ -36,11 +39,13 @@ public:
   // std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
   
   std::span<std::byte> report_data() {
-    return std::span<std::byte>{data_}.subspan(1);  
+    // TODO: it feels strange to use *this, because i am refering to pointer, why can't i use "this" as a reference...
+    // return std::span<std::byte>{this->begin() + 1, this->end()}.subspan(1);
+    return std::span<std::byte>(this->begin() + 1, this->end());
   };
   
   template <std::same_as<std::byte>... Ts>
-  HIDReportInternal(ReportID report, Ts ...data) : data_{report, data...} {}
+  HIDReportInternal(ReportID report, Ts ...report_data) : HIDBuffer{report, report_data...} {}
 
   // TODO: do i even need this function
   //       it can be provided, instead of exposing the internal data_ memeber
@@ -52,18 +57,27 @@ public:
 
   // This will resize the vector and preallocte empty values
   // We assume the buffers are small and OS+compiler can handle zeroing out in the cache line even before reaching the memory
-  HIDReportInternal(ReportID report, std::size_t count) : data_(count + 1) {
+  // TODO: shouljd i use std::ssize instead of std::size_t
+  HIDReportInternal(ReportID report, std::size_t report_data_size) : HIDBuffer(report_data_size + 1) {
     setReport(report);
   }
 
-  // 1. Custom Equality (only check serial numbers)
-  bool operator==(const HIDReportInternal& rhs) const {
-    return data_ == rhs.data_;
-  }
+  // forward comperators
+  bool operator==(const HIDReportInternal& rhs) const = default; 
+  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const = default;
+  // // 1. Custom Equality (only check serial numbers)
+  // bool operator==(const HIDReportInternal& rhs) const {
+  //   return data_ == rhs.data_;
+  // }
 
-  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const {
-    return data_ <=> rhs.data_;
-  };
+  // std::strong_ordering operator<=>(const HIDReportInternal& rhs) const {
+  //   return data_ <=> rhs.data_;
+  // };
+  //
+
+  // expose vector operations
+  using HIDBuffer::size;
+  using HIDBuffer::data;
 };
 
 } // namespace detail
