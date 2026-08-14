@@ -1,6 +1,6 @@
 #include "hidapi/detail/hid_bus_type.hpp"
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 using hidapi::detail::bus_type_to_string;
 

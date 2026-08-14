@@ -8,6 +8,16 @@ cc_test(
     deps = [
         "//hidapi/detail:hid_bus_type",
         "@googletest//:gtest_main",
-        "@hidapi",
+    ],
+)
+
+cc_test(
+    name = "hid_report_internal",
+    srcs = [
+        "hid_report_internal_test.cpp",
+    ],
+    deps = [
+        "//hidapi/detail:hid_report_internal",
+        "@googletest//:gtest_main",
     ],
 )

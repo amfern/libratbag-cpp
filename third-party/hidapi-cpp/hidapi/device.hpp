@@ -1,7 +1,6 @@
 #pragma once
 
 #include "hidapi.h"
-#include "hidapi/common.hpp"
 #include "hidapi/device_info.hpp"
 #include "hidapi/hid_report.hpp"
 
