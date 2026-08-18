@@ -15,9 +15,7 @@ using HIDBuffer = std::vector<std::byte>;
 using ReportID = std::byte;
 using ReportData = std::span<std::byte>;
 
-
 class HIDReportInternal {
-// friend class std::formatter<HIDReportInternal>;
 
 public:
   // TODO: maybe use std::array instead of std::vector, and make all HIDBuffer static_size
@@ -26,38 +24,14 @@ public:
   ReportID report() const;
   void setReport(ReportID report_id);
 
-  
-  // make a member function to return it
-  // The user needs to be aware that this is a reference and it points to something in this HIDReport, so if it this hid report goes out of scope, this referfence becomes invalid
-  // things that are refernce types, even just pointers, even that doesn't own the object.
-  // - Have them only as a parameter type, so you know it will outlive the entierly of the function call
-  // - As a local variable where you can see the scope it reffering to
-  // And that's the limit, unless i write my own view
-  // It's up to the user to treat the reference they received with approproiate care for life of the source object
-  // span is also short lived, as it referes to internal memory of vector.
-  // std::span<std::byte> data = std::span<std::byte>{data_}.subspan(1);
-
-  // TODO: this should be a dedicated type instead of std::span
-  ReportData report_data() {
-    return ReportData{data_}.subspan(1);  
-  };
+  ReportData report_data();
   
   template <std::same_as<std::byte>... Ts>
   HIDReportInternal(ReportID report, Ts ...data) : data_{report, data...} {}
 
-  // TODO: do i even need this function
-  //       it can be provided, instead of exposing the internal data_ memeber
-  // TODO: this will copy the data... i wonder if there is a btter way of not
-  // copying the data Is there a way to use some kind in-place optimization? How
-  // HIDReport(ReportID report, std::vector<std::byte> data) : data_{std::move(data)} {
-  //   data_.insert(data_.begin(), report);
-  // }
-
   // This will resize the vector and preallocte empty values
   // We assume the buffers are small and OS+compiler can handle zeroing out in the cache line even before reaching the memory
-  HIDReportInternal(ReportID report, std::size_t count) : data_(count + 1) {
-    setReport(report);
-  }
+  HIDReportInternal(ReportID report, std::size_t count);
 
   // TODO(ask): why do i need to tell c++ to use default comparator, why can't it just be the deafult behavior?
   //            I assume the default would just compare all members?

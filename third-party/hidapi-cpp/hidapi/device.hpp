@@ -15,15 +15,12 @@ using namespace std::chrono_literals;
 
 using ReadTimeoutMilli = std::chrono::duration<uint64_t, std::milli>;
 
-
-// TODO: Create proper wrapper class for hid_device
-// https://github.com/libusb/hidapi/blob/657b9fa147722ad59d045965e625d3972fa1264c/hidapi/hidapi.h#L284
 class HIDDevice {
  
 public:
 
   // TODO: inside this function i will call std::move(device_info).
-  //            Which can caught the user of this function off guard, because the device_info moved.
+  //            Which can caught the user off guard, because the device_info moved.
   //            So is it good to explicity ask for rvalue(HIDDeviceInfo &&device_info)?
   //            or should i use "static HIDDevice popen(HIDDeviceInfo device_info) {"
   // TODO: return const & is okay, but never return const because it will lead to wierd things and copy constructor to be called.

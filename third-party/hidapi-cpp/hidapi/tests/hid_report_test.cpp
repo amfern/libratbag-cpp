@@ -10,13 +10,6 @@
 using hidapi::HIDReport;
 using hidapi::ReportID;
 
-// TODO: move those tests to /detail directory
-
-
-// TODO: how do i know this will not be optimization out
-// ANS:  the compiler will do the full validation and generate the code and then optimized that code out. and will probabbly write the code if it had side effects.
-//       So the compiler will validate the code, even if it's going to be optimized later. And if it has side effects like assert, it will aslo run the code.
-
 // TODO(ask): now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
 TEST(HidReportTest, CanInitialize) {
   HIDReport report(ReportID{0x77}, std::size_t{16});
