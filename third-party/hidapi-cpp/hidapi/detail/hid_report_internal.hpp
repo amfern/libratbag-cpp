@@ -25,7 +25,7 @@ public:
   void setReport(ReportID report_id);
 
   ReportData report_data();
-  
+
   template <std::same_as<std::byte>... Ts>
   HIDReportInternal(ReportID report, Ts ...data) : data_{report, data...} {}
 
