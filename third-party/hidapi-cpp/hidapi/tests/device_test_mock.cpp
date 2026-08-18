@@ -39,8 +39,8 @@ TEST_F(DeviceTestSuit, DeviceWrite) {
 TEST_F(DeviceTestSuit, DeviceRead) {
   auto buf = device_ptr->read(64);
 
-  // TODO: why i can't do HIDBuffer expected{{0}, {0}, {0}};?
-  //  ANS: because std::byte doesn't have default constructor from int
+  //  why i can't do HIDBuffer expected{{0}, {0}, {0}};?
+  //  ANS: because std::byte doesn't have default constructor from int, and it's by design
   HIDBuffer expected{
       std::byte{0},  std::byte{1},  std::byte{2},  std::byte{3},  std::byte{4},
       std::byte{5},  std::byte{6},  std::byte{7},  std::byte{8},  std::byte{9},
