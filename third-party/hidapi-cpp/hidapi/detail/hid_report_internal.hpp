@@ -14,6 +14,7 @@ using HIDBuffer = std::vector<std::byte>; // TODO: this should be in some common
 using ReportID = std::byte;
 
 
+// if based class was empty type, inhereting it would have saved data, but here it's not the case
 class HIDReportInternal : private HIDBuffer {
 // friend class std::formatter<HIDReportInternal>;
 private:
