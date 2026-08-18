@@ -15,6 +15,10 @@ using HIDBuffer = std::vector<std::byte>;
 using ReportID = std::byte;
 using ReportData = std::span<std::byte>;
 
+// TODO(ask): what do you think about inheriting std::vector instead of having it as a member?
+// from what i read, it can create issues when casting to std::vector and calling delete, but in this case the inheritance is private
+// class HIDReportInternal : private HIDBuffer {
+
 class HIDReportInternal {
 
 public:
