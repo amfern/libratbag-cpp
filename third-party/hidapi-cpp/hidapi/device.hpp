@@ -29,7 +29,6 @@ public:
   // clang tidy catches use after move
   template<typename T>
   static HIDDevice open(T device_info) {
-
     hid_device* handle = hid_open_path(device_info.path().data());
 	if (handle == nullptr) {
         throw std::runtime_error("Unable to open device");
@@ -62,6 +61,5 @@ private:
   hid_device* handle_;
   HIDDeviceInfo device_info_;
 };
-
 
 } // namespace hidapi
