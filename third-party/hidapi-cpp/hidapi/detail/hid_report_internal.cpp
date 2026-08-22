@@ -17,20 +17,15 @@ void HIDReportInternal::setReport(ReportID report_id) {
   front() = report_id;
 };
 
+ReportData HIDReportInternal::report_data() {
+  // return everything except the first byte which is the report
+  return std::span<std::byte>(this->begin() + 1, this->end());
+};
+
+HIDReportInternal::HIDReportInternal(ReportID report, std::size_t report_data_size) : HIDBuffer(report_data_size + 1) {
+  setReport(report);
+}
+
 } // namespace detail
 } // namespace hidapi
-
-// namespace std {
-// using namespace hidapi;
-
-// template <> struct formatter<HIDReportIn> : formatter<string_view> {
-
-//   template <class FormatContext>
-//   typename FormatContext::iterator format(HIDReport &report,
-//                                           FormatContext &ctx) const {
-//     return format_to(ctx.out(), "report_id: {}, report_data: {}", report.report(), report.report_data());
-//   }
-// };
-// } // namespace std
-
 

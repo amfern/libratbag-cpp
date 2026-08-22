@@ -11,10 +11,7 @@
 using hidapi::detail::HIDReportInternal;
 using hidapi::detail::ReportID;
 
-// TODO: move those tests to /detail directory
-
-
-// TODO: how do i know this will not be optimization out
+// QA:  how do i know this will not be optimization out
 // ANS:  the compiler will do the full validation and generate the code and then optimized that code out. and will probabbly write the code if it had side effects.
 //       So the compiler will validate the code, even if it's going to be optimized later. And if it has side effects like assert, it will aslo run the code.
 TEST(HidReportInternalTest, CanInitialize) {
@@ -59,15 +56,6 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
   ASSERT_EQ(data[4], std::byte{5});
   ASSERT_EQ(data[5], std::byte{6});
 }
-
-TEST(HidReportInternalTest, formatting) {
-  // HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
-  //                  std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6});
-
-  // TODO: write test for formatting
-  // EXPECT_EQ(std::format("{}", static_cast<uint8_t>(std::byte{3})), "adasds");
-}
-
 
 // TEST(HidReportInternalTest, CanInitializeFromBuffer) {
 //   unsigned char data_raw[] = {0x77, 1,2,3,4,5,6};

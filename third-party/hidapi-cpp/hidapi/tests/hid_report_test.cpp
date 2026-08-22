@@ -10,12 +10,7 @@
 using hidapi::HIDReport;
 using hidapi::ReportID;
 
-// TODO: move those tests to /detail directory
-
-
-// TODO: how do i know this will not be optimization out
-// ANS:  the compiler will do the full validation and generate the code and then optimized that code out. and will probabbly write the code if it had side effects.
-//       So the compiler will validate the code, even if it's going to be optimized later. And if it has side effects like assert, it will aslo run the code.
+// TODO(ask): now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
 TEST(HidReportTest, CanInitialize) {
   HIDReport report(ReportID{0x77}, std::size_t{16});
   auto data = report.report_data();
@@ -39,10 +34,12 @@ TEST(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
                    std::byte{15});
 }
 
-TEST(HidReportTest, formatting) {
-  // HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
-  //                  std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6});
+TEST(HidReportTest, CanFormatPrint) {
+  HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1},
+                           std::byte{2}, std::byte{3}, std::byte{4},
+                           std::byte{5}, std::byte{6});
 
-  // TODO: write test for formatting
-  // EXPECT_EQ(std::format("{}", static_cast<uint8_t>(std::byte{3})), "adasds");
+  EXPECT_EQ(std::format("{}", report),
+            "HIDReport(report_id: 0x77, report_data: [0x00, 0x01, "
+            "0x02, 0x03, 0x04, 0x05, 0x06])");
 }

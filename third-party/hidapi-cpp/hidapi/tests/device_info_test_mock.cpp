@@ -6,6 +6,8 @@
 using hidapi::HidBusType;
 using hidapi::HIDDeviceInfo;
 
+// TODO: add tests for function of deviceInfo
+
 TEST(DeviceInfoTestSuit, EnumarateMockedDevices) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 

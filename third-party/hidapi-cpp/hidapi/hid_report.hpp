@@ -13,6 +13,7 @@ namespace hidapi {
 
 using HIDBuffer = hidapi::detail::HIDBuffer;
 using ReportID = hidapi::detail::ReportID;
+using ReportData = hidapi::detail::ReportData;
 using HIDReportInternal = hidapi::detail::HIDReportInternal;
 
 class HIDReport : private HIDReportInternal {
@@ -35,3 +36,39 @@ public:
 
 
 } // namespace hidapi
+
+namespace std {
+
+using namespace hidapi;
+
+template <> struct formatter<ReportID> : formatter<string_view> {
+  template <class FormatContext>
+  typename FormatContext::iterator format(ReportID &report_id,
+                                          FormatContext &ctx) const {
+    return format_to(ctx.out(), "{:#04x}", static_cast<unsigned char>(report_id));
+  }
+};
+
+template <> struct formatter<ReportData> : formatter<string_view> {
+  template <class FormatContext>
+  typename FormatContext::iterator format(ReportData &report_data,
+                                          FormatContext &ctx) const {
+    return format_to(ctx.out(), "{::#04x}",
+                     report_data | std::views::transform([](std::byte b) {
+                       return std::to_integer<unsigned char>(b);
+                     }));
+  }
+};
+
+template <> struct formatter<HIDReport> : formatter<string_view> {
+
+  template <class FormatContext>
+  typename FormatContext::iterator format(HIDReport &report,
+                                          FormatContext &ctx) const {
+    return format_to(ctx.out(),
+                     "HIDReport(report_id: {}, report_data: {})",
+                     report.report(), report.report_data());
+  }
+};
+
+} // namespace std
