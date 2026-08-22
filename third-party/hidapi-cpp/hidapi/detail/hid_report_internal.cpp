@@ -10,19 +10,19 @@ namespace hidapi {
 namespace detail {
 
 ReportID HIDReportInternal::report() const {
-  return data_[0];
+  return front();
 };
 
 void HIDReportInternal::setReport(ReportID report_id) {
-  data_[0] = report_id;
+  front() = report_id;
 };
 
 ReportData HIDReportInternal::report_data() {
   // return everything except the first byte which is the report
-  return ReportData{data_}.subspan(1);
+  return std::span<std::byte>(this->begin() + 1, this->end());
 };
 
-HIDReportInternal::HIDReportInternal(ReportID report, std::size_t count) : data_(count + 1) {
+HIDReportInternal::HIDReportInternal(ReportID report, std::size_t report_data_size) : HIDBuffer(report_data_size + 1) {
   setReport(report);
 }
 

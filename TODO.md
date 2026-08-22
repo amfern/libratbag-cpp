@@ -63,3 +63,10 @@ cheap to copy. cheaper than dereferencing an address
 // for a 4GB std::vector it may be important, and then there are different software architecurte required
 // TODO: read about std::start_life_time_as if they are trivially copyable
 // TODO: read about https://www.sandordargo.com/blog/2025/02/05/cpp26-erroneous-behaviour
+
+
+
+// TODO(ask): why do i need to tell c++ to use default comparator, why can't it just be the deafult behavior?
+//            bool operator==(const HIDReportInternal& rhs) const = default;
+//            I assume the default would just compare all members?
+// Answer:    history... bascially only in c++20 it was alloed to have default comperator, before that having defualt comparator would make the wrong thing???? the copy constructor doesn't have any

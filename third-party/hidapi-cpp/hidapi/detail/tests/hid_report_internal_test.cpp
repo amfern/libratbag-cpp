@@ -44,7 +44,7 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
   HIDReportInternal report(ReportID{}, std::ssize(c_api_fill_raw_data));
 
   // mimic C-API populating the storage
-  std::ranges::copy(c_api_fill_raw_data, reinterpret_cast<unsigned char*>(report.data_.data()));
+  std::ranges::copy(c_api_fill_raw_data, reinterpret_cast<unsigned char*>(report.data()));
 
   auto data = report.report_data();
 
