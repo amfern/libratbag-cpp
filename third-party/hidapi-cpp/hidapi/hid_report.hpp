@@ -18,8 +18,9 @@ using HIDReportInternal = hidapi::detail::HIDReportInternal;
 
 class HIDReport : private HIDReportInternal {
 
-// TODO(ask): using friend means by classes are badley design, does it apply for this case aswell?
-// Where i want to limit the a access to raw data_ buffer only to my internal API?
+// TODO: using friend means by classes are badley design, does it apply for this case aswell?
+//       Where i want to limit the a access to raw data buffer only to my internal API?
+// ans:  sometimes it is ncessary, and can make the API looks simple to the external users, and as long as it's hidden from the user
 friend class HIDDevice;
 
 public:

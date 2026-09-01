@@ -66,7 +66,16 @@ cheap to copy. cheaper than dereferencing an address
 
 
 
-// TODO(ask): why do i need to tell c++ to use default comparator, why can't it just be the deafult behavior?
+// TODO: why do i need to tell c++ to use default comparator, why can't it just be the deafult behavior?
 //            bool operator==(const HIDReportInternal& rhs) const = default;
 //            I assume the default would just compare all members?
 // Answer:    history... bascially only in c++20 it was alloed to have default comperator, before that having defualt comparator would make the wrong thing???? the copy constructor doesn't have any
+
+
+// it's not possible to test all outcomes of a big function,
+// but we can intentionally test a small thing and relay on small thing
+// working correcntly first It's harder to check all possible inputs on an
+// higher level. integration - two different parts from different places are
+// working togather, even if it's in the same process and same project. Use
+// detail like in arene-base for all the private functions that need testing,
+// extract helper class.

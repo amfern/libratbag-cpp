@@ -2,16 +2,19 @@
 
 #include "gtest/gtest.h"
 
-using hidapi::detail::bus_type_to_string;
+// TODO(ask): should include whole namespace or only specific stuff i need?
+// using hidapi::detail::bus_type_to_string;
+// using hidapi::detail::HidBusType;
+using namespace hidapi::detail;
 
 TEST(BusTypeToStringTest, CanReturnCorrectStringToEnum) {
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_USB), "USB");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_BLUETOOTH), "Bluetooth");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_I2C), "I2C");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_SPI), "SPI");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_UNKNOWN), "unknown");
+  ASSERT_EQ(bus_type_to_string(HidBusType::USB), "USB");
+  ASSERT_EQ(bus_type_to_string(HidBusType::Bluetooth), "Bluetooth");
+  ASSERT_EQ(bus_type_to_string(HidBusType::I2C), "I2C");
+  ASSERT_EQ(bus_type_to_string(HidBusType::SPI), "SPI");
+  ASSERT_EQ(bus_type_to_string(HidBusType::Unknown), "Unknown");
 }
 
 TEST(BusTypeToStringTest, CanFormatString) {
-  ASSERT_EQ(std::format("This is {}", HID_API_BUS_USB), "This is USB");
+  ASSERT_EQ(std::format("This is {}", HidBusType::USB), "This is USB");
 }

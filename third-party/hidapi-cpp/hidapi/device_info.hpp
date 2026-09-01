@@ -102,7 +102,7 @@ public:
 
   ~HIDDeviceInfo(); // destructor
 
-  HIDDeviceInfo(const HIDDeviceInfo &other) = delete; // copy constructor
+  HIDDeviceInfo(const HIDDeviceInfo &other) =  delete; // copy constructor
   HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;      // move constructor
   HIDDeviceInfo &operator=(const HIDDeviceInfo &rhs) = delete; // copy operator
   HIDDeviceInfo &operator=(HIDDeviceInfo &&rhs) noexcept;      // move operator
