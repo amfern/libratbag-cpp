@@ -19,11 +19,15 @@ void HIDDevice::write(HIDBuffer buf) {
 
   auto bytes_written = hid_write(handle_, buf_ptr, buf.size());
 
-  if (bytes_written != buf.size()) {
-    throw std::runtime_error(std::format(
-        "Actual number of writen bytes({}) doesn't match the expected({})",
-        bytes_written, buf.size()));
+  if (bytes_written == buf.size()) {
+    return;
   }
+
+  HIDAPIString err(hid_error(handle_));
+  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
+                                       "doesn't match the expected({}): {}",
+                                       bytes_written, buf.size(),
+                                       err));
 }
 
 std::optional<HIDBuffer> HIDDevice::read(std::size_t max_length, ReadTimeoutMilli timeout) {
@@ -50,11 +54,14 @@ std::optional<HIDBuffer> HIDDevice::read(std::size_t max_length, ReadTimeoutMill
 void HIDDevice::send_feature_report(HIDReport report) {
   auto buf_ptr = reinterpret_cast<unsigned char*>(report.data());
   auto bytes_written = hid_send_feature_report(handle_, buf_ptr, report.size());
-  if (bytes_written != report.size()) {
-    throw std::runtime_error(std::format(
-        "Actual number of writen bytes({}) doesn't match the expected({})",
-                                         bytes_written, report.size()));
+  if (bytes_written == report.size()) {
+    return;
   }
+
+  HIDAPIString err(hid_error(handle_));
+  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
+                                       "doesn't match the expected({}): {}",
+                                       bytes_written, report.size(), err));
 }
 
 std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, std::size_t length) {
@@ -66,7 +73,7 @@ std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, s
 
   if (bytes_read == -1) {
     HIDAPIString err(hid_error(handle_));
-    throw std::runtime_error(std::format("HID read error: {}", err));
+    throw std::runtime_error(std::format("HIDReport receive error: {}", err));
   }
 
   return report;
