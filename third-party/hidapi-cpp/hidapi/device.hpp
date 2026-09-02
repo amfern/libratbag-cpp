@@ -11,8 +11,6 @@
 
 namespace hidapi {
 
-using namespace std::chrono_literals;
-
 using ReadTimeoutMilli = std::chrono::duration<uint64_t, std::milli>;
 
 class HIDDevice {

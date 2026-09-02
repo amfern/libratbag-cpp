@@ -42,14 +42,13 @@ static constexpr std::string_view bus_type_to_string(HidBusType bus_type) {
 } // namespace hidapi
 
 namespace std {
-using namespace hidapi::detail;
 
-template <> struct formatter<HidBusType> : formatter<string_view> {
+template <> struct formatter<hidapi::detail::HidBusType> : formatter<string_view> {
 
   template <class FormatContext>
-  typename FormatContext::iterator format(const HidBusType &bus_type,
+  typename FormatContext::iterator format(const hidapi::detail::HidBusType &bus_type,
                                           FormatContext &ctx) const {
-    auto name = bus_type_to_string(bus_type);
+    auto name = hidapi::detail::bus_type_to_string(bus_type);
     return format_to(ctx.out(), "{}", name);
   }
 };
