@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "hidapi.h"
-#include "hidapi/detail/hid_bus_type.hpp"
+#include "hidapi/detail/hid_bus_type_internal.hpp"
 
 namespace hidapi {
 
@@ -71,7 +71,7 @@ using UsagePage = uint16_t;
 using Usage = uint16_t;
 using InterfaceNumber = int32_t;
 using HIDDeviceInfoList = std::vector<HIDDeviceInfo>;
-using HidBusType = hidapi::detail::HidBusType;
+using HidBusType = hidapi::detail::HidBusTypeInternal;
 
 class HIDDeviceInfo {
 

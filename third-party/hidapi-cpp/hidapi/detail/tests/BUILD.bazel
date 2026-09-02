@@ -3,10 +3,10 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 cc_test(
     name = "bus_type_to_string_test",
     srcs = [
-        "bus_type_to_string_test.cpp",
+        "hid_bus_type_internal_test.cpp",
     ],
     deps = [
-        "//hidapi/detail:hid_bus_type",
+        "//hidapi/detail:hid_bus_type_internal",
         "@googletest//:gtest_main",
     ],
 )

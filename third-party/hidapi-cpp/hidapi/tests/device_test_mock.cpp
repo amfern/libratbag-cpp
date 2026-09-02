@@ -9,7 +9,6 @@
 #include <codecvt>
 #include <cstddef>
 
-
 // TODO: negative fail tests
 
 class DeviceTestSuit : public ::testing::Test {
