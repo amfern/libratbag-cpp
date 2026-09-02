@@ -2,8 +2,6 @@
 
 #include "gtest/gtest.h"
 
-using hidapi::detail::bus_type_to_string;
-
 TEST(BusTypeToStringTest, CanReturnCorrectStringToEnum) {
   ASSERT_EQ(bus_type_to_string(HID_API_BUS_USB), "USB");
   ASSERT_EQ(bus_type_to_string(HID_API_BUS_BLUETOOTH), "Bluetooth");

@@ -3,13 +3,11 @@
 
 #include "gtest/gtest.h"
 
-using hidapi::HidBusType;
-using hidapi::HIDDeviceInfo;
 
 // TODO: add tests for function of deviceInfo
 
 TEST(DeviceInfoTestSuit, EnumarateMockedDevices) {
-  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
+  auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();
 
   // hid_enumerate() is mocked in hid_mocked.c to always return the same value
   EXPECT_EQ(

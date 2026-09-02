@@ -11,24 +11,25 @@
 
 namespace hidapi {
 
+// Reexport the following types from detail?
 using HIDBuffer = hidapi::detail::HIDBuffer;
 using ReportID = hidapi::detail::ReportID;
 using ReportData = hidapi::detail::ReportData;
-using HIDReportInternal = hidapi::detail::HIDReportInternal;
 
-class HIDReport : private HIDReportInternal {
+class HIDReport : private hidapi::detail::HIDReportInternal {
 
-// TODO(ask): using friend means by classes are badley design, does it apply for this case aswell?
-// Where i want to limit the a access to raw data_ buffer only to my internal API?
+// TODO: using friend means by classes are badley design, does it apply for this case aswell?
+//       Where i want to limit the a access to raw data buffer only to my internal API?
+// ans:  sometimes it is ncessary, and can make the API looks simple to the external users, and as long as it's hidden from the user
 friend class HIDDevice;
 
 public:
-  using HIDReportInternal::report_data;
-  using HIDReportInternal::report;
-  using HIDReportInternal::setReport;
+  using hidapi::detail::HIDReportInternal::report_data;
+  using hidapi::detail::HIDReportInternal::report;
+  using hidapi::detail::HIDReportInternal::setReport;
 
   // forward the constructors from base class
-  using HIDReportInternal::HIDReportInternal;
+  using hidapi::detail::HIDReportInternal::HIDReportInternal;
 
   bool operator==(const HIDReport& rhs) const = default; 
   std::strong_ordering operator<=>(const HIDReport& rhs) const = default;
@@ -39,19 +40,17 @@ public:
 
 namespace std {
 
-using namespace hidapi;
-
-template <> struct formatter<ReportID> : formatter<string_view> {
+template <> struct formatter<hidapi::ReportID> : formatter<string_view> {
   template <class FormatContext>
-  typename FormatContext::iterator format(ReportID &report_id,
+  typename FormatContext::iterator format(hidapi::ReportID &report_id,
                                           FormatContext &ctx) const {
     return format_to(ctx.out(), "{:#04x}", static_cast<unsigned char>(report_id));
   }
 };
 
-template <> struct formatter<ReportData> : formatter<string_view> {
+template <> struct formatter<hidapi::ReportData> : formatter<string_view> {
   template <class FormatContext>
-  typename FormatContext::iterator format(ReportData &report_data,
+  typename FormatContext::iterator format(hidapi::ReportData &report_data,
                                           FormatContext &ctx) const {
     return format_to(ctx.out(), "{::#04x}",
                      report_data | std::views::transform([](std::byte b) {
@@ -60,10 +59,10 @@ template <> struct formatter<ReportData> : formatter<string_view> {
   }
 };
 
-template <> struct formatter<HIDReport> : formatter<string_view> {
+template <> struct formatter<hidapi::HIDReport> : formatter<string_view> {
 
   template <class FormatContext>
-  typename FormatContext::iterator format(HIDReport &report,
+  typename FormatContext::iterator format(hidapi::HIDReport &report,
                                           FormatContext &ctx) const {
     return format_to(ctx.out(),
                      "HIDReport(report_id: {}, report_data: {})",
