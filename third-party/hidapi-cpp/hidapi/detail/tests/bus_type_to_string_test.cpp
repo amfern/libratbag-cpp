@@ -3,11 +3,11 @@
 #include "gtest/gtest.h"
 
 TEST(BusTypeToStringTest, CanReturnCorrectStringToEnum) {
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_USB), "USB");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_BLUETOOTH), "Bluetooth");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_I2C), "I2C");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_SPI), "SPI");
-  ASSERT_EQ(bus_type_to_string(HID_API_BUS_UNKNOWN), "unknown");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_USB), "USB");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_BLUETOOTH), "Bluetooth");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_I2C), "I2C");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_SPI), "SPI");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_UNKNOWN), "unknown");
 }
 
 TEST(BusTypeToStringTest, CanFormatString) {

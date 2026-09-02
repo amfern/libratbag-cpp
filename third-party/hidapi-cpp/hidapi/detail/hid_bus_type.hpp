@@ -48,7 +48,7 @@ template <> struct formatter<hidapi::detail::HidBusType> : formatter<string_view
   template <class FormatContext>
   typename FormatContext::iterator format(const hidapi::detail::HidBusType &bus_type,
                                           FormatContext &ctx) const {
-    auto name = bus_type_to_string(bus_type);
+    auto name = hidapi::detail::bus_type_to_string(bus_type);
     return format_to(ctx.out(), "{}", name);
   }
 };
