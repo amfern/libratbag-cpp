@@ -9,11 +9,6 @@
 #include <codecvt>
 #include <cstddef>
 
-// using hidapi::HIDDevice;
-// using hidapi::HIDBuffer;
-// using hidapi::HIDReport;
-// using hidapi::ReportID;
-
 
 // TODO: negative fail tests
 
