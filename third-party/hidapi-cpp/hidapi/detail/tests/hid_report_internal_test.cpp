@@ -23,7 +23,17 @@ TEST(HidReportInternalTest, CanInitialize) {
   data[6] = {6};
 
   ASSERT_EQ(report.report(), std::byte{0x77});
+  assert(data[0] == std::byte{0});
   assert(data[6] == std::byte{6});
+  assert(data[7] == std::byte{0});
+}
+
+TEST(HidReportInternalTest, CanInitializeWithZero) {
+  hidapi::detail::HIDReportInternal report(hidapi::detail::ReportID{0x77}, std::size_t{0});
+  auto data = report.report_data();
+
+  ASSERT_EQ(report.report(), std::byte{0x77});
+  ASSERT_EQ(data.size(), std::size_t{0});
 }
 
 TEST(HidReportInternalTest, CanInitiazlieAnyNumberOfbytes) {
@@ -74,3 +84,9 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
 //   ASSERT_EQ(data[4], std::byte{5});
 //   ASSERT_EQ(data[5], std::byte{6});
 // }
+
+
+// TODO: add move and copy tests here as well
+//
+
+// TODO(ask): should i test the move constructor, even though i don't override it?

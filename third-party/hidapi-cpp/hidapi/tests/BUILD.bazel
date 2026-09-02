@@ -9,9 +9,9 @@ load("@rules_cc//cc:defs.bzl", "cc_test")
 #            "hid_enumerate" symbol was resolved and stripped in
 #            bazel-bin/hidapi-cpp/libhidapi.so
 cc_test(
-    name = "device_info_test_mocked",
+    name = "device_info_test",
     srcs = [
-        "device_info_test_mock.cpp",
+        "device_info_test.cpp",
         "hid_mocked.c",
     ],
     # linkopts = [
