@@ -29,7 +29,7 @@ cc_library(
         "//tests:__subpackages__"
     ],
     deps = [
-        "//hidapi/detail:hid_bus_type",
+        "//hidapi/detail:hid_bus_type_internal",
         "@hidapi",
     ],
 )

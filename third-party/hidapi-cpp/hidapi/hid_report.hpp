@@ -7,7 +7,7 @@
 #include <span>
 #include <format>
 
-#include "detail/hid_report_internal.hpp"
+#include "hidapi/detail/hid_report_internal.hpp"
 
 namespace hidapi {
 

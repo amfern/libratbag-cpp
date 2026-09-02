@@ -8,7 +8,7 @@
 namespace hidapi {
 namespace detail {
 
-enum class HidBusType : std::underlying_type_t<hid_bus_type> {
+enum class HidBusTypeInternal : std::underlying_type_t<hid_bus_type> {
   Unknown = HID_API_BUS_UNKNOWN,
   // USB bus
   //   Specifications:
@@ -33,22 +33,22 @@ enum class HidBusType : std::underlying_type_t<hid_bus_type> {
 
 
 // TODO: with c++26 we can use reflections instead of manual switch case
-static constexpr std::string_view bus_type_to_string(HidBusType bus_type) {
+static constexpr std::string_view bus_type_to_string(HidBusTypeInternal bus_type) {
   switch (bus_type) {
-  case HidBusType::USB:
+  case HidBusTypeInternal::Unknown:
+    return std::string_view("Unknown");
+  case HidBusTypeInternal::USB:
     return std::string_view("USB");
     break;
-  case HidBusType::Bluetooth:
+  case HidBusTypeInternal::Bluetooth:
     return std::string_view("Bluetooth");
     break;
-  case HidBusType::I2C:
+  case HidBusTypeInternal::I2C:
     return std::string_view("I2C");
     break;
-  case HidBusType::SPI:
+  case HidBusTypeInternal::SPI:
     return std::string_view("SPI");
     break;
-  case HidBusType::Unknown:
-    return std::string_view("Unknown");
   }
 
   return std::string_view("Unknown");
@@ -59,10 +59,10 @@ static constexpr std::string_view bus_type_to_string(HidBusType bus_type) {
 
 namespace std {
 
-template <> struct formatter<hidapi::detail::HidBusType> : formatter<string_view> {
+template <> struct formatter<hidapi::detail::HidBusTypeInternal> : formatter<string_view> {
 
   template <class FormatContext>
-  typename FormatContext::iterator format(const hidapi::detail::HidBusType &bus_type,
+  typename FormatContext::iterator format(const hidapi::detail::HidBusTypeInternal &bus_type,
                                           FormatContext &ctx) const {
     auto name = hidapi::detail::bus_type_to_string(bus_type);
     return format_to(ctx.out(), "{}", name);
