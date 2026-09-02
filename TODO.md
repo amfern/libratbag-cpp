@@ -77,5 +77,5 @@ cheap to copy. cheaper than dereferencing an address
 // working correcntly first It's harder to check all possible inputs on an
 // higher level. integration - two different parts from different places are
 // working togather, even if it's in the same process and same project. Use
-// detail like in arene-base for all the private functions that need testing,
-// extract helper class.
+// "detail" directory to be able to test internal implemenetation detail things while keeping them hidden from API user.
+// like in arene-base for all the private functions that need testing,

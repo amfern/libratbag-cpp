@@ -33,6 +33,7 @@ enum class HidBusTypeInternal : std::underlying_type_t<hid_bus_type> {
 
 
 // TODO: with c++26 we can use reflections instead of manual switch case
+// helper function to convery bus_type_to_string, a function that is hidden from API user, but used internally during std::format
 static constexpr std::string_view bus_type_to_string(HidBusTypeInternal bus_type) {
   switch (bus_type) {
   case HidBusTypeInternal::Unknown:
