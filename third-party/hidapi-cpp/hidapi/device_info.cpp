@@ -149,7 +149,9 @@ InterfaceNumber HIDDeviceInfo::interface_number() const {
   return static_cast<const InterfaceNumber &>(device_info_->interface_number);
 }
 
-hid_bus_type HIDDeviceInfo::bus_type() const { return device_info_->bus_type; }
+HidBusType HIDDeviceInfo::bus_type() const {
+  return static_cast<HidBusType>(device_info_->bus_type);
+}
 
 std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
   os << std::format("{}", info);

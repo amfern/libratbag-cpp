@@ -20,6 +20,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
                 "than returned by hid_enumurate";
     }
 
+    HidBusType bus_type = static_cast<HidBusType>(cur_dev->bus_type);
     ASSERT_EQ(info.path(), cur_dev->path);
     ASSERT_EQ(info.device_id().vid(), cur_dev->vendor_id);
     ASSERT_EQ(info.device_id().pid(), cur_dev->product_id);
@@ -30,7 +31,6 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
     ASSERT_EQ(info.usage_page(), cur_dev->usage_page);
     ASSERT_EQ(info.usage(), cur_dev->usage);
     ASSERT_EQ(info.interface_number(), cur_dev->interface_number);
-    ASSERT_EQ(info.bus_type(), cur_dev->bus_type);
 
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     std::string manufacturer_string_utf8 =
@@ -38,6 +38,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
     std::string product_string_utf8 =
         converter.to_bytes(cur_dev->product_string);
     std::string serial_number_utf8 = converter.to_bytes(cur_dev->serial_number);
+    ASSERT_EQ(info.bus_type(), bus_type);
 
     std::string hid_device_info_string = std::format(
         "HIDDeviceInfo(path: {}, deviceId: DeviceID(vid: {:#06x}, pid: "
@@ -48,7 +49,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
         cur_dev->path, cur_dev->vendor_id, cur_dev->product_id,
         serial_number_utf8, cur_dev->release_number, manufacturer_string_utf8,
         product_string_utf8, cur_dev->usage_page, cur_dev->usage,
-        cur_dev->interface_number, cur_dev->bus_type);
+        cur_dev->interface_number, bus_type);
 
     ASSERT_EQ(std::format("{}", info), hid_device_info_string);
 

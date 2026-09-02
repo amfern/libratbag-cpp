@@ -3,13 +3,13 @@
 #include "gtest/gtest.h"
 
 TEST(BusTypeToStringTest, CanReturnCorrectStringToEnum) {
-  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_USB), "USB");
-  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_BLUETOOTH), "Bluetooth");
-  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_I2C), "I2C");
-  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_SPI), "SPI");
-  ASSERT_EQ(hidapi::detail::bus_type_to_string(HID_API_BUS_UNKNOWN), "unknown");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(hidapi::detail::HidBusType::USB), "USB");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(hidapi::detail::HidBusType::Bluetooth), "Bluetooth");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(hidapi::detail::HidBusType::I2C), "I2C");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(hidapi::detail::HidBusType::SPI), "SPI");
+  ASSERT_EQ(hidapi::detail::bus_type_to_string(hidapi::detail::HidBusType::Unknown), "Unknown");
 }
 
 TEST(BusTypeToStringTest, CanFormatString) {
-  ASSERT_EQ(std::format("This is {}", HID_API_BUS_USB), "This is USB");
+  ASSERT_EQ(std::format("This is {}", hidapi::detail::HidBusType::USB), "This is USB");
 }
