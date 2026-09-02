@@ -7,8 +7,8 @@
 
 #include "hidapi/hid_report.hpp"
 
-
-// TODO(ask): now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
+// TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
+// ans : yes, but have more nuanced tests in the internal implementation
 TEST(HidReportTest, CanInitialize) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
   auto data = report.report_data();

@@ -3,6 +3,9 @@
 #include "hidapi.h"
 #include "hidapi/device_info.hpp"
 #include "hidapi/hid_report.hpp"
+#include "hidapi/device_info.hpp"
+// TODO(ask): i can also include header files by filename, instead of relative path like "hidapi/device_info.hpp", which way do you prefer and why?
+// #include "hidapi.h"
 
 #include <cstddef>
 #include <vector>
@@ -34,6 +37,8 @@ public:
 
     return HIDDevice(handle, std::forward<T>(device_info));
   };
+
+  HIDDeviceInfo& deviceInfo();
 
   void write(HIDBuffer buf);
 
