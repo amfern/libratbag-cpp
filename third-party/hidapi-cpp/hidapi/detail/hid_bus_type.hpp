@@ -27,12 +27,9 @@ enum class HidBusType : std::underlying_type_t<hid_bus_type> {
   // SPI bus
   //   Specifications: https://www.microsoft.com/download/details.aspx?id=103325
   SPI = HID_API_BUS_SPI,
-  // Virtual device
-  //    E.g.: https://elixir.bootlin.com/linux/v4.0/source/include/uapi/linux/input.h#L955 
-  // Virtual = HID_API_BUS_VIRTUAL,
 };
 
-// using HidBusType = hid_bus_type;
+// TODO(ask): what if the typedef enum is extended with new value? how to make sure the compiler will complain. maybe with static assert or an explicit switch statement? or reflections?
 
 
 // TODO: with c++26 we can use reflections instead of manual switch case

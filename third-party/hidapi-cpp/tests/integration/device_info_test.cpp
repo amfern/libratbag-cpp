@@ -31,6 +31,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
     ASSERT_EQ(info.usage_page(), cur_dev->usage_page);
     ASSERT_EQ(info.usage(), cur_dev->usage);
     ASSERT_EQ(info.interface_number(), cur_dev->interface_number);
+    ASSERT_EQ(info.bus_type(), bus_type);
 
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     std::string manufacturer_string_utf8 =
@@ -38,7 +39,6 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
     std::string product_string_utf8 =
         converter.to_bytes(cur_dev->product_string);
     std::string serial_number_utf8 = converter.to_bytes(cur_dev->serial_number);
-    ASSERT_EQ(info.bus_type(), bus_type);
 
     std::string hid_device_info_string = std::format(
         "HIDDeviceInfo(path: {}, deviceId: DeviceID(vid: {:#06x}, pid: "
