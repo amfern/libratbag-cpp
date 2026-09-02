@@ -150,7 +150,6 @@ InterfaceNumber HIDDeviceInfo::interface_number() const {
 }
 
 HidBusType HIDDeviceInfo::bus_type() const {
-  // TODO(ask): is this okay to cast C typedef enum to c++ enum class?
   return static_cast<HidBusType>(device_info_->bus_type);
 }
 

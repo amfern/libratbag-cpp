@@ -26,7 +26,17 @@ TEST(HidReportInternalTest, CanInitialize) {
   data[6] = {6};
 
   ASSERT_EQ(report.report(), std::byte{0x77});
+  assert(data[0] == std::byte{0});
   assert(data[6] == std::byte{6});
+  assert(data[7] == std::byte{7});
+}
+
+TEST(HidReportInternalTest, CanInitialize) {
+  HIDReportInternal report(ReportID{0x77}, std::size_t{0});
+  auto data = report.report_data();
+
+  ASSERT_EQ(report.report(), std::byte{0x77});
+  ASSERT_EQ(data.size(), std::size_t{0});
 }
 
 TEST(HidReportInternalTest, CanInitiazlieAnyNumberOfbytes) {

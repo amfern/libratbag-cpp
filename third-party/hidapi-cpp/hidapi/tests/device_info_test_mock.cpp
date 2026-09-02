@@ -2,6 +2,8 @@
 #include <codecvt>
 
 #include "gtest/gtest.h"
+#include <concepts>
+#include <type_traits>
 
 using namespace hidapi;
 
@@ -21,22 +23,35 @@ TEST(DeviceInfoTest, CanEnumarate) {
   EXPECT_EQ(deviceInfo.bus_type(), HidBusType::SPI);
 }
 
-// TODO(ask): how should i test move and copy constructor
-//            should i test destructor aswell? how?
 TEST(DeviceInfoTest, CanMove) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 
   auto newDeviceInfo(std::move(deviceInfos.front()));
-  auto newNewDeviceInfo = std::move(newDeviceInfo);
+  // check that newDeviceInfo has the correct mocked values
+  
+  EXPECT_EQ(newDeviceInfo.path(), "mock/path"); // example
+  // TODO: .... do same checks for the rest of the attributes
+  // auto newNewDeviceInfo = std::move(newDeviceInfo);
+
+  
+  // check that the moved-from has the
+  auto& movedFrom = deviceInfos.front();
+  EXPECT_EQ(movedFrom.path(), ""); // example
+  // TODO: .... do same checks for the rest of the attributes
+
+
+  // move back to a deviceInfo that was moved from, to see that all attributes are correcly assign and the moved-from can be used again
+  deviceInfos.front() = std::move(newDeviceInfo);
+  EXPECT_EQ(deviceInfos.front(), "mock/path"); // example
+  // TODO: .... do same checks for the rest of the attributes  
 }
 
-// TODO: implement build fail test with Yuya's bazel rule
-// TEST(DeviceInfoTest, CanNotCopy) {
-//   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 
-//   auto newDeviceInfo(deviceInfos.front());
-//   auto newNewDeviceInfo = newDeviceInfo;
-// }
+// TODO: implement build fail test with Yuya's bazel rule
+TEST(DeviceInfoTest, CanNotCopy) {
+  static_assert(!std::copy_constructible<HIDDeviceInfo>);
+  static_assert(!std::is_copy_assignable_v<HIDDeviceInfo>); // TODO: why no copy assignable concept?
+}
 
 TEST(DeviceInfoTest, CanPrintFormat) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();

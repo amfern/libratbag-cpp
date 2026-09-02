@@ -8,7 +8,6 @@
 namespace hidapi {
 namespace detail {
 
-// TODO(ask): is this a good idea to get the underlying like that?
 enum class HidBusType : std::underlying_type_t<hid_bus_type> {
   Unknown = HID_API_BUS_UNKNOWN,
   // USB bus
