@@ -36,9 +36,9 @@ cc_test(
 )
 
 cc_test(
-    name = "device_test_mocked",
+    name = "device_test",
     srcs = [
-        "device_test_mock.cpp",
+        "device_test.cpp",
         "hid_mocked.c",
     ],
     # linkopts = [
