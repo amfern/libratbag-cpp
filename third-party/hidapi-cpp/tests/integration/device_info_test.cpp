@@ -39,7 +39,6 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
         converter.to_bytes(cur_dev->manufacturer_string);
     std::string product_string_utf8 =
         converter.to_bytes(cur_dev->product_string);
-    HidBusType bus_type = static_cast<HidBusType>(cur_dev->bus_type);
 
     ASSERT_EQ(info.path(), cur_dev->path);
     ASSERT_EQ(info.device_id().vid(), cur_dev->vendor_id);
