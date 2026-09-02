@@ -9,29 +9,27 @@
 #include <codecvt>
 #include <cstddef>
 
-using hidapi::HidBusType;
-using hidapi::HIDDeviceInfo;
-using hidapi::HIDDevice;
-using hidapi::HIDBuffer;
-using hidapi::HIDReport;
-using hidapi::ReportID;
+// using hidapi::HIDDevice;
+// using hidapi::HIDBuffer;
+// using hidapi::HIDReport;
+// using hidapi::ReportID;
 
 
 // TODO: negative fail tests
 
 class DeviceTestSuit : public ::testing::Test {
 protected:
-  std::shared_ptr<HIDDevice> device_ptr;
+  std::shared_ptr<hidapi::HIDDevice> device_ptr;
 
   DeviceTestSuit() {
     // TODO: just do a get mock device, and work on that.
-    auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
-    device_ptr = std::make_shared<HIDDevice>(HIDDevice::open(std::move(deviceInfos[0])));
+    auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();
+    device_ptr = std::make_shared<hidapi::HIDDevice>(hidapi::HIDDevice::open(std::move(deviceInfos[0])));
   }
 };
 
 TEST_F(DeviceTestSuit, DeviceWrite) {
-  HIDBuffer buf(64);
+  hidapi::HIDBuffer buf(64);
 
   device_ptr->write(buf);
 }
@@ -41,7 +39,7 @@ TEST_F(DeviceTestSuit, DeviceRead) {
 
   //  why i can't do HIDBuffer expected{{0}, {0}, {0}};?
   //  ANS: because std::byte doesn't have default constructor from int, and it's by design
-  HIDBuffer expected{
+  hidapi::HIDBuffer expected{
       std::byte{0},  std::byte{1},  std::byte{2},  std::byte{3},  std::byte{4},
       std::byte{5},  std::byte{6},  std::byte{7},  std::byte{8},  std::byte{9},
       std::byte{10}, std::byte{11}, std::byte{12}, std::byte{13}, std::byte{14},
@@ -61,7 +59,7 @@ TEST_F(DeviceTestSuit, DeviceRead) {
 }
 
 TEST_F(DeviceTestSuit, DeviceReportSend) {
-  HIDReport report(ReportID{0x77}, std::size_t{16});
+  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
   auto data = report.report_data();
   // TODO: maybe i can override the operator [] to make it transperant to set and get the bytes??
   data[0] = {0}; 
@@ -77,13 +75,15 @@ TEST_F(DeviceTestSuit, DeviceReportSend) {
 
 TEST_F(DeviceTestSuit, DeviceReportRead) {
   auto report_received =
-      device_ptr->receive_feature_report(ReportID{0x77}, std::size_t{16});
+      device_ptr->receive_feature_report(hidapi::ReportID{0x77}, std::size_t{16});
 
-  HIDReport expected_report(
-      ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2}, std::byte{3},
+  hidapi::HIDReport expected_report(
+      hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2}, std::byte{3},
       std::byte{4}, std::byte{5}, std::byte{6}, std::byte{7}, std::byte{8},
       std::byte{9}, std::byte{10}, std::byte{11}, std::byte{12}, std::byte{13},
       std::byte{14}, std::byte{15});
 
   ASSERT_EQ(report_received, expected_report);
 }
+
+// TODO: add move and copy tests for device

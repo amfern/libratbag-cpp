@@ -128,7 +128,16 @@ DeviceID HIDDeviceInfo::device_id() const { return device_id_; }
 HIDAPIString HIDDeviceInfo::serial_number() const { return serial_number_; }
 
 ReleaseNumber HIDDeviceInfo::release_number() const {
-  return static_cast<const ReleaseNumber &>(device_info_->release_number);
+  // TODO(ask): if this function call on a moved object, it will cause an sanitizer error, so i add a check here to return something.
+  //            but by returning 0, it can hide the behavior, because i don't think that callind function on a movedfrom object is something the user suppose to doing in the first place.
+  //            And i am masking an error here. Or maybe i should throw std::runtime_error here?
+  //            Or should i use assert not nullptr here?
+  //            Or should i set the object to some empty struct hid_device_info?
+  // if (device_info_ == nullptr) {
+  //   return 0;
+  // }
+  // assert(device_info_ != nullptr);
+  return static_cast<const ReleaseNumber>(device_info_->release_number);
 }
 
 HIDAPIString HIDDeviceInfo::manufacturer_string() const {
@@ -138,11 +147,11 @@ HIDAPIString HIDDeviceInfo::manufacturer_string() const {
 HIDAPIString HIDDeviceInfo::product_string() const { return product_string_; }
 
 UsagePage HIDDeviceInfo::usage_page() const {
-  return static_cast<const UsagePage &>(device_info_->usage_page);
+  return static_cast<const UsagePage>(device_info_->usage_page);
 }
 
 Usage HIDDeviceInfo::usage() const {
-  return static_cast<const Usage &>(device_info_->usage);
+  return static_cast<const Usage>(device_info_->usage);
 }
 
 InterfaceNumber HIDDeviceInfo::interface_number() const {

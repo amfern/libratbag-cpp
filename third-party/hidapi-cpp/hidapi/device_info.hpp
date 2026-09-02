@@ -124,25 +124,24 @@ private:
 } // namespace hidapi
 
 namespace std {
-using namespace hidapi;
 
-template <> struct formatter<DeviceID> : formatter<string_view> {
+template <> struct formatter<hidapi::DeviceID> : formatter<string_view> {
 
-  auto format(const DeviceID &id, auto &ctx) const {
+  auto format(const hidapi::DeviceID &id, auto &ctx) const {
     return format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
                      id.vid(), id.pid());
   }
 };
 
-template <> struct formatter<HIDAPIString> : formatter<string_view> {
-  auto format(const HIDAPIString &hidapi_string, auto &ctx) const {
+template <> struct formatter<hidapi::HIDAPIString> : formatter<string_view> {
+  auto format(const hidapi::HIDAPIString &hidapi_string, auto &ctx) const {
     std::string string_utf8 = hidapi_string.toString();
     return format_to(ctx.out(), "{}", string_utf8);
   }
 };
 
-template <> struct formatter<HIDDeviceInfo> : formatter<string_view> {
-  auto format(const HIDDeviceInfo &info, auto &ctx) const {
+template <> struct formatter<hidapi::HIDDeviceInfo> : formatter<string_view> {
+  auto format(const hidapi::HIDDeviceInfo &info, auto &ctx) const {
     return format_to(ctx.out(),
                      "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
                      "release_number: {}, "

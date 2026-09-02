@@ -7,13 +7,13 @@
 
 #include "hidapi/hid_report.hpp"
 
-using hidapi::HIDReport;
-using hidapi::ReportID;
+// using hidapi::HIDReport;
+// using hidapi::ReportID;
 
 // TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
 // ans : yes, but have more nuanced tests in the internal implementation
 TEST(HidReportTest, CanInitialize) {
-  HIDReport report(ReportID{0x77}, std::size_t{16});
+  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
   auto data = report.report_data();
   data[0] = {0};
   data[1] = {1};
@@ -28,7 +28,7 @@ TEST(HidReportTest, CanInitialize) {
 }
 
 TEST(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
-  HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
+  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
                    std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6},
                    std::byte{7}, std::byte{8}, std::byte{9}, std::byte{10},
                    std::byte{11}, std::byte{12}, std::byte{13}, std::byte{14},
@@ -36,7 +36,7 @@ TEST(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
 }
 
 TEST(HidReportTest, CanFormatPrint) {
-  HIDReport report(ReportID{0x77}, std::byte{0}, std::byte{1},
+  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{0}, std::byte{1},
                            std::byte{2}, std::byte{3}, std::byte{4},
                            std::byte{5}, std::byte{6});
 
