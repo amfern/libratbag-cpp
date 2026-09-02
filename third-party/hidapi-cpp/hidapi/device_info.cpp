@@ -107,9 +107,6 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   if (this != &rhs) {
 
     // handle case, where the object was moved
-    // In rust the moved from object cannot be used, it's a compiler error
-    // In C++ we add this check
-    // Why we don't implement similar behavior in C++?
     // TODO(ask): instead of assinging nullptr here, i assing an empty and valid struct, what do you think about that?
     if (device_info_ != &empty_device_info) {
       device_info_->next = nullptr;
@@ -124,10 +121,11 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
     this->manufacturer_string_ = std::move(rhs.manufacturer_string_);
     this->product_string_ = std::move(rhs.product_string_);
 
-    // should i also nullify the string views? it will add more overhead
+    // Q: should i also nullify the string views? it will add more overhead
     // but we will prevent leaky abstraction? rhs.hid_path_ = std::string_view{};
-    // Better to start with the conceptually correct thing, and then make it
-    // fast and correct. The overheard is neglegable
+    // ANS: Better to start with the conceptually correct thing, and then make it
+    // there is no copy of elements involved, so this cleanup is fast and correct. The overheard is neglegable
+    // TODO(ask): i wish i could just call the constructor again on rhs object to reinitialize it
     rhs.device_info_ = &empty_device_info;
     rhs.device_id_ = DeviceID{0, 0};
     rhs.hid_path_ = HIDPath{};
@@ -155,7 +153,7 @@ ReleaseNumber HIDDeviceInfo::release_number() const {
   //   return 0;
   // }
   // assert(device_info_ != nullptr);
-  return static_cast<const ReleaseNumber>(device_info_->release_number);
+  return device_info_->release_number;
 }
 
 HIDAPIString HIDDeviceInfo::manufacturer_string() const {
@@ -165,15 +163,15 @@ HIDAPIString HIDDeviceInfo::manufacturer_string() const {
 HIDAPIString HIDDeviceInfo::product_string() const { return product_string_; }
 
 UsagePage HIDDeviceInfo::usage_page() const {
-  return static_cast<const UsagePage>(device_info_->usage_page);
+  return device_info_->usage_page;
 }
 
 Usage HIDDeviceInfo::usage() const {
-  return static_cast<const Usage>(device_info_->usage);
+  return device_info_->usage;
 }
 
 InterfaceNumber HIDDeviceInfo::interface_number() const {
-  return static_cast<const InterfaceNumber &>(device_info_->interface_number);
+  return device_info_->interface_number;
 }
 
 HidBusType HIDDeviceInfo::bus_type() const {
