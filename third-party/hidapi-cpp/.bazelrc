@@ -24,6 +24,7 @@ build:debug --strip=never
 build:debug --features=oso_prefix_is_pwd
 build:debug -c dbg
 build:debug --copt=-fno-omit-frame-pointer
+build:debug -ferror-limit=1
 # build:debug --copt=-O1
 # build:debug --strip=never
 
