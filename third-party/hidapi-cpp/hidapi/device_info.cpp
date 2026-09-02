@@ -7,7 +7,24 @@
 
 namespace hidapi {
 
-DeviceID::DeviceID(ProductID vid, VendorID pid) : vid_(vid), pid_(pid) {}
+static struct hid_device_info empty_device_info = {
+  .path = nullptr,
+  .vendor_id = 0,
+  .product_id = 0,
+  .serial_number = 0,
+  .release_number = 0,
+  .manufacturer_string = 0,
+  .product_string = 0,
+  .usage_page = 0,
+  .usage = 0,
+  .interface_number = 0,
+  .next = nullptr,
+  .bus_type = HID_API_BUS_UNKNOWN,
+};
+
+DeviceID::DeviceID(ProductID vid, VendorID pid)
+    : vid_(vid), pid_(pid) {
+}
 
 ProductID DeviceID::pid() const { return pid_; }
 
@@ -57,7 +74,7 @@ HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
       product_string_(device_info_->product_string) {}
 
 HIDDeviceInfo::~HIDDeviceInfo() {
-  if (device_info_) {
+  if (device_info_ != &empty_device_info) {
     // We remove the next element to prevent from the hid_free_enumeration
     // deleting them.
     // ideally we should modify the hidapi librarby and add an single delete
@@ -75,8 +92,9 @@ HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
       manufacturer_string_(std::move(other.manufacturer_string_)),
       product_string_(std::move(other.product_string_)) {
 
-  other.device_info_ = nullptr;
-
+  // HIDDeviceInfo(&empty_device_info);
+  // TODO(ask): i wish i could just call the constructor again of "other" object to reset it
+  other.device_info_ = &empty_device_info;
   other.device_id_ = DeviceID{0, 0};
   other.hid_path_ = HIDPath{};
   other.serial_number_ = HIDAPIString{};
@@ -92,13 +110,13 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
     // In rust the moved from object cannot be used, it's a compiler error
     // In C++ we add this check
     // Why we don't implement similar behavior in C++?
-    if (device_info_ != nullptr) {
+    // TODO(ask): instead of assinging nullptr here, i assing an empty and valid struct, what do you think about that?
+    if (device_info_ != &empty_device_info) {
       device_info_->next = nullptr;
       hid_free_enumeration(device_info_);
     }
 
     this->device_info_ = rhs.device_info_;
-    rhs.device_info_ = nullptr;
 
     this->hid_path_ = rhs.hid_path_;
     this->device_id_ = std::move(rhs.device_id_);
@@ -110,7 +128,7 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
     // but we will prevent leaky abstraction? rhs.hid_path_ = std::string_view{};
     // Better to start with the conceptually correct thing, and then make it
     // fast and correct. The overheard is neglegable
-
+    rhs.device_info_ = &empty_device_info;
     rhs.device_id_ = DeviceID{0, 0};
     rhs.hid_path_ = HIDPath{};
     rhs.serial_number_ = HIDAPIString{};

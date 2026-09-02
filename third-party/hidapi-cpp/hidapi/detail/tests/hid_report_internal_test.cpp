@@ -87,3 +87,6 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
 
 
 // TODO: add move and copy tests here as well
+//
+
+// TODO(ask): should i test the move constructor, even though i don't override it?

@@ -10,6 +10,10 @@
 
 namespace hidapi {
 
+HIDDeviceInfo &HIDDevice::deviceInfo() {
+  return device_info_;
+}
+
 void HIDDevice::write(HIDBuffer buf) {
   auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
 

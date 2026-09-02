@@ -43,19 +43,18 @@ TEST(DeviceInfoTest, CanMove) {
   // TODO(ask): last time we spoke, i asked how to test move constructors, and should i even be testing the state of moved-from object?
   //            according to C++ i should avoid calling or using the moved from object, and indid
   //            after move, the internal pointer of device_info_ is nullptr, so it triggers ASAN error
+  //            I can fix it by assining an empty struct
   auto& movedFrom = deviceInfos.front();
-  // std::ignore = movedFrom;
-  // EXPECT_EQ(movedFrom.path(), ""); // example
-  // // TODO: actually update those checks
-  // EXPECT_EQ(movedFrom.device_id(), hidapi::DeviceID(0x0, 0x0));
-  // EXPECT_EQ(movedFrom.serial_number(), L"");
-  // EXPECT_EQ(movedFrom.release_number(), 0);
-  // EXPECT_EQ(movedFrom.manufacturer_string(), L"");
-  // EXPECT_EQ(movedFrom.product_string(), L"");
-  // EXPECT_EQ(movedFrom.usage_page(), 2);
-  // EXPECT_EQ(movedFrom.usage(), 3);
-  // EXPECT_EQ(movedFrom.interface_number(), 4);
-  // EXPECT_EQ(movedFrom.bus_type(), hidapi::HidBusType::SPI);
+  EXPECT_EQ(movedFrom.path(), ""); // example
+  EXPECT_EQ(movedFrom.device_id(), hidapi::DeviceID(0x0, 0x0));
+  EXPECT_EQ(movedFrom.serial_number(), L"");
+  EXPECT_EQ(movedFrom.release_number(), 0);
+  EXPECT_EQ(movedFrom.manufacturer_string(), L"");
+  EXPECT_EQ(movedFrom.product_string(), L"");
+  EXPECT_EQ(movedFrom.usage_page(), 0);
+  EXPECT_EQ(movedFrom.usage(), 0);
+  EXPECT_EQ(movedFrom.interface_number(), 0);
+  EXPECT_EQ(movedFrom.bus_type(), hidapi::HidBusType::Unknown);
 
   // move back via move assign operator
   movedFrom = std::move(newDeviceInfo);

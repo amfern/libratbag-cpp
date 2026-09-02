@@ -1,5 +1,6 @@
 #pragma once
 
+#include "device_info.hpp"
 #include "hidapi.h"
 #include "hidapi/device_info.hpp"
 #include "hidapi/hid_report.hpp"
@@ -34,6 +35,8 @@ public:
 
     return HIDDevice(handle, std::forward<T>(device_info));
   };
+
+  HIDDeviceInfo& deviceInfo();
 
   void write(HIDBuffer buf);
 
