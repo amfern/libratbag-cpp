@@ -1,18 +1,28 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
-# TODO: also test the failure of hid_mocked.c, create a way validate it's failing correctly
-
 # TODO: Help me make sense of what happens here.
 #            I was able to overwrite hid_enumerate symbol from from hidapi.so with my own... and there was no error.
 #            Shouldn't i get an ODR violation of redeclarion of a symbol.
 #            I wasn't able to overwrite with linker --wrap, it seems like all
 #            "hid_enumerate" symbol was resolved and stripped in
 #            bazel-bin/hidapi-cpp/libhidapi.so
+
+cc_test(
+    name = "hid_report",
+    srcs = [
+        "test_hid_report.cpp",
+    ],
+    deps = [
+        "//hidapi:hid_report",
+        "@googletest//:gtest_main",
+    ],
+)
+
 cc_test(
     name = "device_info_test",
     srcs = [
-        "device_info_test.cpp",
-        "hid_mocked.c",
+        "test_device_info.cpp",
+        "mock_hid.c",
     ],
     # linkopts = [
     #     "-Wl,--wrap,hid_enumerate",
@@ -25,12 +35,49 @@ cc_test(
 )
 
 cc_test(
-    name = "hid_report",
+    name = "device_info_failed_enumarate",
     srcs = [
-        "hid_report_test.cpp",
+        "test_device_info_failed_enumarate.cpp",
+        "mock_hid_failed_enumarate.c",
     ],
+    # linkopts = [
+    #     "-Wl,--wrap,hid_enumerate",
+    # ],
     deps = [
-        "//hidapi:hid_report",
+        # ":mocked_hidapi",
+        "//hidapi:device_info",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "device_failed_to_open",
+    srcs = [
+        "test_device_failed_open.cpp",
+        "mock_hid_failed_open.c",
+    ],
+    # linkopts = [
+    #     "-Wl,--wrap,hid_enumerate",
+    # ],
+    deps = [
+        # ":mocked_hidapi",
+        "//hidapi:device",
+        "@googletest//:gtest_main",
+    ],
+)
+
+cc_test(
+    name = "device_failed_write_and_read",
+    srcs = [
+        "test_device_failed_to_write_and_read.cpp",
+        "mock_hid_failed_write_and_read.c",
+    ],
+    # linkopts = [
+    #     "-Wl,--wrap,hid_enumerate",
+    # ],
+    deps = [
+        # ":mocked_hidapi",
+        "//hidapi:device",
         "@googletest//:gtest_main",
     ],
 )
@@ -38,15 +85,15 @@ cc_test(
 cc_test(
     name = "device_test",
     srcs = [
-        "device_test.cpp",
-        "hid_mocked.c",
+        "test_device.cpp",
+        "mock_hid.c",
     ],
     # linkopts = [
     #     "-Wl,--wrap,hid_enumerate",
     # ],
     deps = [
         # ":mocked_hidapi",
-        "//hidapi",
+        "//hidapi:device",
         "@googletest//:gtest_main",
     ],
 )

@@ -1,4 +1,5 @@
 #include "hidapi/device_info.hpp"
+#include <stdexcept>
 
 #include <codecvt>
 #include <format>
@@ -48,6 +49,13 @@ std::ostream &operator<<(std::ostream &os, const HIDAPIString &s) {
 const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *cur_dev;
   cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
+
+  // TODO: it will throw error if failed to open udev, or there is just no hid devices in the system.
+  // that is not ideal, as not having any hid devices in the system is totally acceptable and shouldn't be treated as an error.
+  if (cur_dev == nullptr) {
+    HIDAPIString err(hid_error(nullptr));
+    throw std::runtime_error(std::format("Failed to enumarate HID devices: {}", err));
+  }
 
   HIDDeviceInfoList deviceInfos;
 

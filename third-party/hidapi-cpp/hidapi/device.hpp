@@ -32,7 +32,8 @@ public:
   static HIDDevice open(T device_info) {
     hid_device* handle = hid_open_path(device_info.path().data());
 	if (handle == nullptr) {
-        throw std::runtime_error("Unable to open device");
+      HIDAPIString err(hid_error(nullptr));
+      throw std::runtime_error(err.toString());
 	}
 
     return HIDDevice(handle, std::forward<T>(device_info));

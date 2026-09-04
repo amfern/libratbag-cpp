@@ -9,8 +9,6 @@
 #include <codecvt>
 #include <cstddef>
 
-// TODO: negative fail tests
-
 class DeviceTestSuit : public ::testing::Test {
 protected:
   std::shared_ptr<hidapi::HIDDevice> device_ptr;
