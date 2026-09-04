@@ -1,8 +1,8 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
 cc_test(
-    name = "device_info_test",
-    srcs = ["device_info_test.cpp"],
+    name = "test_device_info",
+    srcs = ["test_device_info.cpp"],
     cxxopts = [
         # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
         "-Wno-deprecated-declarations",
@@ -14,8 +14,8 @@ cc_test(
 )
 
 cc_test(
-    name = "device_test",
-    srcs = ["device_test.cpp"],
+    name = "test_device",
+    srcs = ["test_device.cpp"],
     cxxopts = [
         # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
         "-Wno-deprecated-declarations",
