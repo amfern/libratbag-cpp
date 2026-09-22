@@ -17,9 +17,9 @@ TEST(HidReportInternalTest, CanInitialize) {
   data[6] = {6};
 
   ASSERT_EQ(report.report(), std::byte{0x77});
-  assert(data[0] == std::byte{0});
-  assert(data[6] == std::byte{6});
-  assert(data[7] == std::byte{0});
+  ASSERT_EQ(data[0], std::byte{0});
+  ASSERT_EQ(data[6], std::byte{6});
+  ASSERT_EQ(data[7], std::byte{0});
 }
 
 TEST(HidReportInternalTest, CanInitializeWithZero) {
@@ -57,44 +57,3 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
   ASSERT_EQ(data[4], std::byte{5});
   ASSERT_EQ(data[5], std::byte{6});
 }
-
-// TEST(HidReportInternalTest, CanInitializeFromBuffer) {
-//   unsigned char data_raw[] = {0x77, 1,2,3,4,5,6};
-//   HIDReport report;
-//   // report.data_.reserve(std::ssize(data_raw));
-
-//   std::ranges::copy(data_raw | std::views::transform([](unsigned char val) {
-//                       return std::byte{val};
-//                     }),
-//                     std::back_inserter(report.data_));
-
-//   auto data = report.data();
-
-//   ASSERT_EQ(report.report(), std::byte{0x77});
-//   ASSERT_EQ(data[0], std::byte{1});
-//   ASSERT_EQ(data[1], std::byte{2});
-//   ASSERT_EQ(data[2], std::byte{3});
-//   ASSERT_EQ(data[3], std::byte{4});
-//   ASSERT_EQ(data[4], std::byte{5});
-//   ASSERT_EQ(data[5], std::byte{6});
-// }
-
-
-// TODO: add move and copy tests here as well
-//       and moved-from tests
-//
-
-// TODO: should i test the move constructor, even though i don't override it?
-//       ans: yes, tests document the behavior of the class(specially for safety critical is always yes)
-//            it's about specifying what it suppose to do, i cannot tell if move would work correctlly.
-
-// TEST_F(DeviceTestSuit, CanMoveAndGoOutOfScope) {
-//   {
-//     auto newDevice(std::move(*device_ptr));
-//   }
-// }
-
-// TEST_F(DeviceTestSuit, CanNotCopy) {
-//   static_assert(!std::copy_constructible<hidapi::HIDDevice>);
-//   static_assert(!std::is_copy_assignable_v<hidapi::HIDDevice>);
-// }
