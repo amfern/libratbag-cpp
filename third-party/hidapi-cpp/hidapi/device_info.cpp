@@ -94,53 +94,32 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 
 // move constructor
 HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
-    : device_info_(other.device_info_), hid_path_(other.hid_path_),
-      device_id_(std::move(other.device_id_)),
-      serial_number_(std::move(other.serial_number_)),
-      manufacturer_string_(std::move(other.manufacturer_string_)),
-      product_string_(std::move(other.product_string_)) {
-
-  // HIDDeviceInfo(&empty_device_info);
-  // TODO(ask): i wish i could just call the constructor again of "other" object to reset it
-  other.device_info_ = &empty_device_info;
-  other.device_id_ = DeviceID{0, 0};
-  other.hid_path_ = HIDPath{};
-  other.serial_number_ = HIDAPIString{};
-  other.manufacturer_string_ = HIDAPIString{};
-  other.product_string_ = HIDAPIString{};
-}
+    : device_info_(std::exchange(other.device_info_, &empty_device_info)),
+      hid_path_(std::exchange(other.hid_path_, HIDPath{})),
+      device_id_(std::exchange(other.device_id_, DeviceID{0, 0})),
+      serial_number_(std::exchange(other.serial_number_, HIDAPIString{})),
+      manufacturer_string_(
+          std::exchange(other.manufacturer_string_, HIDAPIString{})),
+      product_string_(std::exchange(other.product_string_, HIDAPIString{})) {}
 
 // move operator
 HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
-  if (this != &rhs) {
-
-    // handle case, where the object was moved
-    // TODO(ask): instead of assinging nullptr here, i assing an empty and valid struct, what do you think about that?
-    if (device_info_ != &empty_device_info) {
-      device_info_->next = nullptr;
-      hid_free_enumeration(device_info_);
-    }
-
-    this->device_info_ = rhs.device_info_;
-
-    this->hid_path_ = rhs.hid_path_;
-    this->device_id_ = std::move(rhs.device_id_);
-    this->serial_number_ = std::move(rhs.serial_number_);
-    this->manufacturer_string_ = std::move(rhs.manufacturer_string_);
-    this->product_string_ = std::move(rhs.product_string_);
-
-    // Q: should i also nullify the string views? it will add more overhead
-    // but we will prevent leaky abstraction? rhs.hid_path_ = std::string_view{};
-    // ANS: Better to start with the conceptually correct thing, and then make it
-    // there is no copy of elements involved, so this cleanup is fast and correct. The overheard is neglegable
-    // TODO(ask): i wish i could just call the constructor again on rhs object to reinitialize it
-    rhs.device_info_ = &empty_device_info;
-    rhs.device_id_ = DeviceID{0, 0};
-    rhs.hid_path_ = HIDPath{};
-    rhs.serial_number_ = HIDAPIString{};
-    rhs.manufacturer_string_ = HIDAPIString{};
-    rhs.product_string_ = HIDAPIString{};
+  if (this == &rhs) {
+    return *this;
   }
+
+  // Use null object pattern, to handle case where assiging to object that was moved out from
+  if (device_info_ != &empty_device_info) {
+    device_info_->next = nullptr;
+    hid_free_enumeration(device_info_);
+  }
+
+  this->device_info_ = std::exchange(rhs.device_info_, &empty_device_info);
+  this->hid_path_ = std::exchange(rhs.hid_path_, HIDPath{});
+  this->device_id_ = std::exchange(rhs.device_id_, DeviceID{0, 0});
+  this->serial_number_ = std::exchange(rhs.serial_number_, HIDAPIString{});
+  this->manufacturer_string_ = std::exchange(rhs.manufacturer_string_, HIDAPIString{});
+  this->product_string_ = std::exchange(rhs.product_string_, HIDAPIString{});
 
   return *this;
 }
@@ -152,15 +131,6 @@ DeviceID HIDDeviceInfo::device_id() const { return device_id_; }
 HIDAPIString HIDDeviceInfo::serial_number() const { return serial_number_; }
 
 ReleaseNumber HIDDeviceInfo::release_number() const {
-  // TODO(ask): if this function call on a moved object, it will cause an sanitizer error, so i add a check here to return something.
-  //            but by returning 0, it can hide the behavior, because i don't think that callind function on a movedfrom object is something the user suppose to doing in the first place.
-  //            And i am masking an error here. Or maybe i should throw std::runtime_error here?
-  //            Or should i use assert not nullptr here?
-  //            Or should i set the object to some empty struct hid_device_info?
-  // if (device_info_ == nullptr) {
-  //   return 0;
-  // }
-  // assert(device_info_ != nullptr);
   return device_info_->release_number;
 }
 
