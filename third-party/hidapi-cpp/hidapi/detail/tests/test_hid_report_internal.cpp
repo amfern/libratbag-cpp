@@ -1,12 +1,6 @@
-#include <algorithm>
-#include <cstddef>
-#include <cstdint>
-#include <iterator>
-#include <ranges>
+#include "hidapi/detail/hid_report_internal.hpp"
 
 #include "gtest/gtest.h"
-
-#include "hidapi/detail/hid_report_internal.hpp"
 
 // QA:  how do i know this will not be optimization out
 // ANS:  the compiler will do the full validation and generate the code and then optimized that code out. and will probabbly write the code if it had side effects.

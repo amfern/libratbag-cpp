@@ -2,9 +2,11 @@
 
 #include <codecvt>
 #include <cstdint>
+#include <exception>
 #include <format>
 #include <optional>
 #include <ostream>
+#include <stdexcept>
 #include <string_view>
 #include <vector>
 

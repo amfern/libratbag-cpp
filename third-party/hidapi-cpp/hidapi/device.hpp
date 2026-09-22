@@ -1,12 +1,13 @@
 #pragma once
 
-#include "hidapi.h"
+// prefer header include with full prefix, long explicit paths
 #include "hidapi/device_info.hpp"
 #include "hidapi/hid_report.hpp"
-#include "hidapi/device_info.hpp"
-// TODO(ask): i can also include header files by filename, instead of relative path like "hidapi/device_info.hpp", which way do you prefer and why?
-// #include "hidapi.h"
 
+// C headers after project specific ones before c++ std one, and just use IWYU to lint it all
+#include "hidapi.h"
+
+// it's better to include after the project .hpp files, to avoid accidently making thing build even though other header didn't include eg. <vector>
 #include <cstddef>
 #include <vector>
 #include <chrono>

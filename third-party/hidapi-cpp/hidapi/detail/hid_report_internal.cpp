@@ -1,9 +1,3 @@
-#include <cstddef>
-#include <cstdint>
-#include <vector>
-#include <span>
-#include <format>
-
 #include "hidapi/detail/hid_report_internal.hpp"
 
 namespace hidapi {

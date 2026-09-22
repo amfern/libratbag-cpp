@@ -60,6 +60,9 @@ cc_library(
 cc_library(
     name = "hidapi",
     visibility = ["//hidapi:__subpackages__"],
+    hdrs = [
+        "hidapi.hpp",
+    ],
     deps = [
         ":device_info",
         ":device",

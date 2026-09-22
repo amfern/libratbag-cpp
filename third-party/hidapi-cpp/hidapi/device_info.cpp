@@ -1,6 +1,6 @@
 #include "hidapi/device_info.hpp"
-#include <stdexcept>
 
+#include <stdexcept>
 #include <codecvt>
 #include <format>
 #include <ostream>

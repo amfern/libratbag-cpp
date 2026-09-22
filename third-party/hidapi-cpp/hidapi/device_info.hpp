@@ -1,12 +1,9 @@
 #pragma once
 
-#include <cstdint>
-#include <format>
+#include "hidapi/detail/hid_bus_type_internal.hpp"
+
 #include <string_view>
 #include <vector>
-
-#include "hidapi.h"
-#include "hidapi/detail/hid_bus_type_internal.hpp"
 
 namespace hidapi {
 

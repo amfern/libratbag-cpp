@@ -1,13 +1,15 @@
 #pragma once
 
+#include "hidapi/detail/hid_report_internal.hpp"
+
 #include <cstddef>
 #include <cstdint>
-#include <sys/types.h>
 #include <vector>
 #include <span>
 #include <format>
+#include <ranges>
 
-#include "hidapi/detail/hid_report_internal.hpp"
+#include <sys/types.h>
 
 namespace hidapi {
 
