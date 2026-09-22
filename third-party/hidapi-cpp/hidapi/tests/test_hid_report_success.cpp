@@ -11,7 +11,7 @@
 // ans : yes, but have more nuanced tests in the internal implementation
 TEST(HidReportTest, CanInitialize) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
-  auto data = report.report_data();
+  auto data = report.reportData();
   data[0] = {0};
   data[1] = {1};
   data[2] = {2};
@@ -38,6 +38,6 @@ TEST(HidReportTest, CanFormatPrint) {
                            std::byte{5}, std::byte{6});
 
   EXPECT_EQ(std::format("{}", report),
-            "HIDReport(report_id: 0x77, report_data: [0x00, 0x01, "
+            "HIDReport(report_id: 0x77, reportData: [0x00, 0x01, "
             "0x02, 0x03, 0x04, 0x05, 0x06])");
 }

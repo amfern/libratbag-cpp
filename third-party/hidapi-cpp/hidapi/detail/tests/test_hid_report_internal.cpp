@@ -7,7 +7,7 @@
 //       So the compiler will validate the code, even if it's going to be optimized later. And if it has side effects like assert, it will aslo run the code.
 TEST(HidReportInternalTest, CanInitialize) {
   hidapi::detail::HIDReportInternal report(hidapi::detail::ReportID{0x77}, std::size_t{16});
-  auto data = report.report_data();
+  auto data = report.reportData();
   data[0] = {0};
   data[1] = {1};
   data[2] = {2};
@@ -24,7 +24,7 @@ TEST(HidReportInternalTest, CanInitialize) {
 
 TEST(HidReportInternalTest, CanInitializeWithZero) {
   hidapi::detail::HIDReportInternal report(hidapi::detail::ReportID{0x77}, std::size_t{0});
-  auto data = report.report_data();
+  auto data = report.reportData();
 
   ASSERT_EQ(report.report(), std::byte{0x77});
   ASSERT_EQ(data.size(), std::size_t{0});
@@ -47,7 +47,7 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
   // mimic C-API populating the storage
   std::ranges::copy(c_api_fill_raw_data, reinterpret_cast<unsigned char*>(report.data()));
 
-  auto data = report.report_data();
+  auto data = report.reportData();
 
   ASSERT_EQ(report.report(), hidapi::detail::ReportID{0x77});
   ASSERT_EQ(data[0], std::byte{1});
@@ -81,6 +81,20 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
 
 
 // TODO: add move and copy tests here as well
+//       and moved-from tests
 //
 
-// TODO(ask): should i test the move constructor, even though i don't override it?
+// TODO: should i test the move constructor, even though i don't override it?
+//       ans: yes, tests document the behavior of the class(specially for safety critical is always yes)
+//            it's about specifying what it suppose to do, i cannot tell if move would work correctlly.
+
+// TEST_F(DeviceTestSuit, CanMoveAndGoOutOfScope) {
+//   {
+//     auto newDevice(std::move(*device_ptr));
+//   }
+// }
+
+// TEST_F(DeviceTestSuit, CanNotCopy) {
+//   static_assert(!std::copy_constructible<hidapi::HIDDevice>);
+//   static_assert(!std::is_copy_assignable_v<hidapi::HIDDevice>);
+// }

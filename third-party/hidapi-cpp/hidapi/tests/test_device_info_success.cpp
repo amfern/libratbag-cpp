@@ -51,16 +51,16 @@ TEST(DeviceInfoTest, CanMove) {
   //  - Function that do queries(getters function) return some default values
   //  - Modifies(setters function) throw
   auto& movedFrom = deviceInfos.front();
-  EXPECT_EQ(movedFrom.path(), ""); // example
-  EXPECT_EQ(movedFrom.device_id(), hidapi::DeviceID(0x0, 0x0));
-  EXPECT_EQ(movedFrom.serial_number(), L"");
-  EXPECT_EQ(movedFrom.release_number(), 0);
-  EXPECT_EQ(movedFrom.manufacturer_string(), L"");
-  EXPECT_EQ(movedFrom.product_string(), L"");
-  EXPECT_EQ(movedFrom.usage_page(), 0);
-  EXPECT_EQ(movedFrom.usage(), 0);
-  EXPECT_EQ(movedFrom.interface_number(), 0);
-  EXPECT_EQ(movedFrom.bus_type(), hidapi::HidBusType::Unknown);
+  ASSERT_DEATH(movedFrom.path(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.device_id(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.serial_number(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.release_number(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.manufacturer_string(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.product_string(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.usage_page(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.usage(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.interface_number(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.bus_type(), ".*called on moved-from object");
 
   // move back via move assign operator
   movedFrom = std::move(newDeviceInfo);

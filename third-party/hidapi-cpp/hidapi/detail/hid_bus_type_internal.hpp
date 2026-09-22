@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <format>
 #include <string_view>
 
@@ -29,12 +30,30 @@ enum class HidBusTypeInternal : std::underlying_type_t<hid_bus_type> {
   SPI = HID_API_BUS_SPI,
 };
 
-// TODO(ask): what if the typedef enum is extended with new value? how to make sure the compiler will complain. maybe with static assert or an explicit switch statement? or reflections?
+// This function is not actually called by anything, it's only used to verify all enum classes are acounted for and prevent future situation where new enum is added.
+// in C++26 we would be able to use reflection to acheive same validation instead
+inline constexpr HidBusTypeInternal c_hid_bus_type_to_HidBusType(hid_bus_type type) {
+  switch(type) {
+  case HID_API_BUS_UNKNOWN:
+    return HidBusTypeInternal::Unknown;
+  case HID_API_BUS_USB:
+    return HidBusTypeInternal::USB;
+  case HID_API_BUS_BLUETOOTH:
+    return HidBusTypeInternal::Bluetooth;
+  case HID_API_BUS_I2C:
+    return HidBusTypeInternal::I2C;
+  case HID_API_BUS_SPI:
+    return HidBusTypeInternal::SPI;
+  }
 
+  assert(false && "shouldn't reach here, the hid_bus_type has changed");
 
-// TODO: with c++26 we can use reflections instead of manual switch case
+  return HidBusTypeInternal::Unknown;
+}
+
+// with c++26 we can use reflections instead of manual switch case
 // helper function to convery bus_type_to_string, a function that is hidden from API user, but used internally during std::format
-static constexpr std::string_view bus_type_to_string(HidBusTypeInternal bus_type) {
+inline constexpr std::string_view bus_type_to_string(HidBusTypeInternal bus_type) {
   switch (bus_type) {
   case HidBusTypeInternal::Unknown:
     return std::string_view("Unknown");

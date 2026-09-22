@@ -20,7 +20,6 @@ using ReadTimeoutMilli = std::chrono::duration<uint64_t, std::milli>;
 class HIDDevice {
  
 public:
-
   // TODO: inside this function i will call std::move(device_info).
   //            Which can caught the user off guard, because the device_info moved.
   //            So is it good to explicity ask for rvalue(HIDDeviceInfo &&device_info)?
@@ -40,25 +39,27 @@ public:
     return HIDDevice(handle, std::forward<T>(device_info));
   };
 
+  HIDDevice(const HIDDevice &other) = delete; // copy constructor
+  HIDDevice(HIDDevice &&other) noexcept;      // move constructor
+  HIDDevice &operator=(const HIDDevice &rhs) = delete; // copy operator
+  HIDDevice &operator=(HIDDevice &&rhs) noexcept;      // move operator
+
+  ~HIDDevice(); // destructor
+
+  bool isValid() const;
+
   HIDDeviceInfo& deviceInfo();
 
-  void write(HIDBuffer buf);
 
   // - read max_length
   // - read untile timeout is reached
   // - timeout of 0, will read max_length and exit imidiatly
   // note: We dont' support block from wait C hipapi, as it may result in deadlock and not something an api should get into even by mistake
   std::optional<HIDBuffer> read(std::size_t max_length, ReadTimeoutMilli timeout = ReadTimeoutMilli{0});
+  void write(HIDBuffer buf);
   
-  void send_feature_report(HIDReport report);
   std::optional<HIDReport> receive_feature_report(ReportID report_id, std::size_t length);
-
-  ~HIDDevice(); // destructor
-
-  HIDDevice(const HIDDevice &other) = delete; // copy constructor
-  HIDDevice(HIDDevice &&other) noexcept;      // move constructor
-  HIDDevice &operator=(const HIDDevice &rhs) = delete; // copy operator
-  HIDDevice &operator=(HIDDevice &&rhs) noexcept;      // move operator
+  void send_feature_report(HIDReport report);
 
 private:
   explicit HIDDevice(hid_device* handle, HIDDeviceInfo device_info);

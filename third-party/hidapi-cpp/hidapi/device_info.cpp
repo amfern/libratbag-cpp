@@ -8,20 +8,6 @@
 
 namespace hidapi {
 
-static struct hid_device_info empty_device_info = {
-  .path = nullptr,
-  .vendor_id = 0,
-  .product_id = 0,
-  .serial_number = 0,
-  .release_number = 0,
-  .manufacturer_string = 0,
-  .product_string = 0,
-  .usage_page = 0,
-  .usage = 0,
-  .interface_number = 0,
-  .next = nullptr,
-  .bus_type = HID_API_BUS_UNKNOWN,
-};
 
 DeviceID::DeviceID(ProductID vid, VendorID pid)
     : vid_(vid), pid_(pid) {
@@ -82,7 +68,7 @@ HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
       product_string_(device_info_->product_string) {}
 
 HIDDeviceInfo::~HIDDeviceInfo() {
-  if (device_info_ != &empty_device_info) {
+  if (isValid()) {
     // We remove the next element to prevent from the hid_free_enumeration
     // deleting them.
     // ideally we should modify the hidapi librarby and add an single delete
@@ -94,7 +80,7 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 
 // move constructor
 HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
-    : device_info_(std::exchange(other.device_info_, &empty_device_info)),
+    : device_info_(std::exchange(other.device_info_, nullptr)),
       hid_path_(std::exchange(other.hid_path_, HIDPath{})),
       device_id_(std::exchange(other.device_id_, DeviceID{0, 0})),
       serial_number_(std::exchange(other.serial_number_, HIDAPIString{})),
@@ -108,13 +94,12 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
     return *this;
   }
 
-  // Use null object pattern, to handle case where assiging to object that was moved out from
-  if (device_info_ != &empty_device_info) {
+  if (isValid()) {
     device_info_->next = nullptr;
     hid_free_enumeration(device_info_);
   }
 
-  this->device_info_ = std::exchange(rhs.device_info_, &empty_device_info);
+  this->device_info_ = std::exchange(rhs.device_info_, nullptr);
   this->hid_path_ = std::exchange(rhs.hid_path_, HIDPath{});
   this->device_id_ = std::exchange(rhs.device_id_, DeviceID{0, 0});
   this->serial_number_ = std::exchange(rhs.serial_number_, HIDAPIString{});
@@ -124,35 +109,62 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   return *this;
 }
 
-HIDPath HIDDeviceInfo::path() const { return hid_path_; }
 
-DeviceID HIDDeviceInfo::device_id() const { return device_id_; }
+bool HIDDeviceInfo::isValid() const {
+  return device_info_ != nullptr;
+}
 
-HIDAPIString HIDDeviceInfo::serial_number() const { return serial_number_; }
+HIDPath HIDDeviceInfo::path() const {
+  // clang-tidy can detect use-after-move, but still should check if the object is valid, because some cases clang-tidy won't be able to catch.
+  // https://clang.llvm.org/extra/clang-tidy/checks/bugprone/use-after-move.html
+  // the additional pointer check is tiny, and dwarfed by other things around it
+  // https://docs.google.com/document/d/1c3iuOSepMLLYmcd4oeSsmUanQnmULeBsdeVviiSYvOo/edit?usp=sharing
+  assert("called on moved-from object" && isValid());
+  return hid_path_;
+}
+
+DeviceID HIDDeviceInfo::device_id() const {
+  assert("called on moved-from object" && isValid());
+  return device_id_;
+}
+
+HIDAPIString HIDDeviceInfo::serial_number() const {
+  assert("called on moved-from object" && isValid());
+  return serial_number_;
+}
 
 ReleaseNumber HIDDeviceInfo::release_number() const {
+  assert("called on moved-from object" && isValid());
   return device_info_->release_number;
 }
 
 HIDAPIString HIDDeviceInfo::manufacturer_string() const {
+  assert("called on moved-from object" && isValid());
   return manufacturer_string_;
 }
 
-HIDAPIString HIDDeviceInfo::product_string() const { return product_string_; }
+HIDAPIString HIDDeviceInfo::product_string() const {
+  assert("called on moved-from object" && isValid());
+  return product_string_;
+}
 
 UsagePage HIDDeviceInfo::usage_page() const {
+  assert("called on moved-from object" && isValid());
   return device_info_->usage_page;
 }
 
 Usage HIDDeviceInfo::usage() const {
+  assert("called on moved-from object" && isValid());
   return device_info_->usage;
 }
 
 InterfaceNumber HIDDeviceInfo::interface_number() const {
+  assert("called on moved-from object" && isValid());
   return device_info_->interface_number;
 }
 
 HidBusType HIDDeviceInfo::bus_type() const {
+  assert("called on moved-from object" && isValid());
   return static_cast<HidBusType>(device_info_->bus_type);
 }
 

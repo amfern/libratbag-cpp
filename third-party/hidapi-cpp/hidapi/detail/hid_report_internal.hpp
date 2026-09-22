@@ -14,11 +14,6 @@ using ReportData = std::span<std::byte>;
 class HIDReportInternal : private HIDBuffer {
 
 public:
-  ReportID report() const;
-  void setReport(ReportID report_id);
-
-  ReportData report_data();
-
   template <std::same_as<std::byte>... Ts>
   HIDReportInternal(ReportID report, Ts ...report_data) : HIDBuffer{report, report_data...} {}
 
@@ -28,6 +23,18 @@ public:
 
   bool operator==(const HIDReportInternal& rhs) const = default;
   std::strong_ordering operator<=>(const HIDReportInternal& rhs) const = default;
+
+  // lifetime management
+  bool isValid() const;
+
+  // members
+  ReportID report() const;
+  void setReport(ReportID report_id);
+
+  ReportData reportData();
+
+  // get underlying HIDBuffer
+  HIDBuffer& buffer();
 
   // expose vector operations
   using HIDBuffer::size;

@@ -8,31 +8,56 @@
 #include <ostream>
 #include <stdexcept>
 #include <string_view>
+#include <utility>
 #include <vector>
+#include <cassert>
 
 namespace hidapi {
 
+
+HIDDevice::HIDDevice(hid_device* handle, HIDDeviceInfo device_info)
+    : handle_(handle), device_info_(std::move(device_info)) {}
+
+HIDDevice::~HIDDevice() {
+  if (isValid()) {
+    hid_close(handle_);
+  }
+}
+
+// move constructor
+HIDDevice::HIDDevice(HIDDevice &&other) noexcept
+    : handle_(std::exchange(other.handle_, nullptr)),
+      device_info_(std::move(other.device_info_)) {}
+
+// move operator
+HIDDevice &HIDDevice::operator=(HIDDevice &&rhs) noexcept {
+  if (this == &rhs) {
+    return *this;
+  }
+
+  // handle case, where the object was moved
+  if (isValid()) {
+    hid_close(handle_);
+  }
+
+  this->handle_ = std::exchange(rhs.handle_, nullptr);
+  this->device_info_ = std::move(rhs.device_info_);
+
+  return *this;
+}
+
+bool HIDDevice::isValid() const {
+  return handle_ != nullptr;
+}
+
 HIDDeviceInfo &HIDDevice::deviceInfo() {
+  assert("called on moved-from object" && isValid());
   return device_info_;
 }
 
-void HIDDevice::write(HIDBuffer buf) {
-  auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
-
-  auto bytes_written = hid_write(handle_, buf_ptr, buf.size());
-
-  if (bytes_written == buf.size()) {
-    return;
-  }
-
-  HIDAPIString err(hid_error(handle_));
-  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
-                                       "doesn't match the expected({}): {}",
-                                       bytes_written, buf.size(),
-                                       err));
-}
-
 std::optional<HIDBuffer> HIDDevice::read(std::size_t max_length, ReadTimeoutMilli timeout) {
+  assert("called on moved-from object" && isValid());
+
   HIDBuffer buf(max_length);
 
   auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
@@ -53,20 +78,25 @@ std::optional<HIDBuffer> HIDDevice::read(std::size_t max_length, ReadTimeoutMill
   return buf;
 }
 
-void HIDDevice::send_feature_report(HIDReport report) {
-  auto buf_ptr = reinterpret_cast<unsigned char*>(report.data());
-  auto bytes_written = hid_send_feature_report(handle_, buf_ptr, report.size());
-  if (bytes_written == report.size()) {
+void HIDDevice::write(HIDBuffer buf) {
+  assert("called on moved-from object" && isValid());
+
+  auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
+  auto bytes_written = hid_write(handle_, buf_ptr, buf.size());
+
+  if (bytes_written == buf.size()) {
     return;
   }
 
   HIDAPIString err(hid_error(handle_));
   throw std::runtime_error(std::format("Actual number of writen bytes({}) "
                                        "doesn't match the expected({}): {}",
-                                       bytes_written, report.size(), err));
+                                       bytes_written, buf.size(),
+                                       err));
 }
 
 std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, std::size_t length) {
+  assert("called on moved-from object" && isValid());
 
   HIDReport report(report_id, length);
 
@@ -81,42 +111,19 @@ std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, s
   return report;
 }
 
-HIDDevice::HIDDevice(hid_device* handle, HIDDeviceInfo device_info)
-    : handle_(handle), device_info_(std::move(device_info)) {}
+void HIDDevice::send_feature_report(HIDReport report) {
+  assert("called on moved-from object" && isValid());
 
-HIDDevice::~HIDDevice() {
-  if (handle_) {
-    hid_close(handle_);
-  }
-}
-
-// move constructor
-HIDDevice::HIDDevice(HIDDevice &&other) noexcept
-    : handle_(other.handle_),
-      device_info_(std::move(other.device_info_)) {
-
-  other.handle_ = nullptr;
-}
-
-// move operator
-HIDDevice &HIDDevice::operator=(HIDDevice &&rhs) noexcept {
-  if (this != &rhs) {
-
-    // handle case, where the object was moved
-    // In rust the moved from object cannot be used, it's a compiler error
-    // In C++ we add this check
-    // Why we don't implement similar behavior in C++?
-    if (handle_ != nullptr) {
-      hid_close(handle_);
-    }
-
-    this->handle_ = rhs.handle_;
-    rhs.handle_ = nullptr;
-
-    this->device_info_ = std::move(rhs.device_info_);
+  auto buf_ptr = reinterpret_cast<unsigned char*>(report.data());
+  auto bytes_written = hid_send_feature_report(handle_, buf_ptr, report.size());
+  if (bytes_written == report.size()) {
+    return;
   }
 
-  return *this;
+  HIDAPIString err(hid_error(handle_));
+  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
+                                       "doesn't match the expected({}): {}",
+                                       bytes_written, report.size(), err));
 }
 
 } // namespace hidapi
