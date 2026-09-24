@@ -1,12 +1,9 @@
 #pragma once
 
-#include <cstdint>
-#include <format>
+#include "hidapi/detail/hid_bus_type_internal.hpp"
+
 #include <string_view>
 #include <vector>
-
-#include "hidapi.h"
-#include "hidapi/detail/hid_bus_type_internal.hpp"
 
 namespace hidapi {
 
@@ -19,7 +16,7 @@ class DeviceID {
 
 public:
   DeviceID(ProductID vid, VendorID pid);
-
+  
   VendorID vid() const;
   ProductID pid() const;
 
@@ -74,9 +71,24 @@ using HIDDeviceInfoList = std::vector<HIDDeviceInfo>;
 using HidBusType = hidapi::detail::HidBusTypeInternal;
 
 class HIDDeviceInfo {
-
+// orgnaize all other classes methond into the following groups
+// - constructor
+// - assigments
+// - comparitors
+// - member function
 public:
   static const HIDDeviceInfoList enumerate_hid_devices();
+
+  friend std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info);
+
+  ~HIDDeviceInfo(); // destructor
+
+  HIDDeviceInfo(const HIDDeviceInfo &other) = delete; // copy constructor
+  HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;      // move constructor
+  HIDDeviceInfo &operator=(const HIDDeviceInfo &rhs) = delete; // copy operator
+  HIDDeviceInfo &operator=(HIDDeviceInfo &&rhs) noexcept;      // move operator
+
+  bool isValid() const;
 
   // TODO: Should i call open from here or should i create an class that
   // receives hid device HIDDevice open() const;
@@ -99,15 +111,6 @@ public:
   Usage usage() const;
   InterfaceNumber interface_number() const;
   HidBusType bus_type() const;
-
-  ~HIDDeviceInfo(); // destructor
-
-  HIDDeviceInfo(const HIDDeviceInfo &other) = delete; // copy constructor
-  HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;      // move constructor
-  HIDDeviceInfo &operator=(const HIDDeviceInfo &rhs) = delete; // copy operator
-  HIDDeviceInfo &operator=(HIDDeviceInfo &&rhs) noexcept;      // move operator
-
-  friend std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info);
 
 private:
   explicit HIDDeviceInfo(hid_device_info *device_info);

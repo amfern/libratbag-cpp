@@ -1,19 +1,13 @@
-#include <algorithm>
-#include <cstddef>
-#include <cstdint>
-#include <iterator>
-#include <ranges>
+#include "hidapi/detail/hid_report_internal.hpp"
 
 #include "gtest/gtest.h"
-
-#include "hidapi/detail/hid_report_internal.hpp"
 
 // QA:  how do i know this will not be optimization out
 // ANS:  the compiler will do the full validation and generate the code and then optimized that code out. and will probabbly write the code if it had side effects.
 //       So the compiler will validate the code, even if it's going to be optimized later. And if it has side effects like assert, it will aslo run the code.
 TEST(HidReportInternalTest, CanInitialize) {
   hidapi::detail::HIDReportInternal report(hidapi::detail::ReportID{0x77}, std::size_t{16});
-  auto data = report.report_data();
+  auto data = report.reportData();
   data[0] = {0};
   data[1] = {1};
   data[2] = {2};
@@ -23,14 +17,14 @@ TEST(HidReportInternalTest, CanInitialize) {
   data[6] = {6};
 
   ASSERT_EQ(report.report(), std::byte{0x77});
-  assert(data[0] == std::byte{0});
-  assert(data[6] == std::byte{6});
-  assert(data[7] == std::byte{0});
+  ASSERT_EQ(data[0], std::byte{0});
+  ASSERT_EQ(data[6], std::byte{6});
+  ASSERT_EQ(data[7], std::byte{0});
 }
 
 TEST(HidReportInternalTest, CanInitializeWithZero) {
   hidapi::detail::HIDReportInternal report(hidapi::detail::ReportID{0x77}, std::size_t{0});
-  auto data = report.report_data();
+  auto data = report.reportData();
 
   ASSERT_EQ(report.report(), std::byte{0x77});
   ASSERT_EQ(data.size(), std::size_t{0});
@@ -53,7 +47,7 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
   // mimic C-API populating the storage
   std::ranges::copy(c_api_fill_raw_data, reinterpret_cast<unsigned char*>(report.data()));
 
-  auto data = report.report_data();
+  auto data = report.reportData();
 
   ASSERT_EQ(report.report(), hidapi::detail::ReportID{0x77});
   ASSERT_EQ(data[0], std::byte{1});
@@ -63,30 +57,3 @@ TEST(HidReportInternalTest, CanInitializeFromBuffer) {
   ASSERT_EQ(data[4], std::byte{5});
   ASSERT_EQ(data[5], std::byte{6});
 }
-
-// TEST(HidReportInternalTest, CanInitializeFromBuffer) {
-//   unsigned char data_raw[] = {0x77, 1,2,3,4,5,6};
-//   HIDReport report;
-//   // report.data_.reserve(std::ssize(data_raw));
-
-//   std::ranges::copy(data_raw | std::views::transform([](unsigned char val) {
-//                       return std::byte{val};
-//                     }),
-//                     std::back_inserter(report.data_));
-
-//   auto data = report.data();
-
-//   ASSERT_EQ(report.report(), std::byte{0x77});
-//   ASSERT_EQ(data[0], std::byte{1});
-//   ASSERT_EQ(data[1], std::byte{2});
-//   ASSERT_EQ(data[2], std::byte{3});
-//   ASSERT_EQ(data[3], std::byte{4});
-//   ASSERT_EQ(data[4], std::byte{5});
-//   ASSERT_EQ(data[5], std::byte{6});
-// }
-
-
-// TODO: add move and copy tests here as well
-//
-
-// TODO(ask): should i test the move constructor, even though i don't override it?

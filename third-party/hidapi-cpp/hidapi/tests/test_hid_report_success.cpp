@@ -1,3 +1,5 @@
+#include "hidapi/hid_report.hpp"
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -5,13 +7,11 @@
 #include <iterator>
 #include <ranges>
 
-#include "hidapi/hid_report.hpp"
-
 // TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
 // ans : yes, but have more nuanced tests in the internal implementation
 TEST(HidReportTest, CanInitialize) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
-  auto data = report.report_data();
+  auto data = report.reportData();
   data[0] = {0};
   data[1] = {1};
   data[2] = {2};
@@ -38,6 +38,37 @@ TEST(HidReportTest, CanFormatPrint) {
                            std::byte{5}, std::byte{6});
 
   EXPECT_EQ(std::format("{}", report),
-            "HIDReport(report_id: 0x77, report_data: [0x00, 0x01, "
+            "HIDReport(report_id: 0x77, reportData: [0x00, 0x01, "
             "0x02, 0x03, 0x04, 0x05, 0x06])");
+}
+
+// We test move and copy constructable, even if we didn't overwrite them
+// it's about specifying what it suppose to do, i cannot tell if move would work correctlly.
+TEST(HidReportInternalTest, CanMove) {
+  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{12});
+  auto newReport = hidapi::HIDReport(std::move(report));
+
+  ASSERT_EQ(newReport.report(), std::byte{0x77});
+  ASSERT_EQ(newReport.reportData().front(), std::byte{12});
+
+  report = std::move(newReport);
+  ASSERT_EQ(report.report(), std::byte{0x77});
+  ASSERT_EQ(report.reportData().front(), std::byte{12});
+
+  ASSERT_DEATH(newReport.report(), ".*called on moved-from object");
+  ASSERT_DEATH(newReport.setReport(std::byte{0x77}), ".*called on moved-from object");
+  ASSERT_DEATH(newReport.reportData(), ".*called on moved-from object");
+  ASSERT_DEATH(newReport.buffer(), ".*called on moved-from object");
+}
+
+TEST(HidReportInternalTest, CanMoveAndGoOutOfScope) {
+  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{12});
+  {
+    auto newReport(std::move(report));
+  }
+}
+
+TEST(HidReportInternalTest, CanCopy) {
+  static_assert(std::copy_constructible<hidapi::HIDReport>);
+  static_assert(std::is_copy_assignable_v<hidapi::HIDReport>);
 }

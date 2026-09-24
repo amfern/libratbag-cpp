@@ -1,13 +1,15 @@
 #pragma once
 
+#include "hidapi/detail/hid_report_internal.hpp"
+
 #include <cstddef>
 #include <cstdint>
-#include <sys/types.h>
 #include <vector>
 #include <span>
 #include <format>
+#include <ranges>
 
-#include "hidapi/detail/hid_report_internal.hpp"
+#include <sys/types.h>
 
 namespace hidapi {
 
@@ -24,15 +26,16 @@ class HIDReport : private hidapi::detail::HIDReportInternal {
 friend class HIDDevice;
 
 public:
-  using hidapi::detail::HIDReportInternal::report_data;
-  using hidapi::detail::HIDReportInternal::report;
-  using hidapi::detail::HIDReportInternal::setReport;
-
   // forward the constructors from base class
   using hidapi::detail::HIDReportInternal::HIDReportInternal;
 
   bool operator==(const HIDReport& rhs) const = default; 
   std::strong_ordering operator<=>(const HIDReport& rhs) const = default;
+
+  using hidapi::detail::HIDReportInternal::reportData;
+  using hidapi::detail::HIDReportInternal::report;
+  using hidapi::detail::HIDReportInternal::setReport;
+  using hidapi::detail::HIDReportInternal::buffer;
 };
 
 
@@ -65,8 +68,8 @@ template <> struct formatter<hidapi::HIDReport> : formatter<string_view> {
   typename FormatContext::iterator format(hidapi::HIDReport &report,
                                           FormatContext &ctx) const {
     return format_to(ctx.out(),
-                     "HIDReport(report_id: {}, report_data: {})",
-                     report.report(), report.report_data());
+                     "HIDReport(report_id: {}, reportData: {})",
+                     report.report(), report.reportData());
   }
 };
 

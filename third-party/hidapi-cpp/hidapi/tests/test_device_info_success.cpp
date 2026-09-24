@@ -1,7 +1,7 @@
 #include "hidapi/device_info.hpp"
-#include <codecvt>
-
 #include "gtest/gtest.h"
+
+#include <codecvt>
 #include <concepts>
 #include <type_traits>
 
@@ -40,21 +40,27 @@ TEST(DeviceInfoTest, CanMove) {
   EXPECT_EQ(newDeviceInfo.bus_type(), hidapi::HidBusType::SPI);
   
   // check that the moved-from is valid bu unspecified
-  // TODO(ask): last time we spoke, i asked how to test move constructors, and should i even be testing the state of moved-from object?
-  //            according to C++ i should avoid calling or using the moved from object, and indid
-  //            after move, the internal pointer of device_info_ is nullptr, so it triggers ASAN error
-  //            I can fix it by assining an empty struct
+  // std:: library expects that object after move:
+  //  1. Can be destroyed
+  //  2. Can be moved into
+  //  3. Strive towards allowing people to use member function on movedFrom, but not mandatory
+  //  4. Last resort implement .isValid()
+  //     a. We don't want move operation to throw, and sometimes it move out operation requries to reallocation an empty object, and in that case it's better to say object is in invalid state.
+  //     b. i can instruct users to not use memebers function of movedFrom, but it adds more cognitive load and gotaches for end useres to worry about.
+  //  The Rule of thum:
+  //  - Function that do queries(getters function) return some default values
+  //  - Modifies(setters function) throw
   auto& movedFrom = deviceInfos.front();
-  EXPECT_EQ(movedFrom.path(), ""); // example
-  EXPECT_EQ(movedFrom.device_id(), hidapi::DeviceID(0x0, 0x0));
-  EXPECT_EQ(movedFrom.serial_number(), L"");
-  EXPECT_EQ(movedFrom.release_number(), 0);
-  EXPECT_EQ(movedFrom.manufacturer_string(), L"");
-  EXPECT_EQ(movedFrom.product_string(), L"");
-  EXPECT_EQ(movedFrom.usage_page(), 0);
-  EXPECT_EQ(movedFrom.usage(), 0);
-  EXPECT_EQ(movedFrom.interface_number(), 0);
-  EXPECT_EQ(movedFrom.bus_type(), hidapi::HidBusType::Unknown);
+  ASSERT_DEATH(movedFrom.path(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.device_id(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.serial_number(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.release_number(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.manufacturer_string(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.product_string(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.usage_page(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.usage(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.interface_number(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.bus_type(), ".*called on moved-from object");
 
   // move back via move assign operator
   movedFrom = std::move(newDeviceInfo);
