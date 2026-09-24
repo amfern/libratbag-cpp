@@ -88,9 +88,10 @@ void HIDDevice::write(HIDBuffer buf) {
   }
 
   HIDAPIString err(hid_error(handle_));
-  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
-                                       "doesn't match the expected({}): {}",
-                                       bytes_written, buf.size(), err));
+  throw std::runtime_error(
+      std::format("Actual number of writen bytes({}) "
+                  "doesn't match the expected({}): {}",
+                  bytes_written, buf.size(), err));
 }
 
 // TODO: should i reduce the error count with -ferror-limit=1
@@ -121,9 +122,10 @@ void HIDDevice::send_feature_report(HIDReport report) {
   }
 
   HIDAPIString err(hid_error(handle_));
-  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
-                                       "doesn't match the expected({}): {}",
-                                       bytes_written, report.size(), err));
+  throw std::runtime_error(
+      std::format("Actual number of writen bytes({}) "
+                  "doesn't match the expected({}): {}",
+                  bytes_written, report.size(), err));
 }
 
-} // namespace hidapi
+}  // namespace hidapi

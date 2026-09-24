@@ -1,8 +1,15 @@
 "Define C++ linter aspects"
 
+load("@aspect_rules_lint//lint:buildifier.bzl", "lint_buildifier_aspect")
 load("@aspect_rules_lint//lint:clang_tidy.bzl", "lint_clang_tidy_aspect")
 load("@aspect_rules_lint//lint:cppcheck.bzl", "lint_cppcheck_aspect")
 load("@aspect_rules_lint//lint:lint_test.bzl", "lint_test")
+
+buildifier = lint_buildifier_aspect(
+    binary = Label("@buildifier_prebuilt//:buildifier"),
+)
+
+buildifier_test = lint_test(aspect = buildifier)
 
 clang_tidy = lint_clang_tidy_aspect(
     binary = Label("//tools/lint:clang_tidy"),

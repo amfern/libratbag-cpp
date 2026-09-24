@@ -26,6 +26,7 @@ register_toolchains(
 # configure pre-commit and linters
 ############################################################################
 bazel_dep(name = "aspect_rules_lint", version = "2.7.2", dev_dependency = True)
+
 # C++ linter tools
 lint_tools = use_extension("@aspect_rules_lint//lint:extensions.bzl", "tools", dev_dependency = True)
 lint_tools.cppcheck()
@@ -34,15 +35,15 @@ use_repo(
     "cppcheck_linux",
     "cppcheck_macos",
 )
-# bazel_dep(name = "rules_build_error", version = "0.11.0", dev_dependency = True)
 
-# for precommit hooks https://gitlab.arm.com/bazel/pre-commit-hooks
-# bazel_dep(name = "pre-commit", version = "1.0.12", dev_dependency = True)
+bazel_dep(name = "bazel_lib", version = "3.0.0", dev_dependency = True)
+bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.4", dev_dependency = True)
 
 ############################################################################
 # configure hedron plugin
 ############################################################################
 bazel_dep(name = "rules_python", version = "1.8.1", dev_dependency = True)
+
 python = use_extension("@rules_python//python/extensions:python.bzl", "python", dev_dependency = True)
 python.toolchain(
     # TODO: remove this when `ignore_root_user_error` is hermetic

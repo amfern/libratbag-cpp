@@ -34,4 +34,4 @@ HIDBuffer &HIDReportInternal::buffer() {
   return *this;
 };
 
-} // namespace hidapi::detail
+}  // namespace hidapi::detail

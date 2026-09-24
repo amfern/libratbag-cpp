@@ -1,6 +1,5 @@
-#include "hidapi/device.hpp"
-
 #include "gtest/gtest.h"
+#include "hidapi/device.hpp"
 
 TEST(DeviceTestSuit, FailedToOpen) {
   auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();

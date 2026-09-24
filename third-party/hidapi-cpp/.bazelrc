@@ -60,3 +60,4 @@ common:pre-commit --lockfile_mode=off
 
 build:lint --aspects=//tools/lint:linters.bzl%clang_tidy
 build:lint --aspects=//tools/lint:linters.bzl%cppcheck
+build:lint --aspects=//tools/lint:linters.bzl%buildifier

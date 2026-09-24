@@ -12,8 +12,7 @@ using ReportData = std::span<std::byte>;
 // if based class was empty type, inhereting it would have saved data, but here
 // it's not the case
 class HIDReportInternal : private HIDBuffer {
-
-public:
+ public:
   template <std::same_as<std::byte>... Ts>
   HIDReportInternal(ReportID report, Ts... report_data)
       : HIDBuffer{report, report_data...} {}
@@ -24,8 +23,8 @@ public:
   HIDReportInternal(ReportID report, std::size_t report_data_size);
 
   bool operator==(const HIDReportInternal &rhs) const = default;
-  std::strong_ordering
-  operator<=>(const HIDReportInternal &rhs) const = default;
+  std::strong_ordering operator<=>(const HIDReportInternal &rhs) const =
+      default;
 
   // lifetime management
   bool isValid() const;
@@ -44,4 +43,4 @@ public:
   using HIDBuffer::size;
 };
 
-} // namespace hidapi::detail
+}  // namespace hidapi::detail

@@ -20,8 +20,7 @@ namespace hidapi {
 using ReadTimeoutMilli = std::chrono::duration<uint64_t, std::milli>;
 
 class HIDDevice {
-
-public:
+ public:
   // TODO: inside this function i will call std::move(device_info).
   //            Which can caught the user off guard, because the device_info
   //            moved. So is it good to explicity ask for rvalue(HIDDeviceInfo
@@ -33,7 +32,8 @@ public:
   // https://github.com/xuchen-tech/Books/blob/main/C%2B%2B%20Templates%20The%20Complete%20Guide%2C%202nd%20Edition%20[BooxRack].pdf
   // ussually we copy pass by const &, but
   // clang tidy catches use after move
-  template <typename T> static HIDDevice open(T device_info) {
+  template <typename T>
+  static HIDDevice open(T device_info) {
     hid_device *handle = hid_open_path(device_info.path().data());
     if (handle == nullptr) {
       HIDAPIString err(hid_error(nullptr));
@@ -43,12 +43,12 @@ public:
     return HIDDevice(handle, std::forward<T>(device_info));
   };
 
-  HIDDevice(const HIDDevice &other) = delete;          // copy constructor
-  HIDDevice(HIDDevice &&other) noexcept;               // move constructor
-  HIDDevice &operator=(const HIDDevice &rhs) = delete; // copy operator
-  HIDDevice &operator=(HIDDevice &&rhs) noexcept;      // move operator
+  HIDDevice(const HIDDevice &other) = delete;           // copy constructor
+  HIDDevice(HIDDevice &&other) noexcept;                // move constructor
+  HIDDevice &operator=(const HIDDevice &rhs) = delete;  // copy operator
+  HIDDevice &operator=(HIDDevice &&rhs) noexcept;       // move operator
 
-  ~HIDDevice(); // destructor
+  ~HIDDevice();  // destructor
 
   bool isValid() const;
 
@@ -67,11 +67,11 @@ public:
                                                   std::size_t length);
   void send_feature_report(HIDReport report);
 
-private:
+ private:
   explicit HIDDevice(hid_device *handle, HIDDeviceInfo device_info);
 
   hid_device *handle_;
   HIDDeviceInfo device_info_;
 };
 
-} // namespace hidapi
+}  // namespace hidapi

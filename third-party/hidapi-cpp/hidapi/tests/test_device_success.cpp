@@ -1,15 +1,14 @@
-#include "hidapi/device.hpp"
-
-#include "gtest/gtest.h"
-
 #include <algorithm>
 #include <codecvt>
 #include <cstddef>
 #include <memory>
 #include <ranges>
 
+#include "gtest/gtest.h"
+#include "hidapi/device.hpp"
+
 class DeviceTestSuit : public ::testing::Test {
-protected:
+ protected:
   std::shared_ptr<hidapi::HIDDevice> device_ptr;
 
   DeviceTestSuit() {
@@ -104,12 +103,12 @@ TEST_F(DeviceTestSuit, CanMove) {
   ASSERT_EQ(buf, expected);
 
   // TODO all variables should be written in snakecase
-  EXPECT_EQ(newDevice.deviceInfo().path(), "/mock/path"); // example
+  EXPECT_EQ(newDevice.deviceInfo().path(), "/mock/path");  // example
 
   // move back
   device = std::move(newDevice);
 
-  EXPECT_EQ(device.deviceInfo().path(), "/mock/path"); // example
+  EXPECT_EQ(device.deviceInfo().path(), "/mock/path");  // example
 
   ASSERT_DEATH(newDevice.deviceInfo().path(), ".*called on moved-from object");
 

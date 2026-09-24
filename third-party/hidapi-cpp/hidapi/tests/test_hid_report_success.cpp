@@ -1,11 +1,12 @@
-#include "hidapi/hid_report.hpp"
+#include <gtest/gtest.h>
 
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
-#include <gtest/gtest.h>
 #include <iterator>
 #include <ranges>
+
+#include "hidapi/hid_report.hpp"
 
 // TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate
 // tests, should i be doing duplicated tests? ans : yes, but have more nuanced

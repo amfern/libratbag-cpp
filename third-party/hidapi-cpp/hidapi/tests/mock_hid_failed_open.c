@@ -1,15 +1,15 @@
 
-#include "hidapi.h"
-
 #include <stdlib.h>
+
+#include "hidapi.h"
 
 // TODO: why am i able to overwrite the symbol? shouldn't it complain?
 // there was no redifinition error.
 //            I wasn't able to overwrite with linker --wrap, it seems like all
 //            "hid_enumerate" symbol was resolved and stripped in
 //            bazel-bin/hidapi-cpp/libhidapi.so
-struct hid_device_info HID_API_EXPORT *
-hid_enumerate(unsigned short vendor_id, unsigned short product_id) {
+struct hid_device_info HID_API_EXPORT *hid_enumerate(
+    unsigned short vendor_id, unsigned short product_id) {
   struct hid_device_info *root =
       (struct hid_device_info *)calloc(1, sizeof(struct hid_device_info));
   root->path = "/mock/path";

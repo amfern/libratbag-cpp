@@ -31,7 +31,7 @@ std::ostream &operator<<(std::ostream &os, const HIDAPIString &s) {
 
 const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *cur_dev;
-  cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
+  cur_dev = hid_enumerate(0, 0);  // 0,0 = find all devices
 
   // TODO: it will throw error if failed to open udev, or there is just no hid
   // devices in the system. that is not ideal, as not having any hid devices in
@@ -60,7 +60,8 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
 // 3. MyClass{} will call constructor as if ()
 // 4. {} It's a C++ things, uniform initialization feature.
 HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
-    : device_info_(device_info), hid_path_(device_info_->path),
+    : device_info_(device_info),
+      hid_path_(device_info_->path),
       device_id_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
       serial_number_(device_info_->serial_number),
       manufacturer_string_(device_info_->manufacturer_string),
@@ -171,4 +172,4 @@ std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
   return os;
 }
 
-} // namespace hidapi
+}  // namespace hidapi

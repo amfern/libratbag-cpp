@@ -1,6 +1,6 @@
 #pragma once
 
-#include "hidapi/detail/hid_report_internal.hpp"
+#include <sys/types.h>
 
 #include <cstddef>
 #include <cstdint>
@@ -9,7 +9,7 @@
 #include <span>
 #include <vector>
 
-#include <sys/types.h>
+#include "hidapi/detail/hid_report_internal.hpp"
 
 namespace hidapi {
 
@@ -19,7 +19,6 @@ using ReportID = hidapi::detail::ReportID;
 using ReportData = hidapi::detail::ReportData;
 
 class HIDReport : private hidapi::detail::HIDReportInternal {
-
   // TODO: using friend means by classes are badley design, does it apply for
   // this case aswell?
   //       Where i want to limit the a access to raw data buffer only to my
@@ -28,7 +27,7 @@ class HIDReport : private hidapi::detail::HIDReportInternal {
   // external users, and as long as it's hidden from the user
   friend class HIDDevice;
 
-public:
+ public:
   // forward the constructors from base class
   using hidapi::detail::HIDReportInternal::HIDReportInternal;
 
@@ -41,11 +40,12 @@ public:
   using hidapi::detail::HIDReportInternal::setReport;
 };
 
-} // namespace hidapi
+}  // namespace hidapi
 
 namespace std {
 
-template <> struct formatter<hidapi::ReportID> : formatter<string_view> {
+template <>
+struct formatter<hidapi::ReportID> : formatter<string_view> {
   template <class FormatContext>
   typename FormatContext::iterator format(hidapi::ReportID &report_id,
                                           FormatContext &ctx) const {
@@ -54,7 +54,8 @@ template <> struct formatter<hidapi::ReportID> : formatter<string_view> {
   }
 };
 
-template <> struct formatter<hidapi::ReportData> : formatter<string_view> {
+template <>
+struct formatter<hidapi::ReportData> : formatter<string_view> {
   template <class FormatContext>
   typename FormatContext::iterator format(hidapi::ReportData &report_data,
                                           FormatContext &ctx) const {
@@ -65,8 +66,8 @@ template <> struct formatter<hidapi::ReportData> : formatter<string_view> {
   }
 };
 
-template <> struct formatter<hidapi::HIDReport> : formatter<string_view> {
-
+template <>
+struct formatter<hidapi::HIDReport> : formatter<string_view> {
   template <class FormatContext>
   typename FormatContext::iterator format(hidapi::HIDReport &report,
                                           FormatContext &ctx) const {
@@ -75,4 +76,4 @@ template <> struct formatter<hidapi::HIDReport> : formatter<string_view> {
   }
 };
 
-} // namespace std
+}  // namespace std

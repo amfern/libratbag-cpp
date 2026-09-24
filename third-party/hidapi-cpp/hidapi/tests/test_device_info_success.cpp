@@ -1,9 +1,9 @@
-#include "hidapi/device_info.hpp"
-#include "gtest/gtest.h"
-
 #include <codecvt>
 #include <concepts>
 #include <type_traits>
+
+#include "gtest/gtest.h"
+#include "hidapi/device_info.hpp"
 
 TEST(DeviceInfoTest, CanEnumarate) {
   auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();
@@ -28,7 +28,7 @@ TEST(DeviceInfoTest, CanMove) {
   auto newDeviceInfo(std::move(deviceInfos.front()));
 
   // check that moved-to object has the correct values
-  EXPECT_EQ(newDeviceInfo.path(), "/mock/path"); // example
+  EXPECT_EQ(newDeviceInfo.path(), "/mock/path");  // example
   EXPECT_EQ(newDeviceInfo.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(newDeviceInfo.serial_number(), L"serial number");
   EXPECT_EQ(newDeviceInfo.release_number(), 1);
@@ -69,7 +69,7 @@ TEST(DeviceInfoTest, CanMove) {
 
   // move back via move assign operator
   movedFrom = std::move(newDeviceInfo);
-  EXPECT_EQ(movedFrom.path(), "/mock/path"); // example
+  EXPECT_EQ(movedFrom.path(), "/mock/path");  // example
   EXPECT_EQ(movedFrom.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(movedFrom.serial_number().toString(), "serial number");
   EXPECT_EQ(movedFrom.release_number(), 1);
