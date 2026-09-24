@@ -1,7 +1,7 @@
 
-#include <stdlib.h>
-
 #include "hidapi.h"
+
+#include <stdlib.h>
 
 // TODO: why am i able to overwrite the symbol? shouldn't it complain?
 // there was no redifinition error.

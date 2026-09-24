@@ -1,6 +1,6 @@
 #pragma once
 
-#include <sys/types.h>
+#include "hidapi/detail/hid_report_internal.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -9,7 +9,7 @@
 #include <span>
 #include <vector>
 
-#include "hidapi/detail/hid_report_internal.hpp"
+#include <sys/types.h>
 
 namespace hidapi {
 

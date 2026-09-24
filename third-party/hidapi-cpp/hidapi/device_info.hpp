@@ -1,9 +1,9 @@
 #pragma once
 
+#include "hidapi/detail/hid_bus_type_internal.hpp"
+
 #include <string_view>
 #include <vector>
-
-#include "hidapi/detail/hid_bus_type_internal.hpp"
 
 namespace hidapi {
 

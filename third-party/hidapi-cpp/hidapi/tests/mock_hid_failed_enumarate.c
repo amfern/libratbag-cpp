@@ -1,6 +1,6 @@
-#include <stdlib.h>
-
 #include "hidapi.h"
+
+#include <stdlib.h>
 
 struct hid_device_info HID_API_EXPORT *hid_enumerate(
     unsigned short vendor_id, unsigned short product_id) {

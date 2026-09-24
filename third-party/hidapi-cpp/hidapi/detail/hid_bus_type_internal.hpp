@@ -1,10 +1,10 @@
 #pragma once
 
+#include "hidapi.h"
+
 #include <cassert>
 #include <format>
 #include <string_view>
-
-#include "hidapi.h"
 
 namespace hidapi::detail {
 
