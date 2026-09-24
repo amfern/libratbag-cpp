@@ -1,6 +1,7 @@
 exports_files(
     [
         ".clang-tidy",
+        ".shellcheckrc",
     ],
     visibility = ["//visibility:public"],
 )

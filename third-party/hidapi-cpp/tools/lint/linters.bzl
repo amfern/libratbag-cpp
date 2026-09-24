@@ -4,6 +4,7 @@ load("@aspect_rules_lint//lint:buildifier.bzl", "lint_buildifier_aspect")
 load("@aspect_rules_lint//lint:clang_tidy.bzl", "lint_clang_tidy_aspect")
 load("@aspect_rules_lint//lint:cppcheck.bzl", "lint_cppcheck_aspect")
 load("@aspect_rules_lint//lint:lint_test.bzl", "lint_test")
+load("@aspect_rules_lint//lint:shellcheck.bzl", "lint_shellcheck_aspect")
 
 buildifier = lint_buildifier_aspect(
     binary = Label("@buildifier_prebuilt//:buildifier"),
@@ -39,3 +40,10 @@ clang_tidy_global_config = lint_clang_tidy_aspect(
     angle_includes_are_system = False,
     verbose = False,
 )
+
+shellcheck = lint_shellcheck_aspect(
+    binary = Label("@aspect_rules_lint//lint:shellcheck_bin"),
+    config = Label("@//:.shellcheckrc"),
+)
+
+shellcheck_test = lint_test(aspect = shellcheck)
