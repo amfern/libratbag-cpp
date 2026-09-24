@@ -2,14 +2,14 @@
 
 #include "hidapi/detail/hid_report_internal.hpp"
 
+#include <sys/types.h>
+
 #include <cstddef>
 #include <cstdint>
 #include <format>
 #include <ranges>
 #include <span>
 #include <vector>
-
-#include <sys/types.h>
 
 namespace hidapi {
 

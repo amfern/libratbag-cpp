@@ -1,5 +1,5 @@
 
-#include "hidapi.h"
+#include "hidapi/hidapi.h"
 
 #include <stdlib.h>
 

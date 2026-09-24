@@ -1,9 +1,9 @@
 #include "hidapi/device_info.hpp"
 
+#include "gtest/gtest.h"
+
 #include <algorithm>
 #include <codecvt>
-
-#include <gtest/gtest.h>
 
 using hidapi::HidBusType;
 using hidapi::HIDDeviceInfo;

@@ -1,10 +1,10 @@
 #include "hidapi/device_info.hpp"
 
+#include "gtest/gtest.h"
+
 #include <codecvt>
 #include <concepts>
 #include <type_traits>
-
-#include <gtest/gtest.h>
 
 TEST(DeviceInfoTest, FailedToEnumarate) {
   try {

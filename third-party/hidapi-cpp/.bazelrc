@@ -53,11 +53,7 @@ test --config=debug --config=asan --config=ubsan # --config=msan
 # Enable hermetic `rules_python`
 common --@rules_python//python/config_settings:bootstrap_impl=script
 
-# Disable Bazel output for `pre-commit` hooks
-common:pre-commit --ui_event_filters=-info,-stdout,-stderr
-common:pre-commit --noshow_progress
-common:pre-commit --lockfile_mode=off
-
+# rules_lint
 build:lint --aspects=//tools/lint:linters.bzl%clang_tidy
 build:lint --aspects=//tools/lint:linters.bzl%cppcheck
 build:lint --aspects=//tools/lint:linters.bzl%buildifier

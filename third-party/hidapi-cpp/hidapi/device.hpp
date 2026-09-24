@@ -6,7 +6,7 @@
 
 // C headers after project specific ones before c++ std one, and just use IWYU
 // to lint it all
-#include "hidapi.h"
+#include "hidapi/hidapi.h"
 
 // it's better to include after the project .hpp files, to avoid accidently
 // making thing build even though other header didn't include eg. <vector>

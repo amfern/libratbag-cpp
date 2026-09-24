@@ -1,12 +1,12 @@
 #include "hidapi/device.hpp"
 
+#include "gtest/gtest.h"
+
 #include <algorithm>
 #include <codecvt>
 #include <cstddef>
 #include <memory>
 #include <ranges>
-
-#include <gtest/gtest.h>
 
 class DeviceTestSuit : public ::testing::Test {
  protected:

@@ -23,7 +23,7 @@ register_toolchains(
 )
 
 ############################################################################
-# configure pre-commit and linters
+# configure linters
 ############################################################################
 bazel_dep(name = "aspect_rules_lint", version = "2.7.2", dev_dependency = True)
 

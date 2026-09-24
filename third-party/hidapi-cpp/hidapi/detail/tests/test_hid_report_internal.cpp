@@ -1,6 +1,6 @@
 #include "hidapi/detail/hid_report_internal.hpp"
 
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 
 // QA:  how do i know this will not be optimization out
 // ANS:  the compiler will do the full validation and generate the code and then
