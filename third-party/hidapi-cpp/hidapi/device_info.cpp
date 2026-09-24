@@ -1,17 +1,14 @@
 #include "hidapi/device_info.hpp"
 
-#include <stdexcept>
 #include <codecvt>
 #include <format>
 #include <ostream>
+#include <stdexcept>
 #include <string_view>
 
 namespace hidapi {
 
-
-DeviceID::DeviceID(ProductID vid, VendorID pid)
-    : vid_(vid), pid_(pid) {
-}
+DeviceID::DeviceID(ProductID vid, VendorID pid) : vid_(vid), pid_(pid) {}
 
 ProductID DeviceID::pid() const { return pid_; }
 
@@ -36,11 +33,13 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   struct hid_device_info *cur_dev;
   cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
 
-  // TODO: it will throw error if failed to open udev, or there is just no hid devices in the system.
-  // that is not ideal, as not having any hid devices in the system is totally acceptable and shouldn't be treated as an error.
+  // TODO: it will throw error if failed to open udev, or there is just no hid
+  // devices in the system. that is not ideal, as not having any hid devices in
+  // the system is totally acceptable and shouldn't be treated as an error.
   if (cur_dev == nullptr) {
     HIDAPIString err(hid_error(nullptr));
-    throw std::runtime_error(std::format("Failed to enumarate HID devices: {}", err));
+    throw std::runtime_error(
+        std::format("Failed to enumarate HID devices: {}", err));
   }
 
   HIDDeviceInfoList deviceInfos;
@@ -103,19 +102,18 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   this->hid_path_ = std::exchange(rhs.hid_path_, HIDPath{});
   this->device_id_ = std::exchange(rhs.device_id_, DeviceID{0, 0});
   this->serial_number_ = std::exchange(rhs.serial_number_, HIDAPIString{});
-  this->manufacturer_string_ = std::exchange(rhs.manufacturer_string_, HIDAPIString{});
+  this->manufacturer_string_ =
+      std::exchange(rhs.manufacturer_string_, HIDAPIString{});
   this->product_string_ = std::exchange(rhs.product_string_, HIDAPIString{});
 
   return *this;
 }
 
-
-bool HIDDeviceInfo::isValid() const {
-  return device_info_ != nullptr;
-}
+bool HIDDeviceInfo::isValid() const { return device_info_ != nullptr; }
 
 HIDPath HIDDeviceInfo::path() const {
-  // clang-tidy can detect use-after-move, but still should check if the object is valid, because some cases clang-tidy won't be able to catch.
+  // clang-tidy can detect use-after-move, but still should check if the object
+  // is valid, because some cases clang-tidy won't be able to catch.
   // https://clang.llvm.org/extra/clang-tidy/checks/bugprone/use-after-move.html
   // the additional pointer check is tiny, and dwarfed by other things around it
   // https://docs.google.com/document/d/1c3iuOSepMLLYmcd4oeSsmUanQnmULeBsdeVviiSYvOo/edit?usp=sharing

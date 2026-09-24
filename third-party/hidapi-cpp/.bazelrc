@@ -57,3 +57,6 @@ common --@rules_python//python/config_settings:bootstrap_impl=script
 common:pre-commit --ui_event_filters=-info,-stdout,-stderr
 common:pre-commit --noshow_progress
 common:pre-commit --lockfile_mode=off
+
+build:lint --aspects=//tools/lint:linters.bzl%clang_tidy
+build:lint --aspects=//tools/lint:linters.bzl%cppcheck

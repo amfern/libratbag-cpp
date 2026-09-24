@@ -6,8 +6,7 @@
 
 #include "hidapi.h"
 
-namespace hidapi {
-namespace detail {
+namespace hidapi::detail {
 
 enum class HidBusTypeInternal : std::underlying_type_t<hid_bus_type> {
   Unknown = HID_API_BUS_UNKNOWN,
@@ -30,10 +29,13 @@ enum class HidBusTypeInternal : std::underlying_type_t<hid_bus_type> {
   SPI = HID_API_BUS_SPI,
 };
 
-// This function is not actually called by anything, it's only used to verify all enum classes are acounted for and prevent future situation where new enum is added.
-// in C++26 we would be able to use reflection to acheive same validation instead
-inline constexpr HidBusTypeInternal c_hid_bus_type_to_HidBusType(hid_bus_type type) {
-  switch(type) {
+// This function is not actually called by anything, it's only used to verify
+// all enum classes are acounted for and prevent future situation where new enum
+// is added. in C++26 we would be able to use reflection to acheive same
+// validation instead
+inline constexpr HidBusTypeInternal
+c_hid_bus_type_to_HidBusType(hid_bus_type type) {
+  switch (type) {
   case HID_API_BUS_UNKNOWN:
     return HidBusTypeInternal::Unknown;
   case HID_API_BUS_USB:
@@ -52,8 +54,10 @@ inline constexpr HidBusTypeInternal c_hid_bus_type_to_HidBusType(hid_bus_type ty
 }
 
 // with c++26 we can use reflections instead of manual switch case
-// helper function to convery bus_type_to_string, a function that is hidden from API user, but used internally during std::format
-inline constexpr std::string_view bus_type_to_string(HidBusTypeInternal bus_type) {
+// helper function to convery bus_type_to_string, a function that is hidden from
+// API user, but used internally during std::format
+inline constexpr std::string_view
+bus_type_to_string(HidBusTypeInternal bus_type) {
   switch (bus_type) {
   case HidBusTypeInternal::Unknown:
     return std::string_view("Unknown");
@@ -74,16 +78,17 @@ inline constexpr std::string_view bus_type_to_string(HidBusTypeInternal bus_type
   return std::string_view("Unknown");
 }
 
-} // namespace detail
-} // namespace hidapi
+} // namespace hidapi::detail
 
 namespace std {
 
-template <> struct formatter<hidapi::detail::HidBusTypeInternal> : formatter<string_view> {
+template <>
+struct formatter<hidapi::detail::HidBusTypeInternal> : formatter<string_view> {
 
   template <class FormatContext>
-  typename FormatContext::iterator format(const hidapi::detail::HidBusTypeInternal &bus_type,
-                                          FormatContext &ctx) const {
+  typename FormatContext::iterator
+  format(const hidapi::detail::HidBusTypeInternal &bus_type,
+         FormatContext &ctx) const {
     auto name = hidapi::detail::bus_type_to_string(bus_type);
     return format_to(ctx.out(), "{}", name);
   }

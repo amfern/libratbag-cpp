@@ -7,8 +7,9 @@
 #include <iterator>
 #include <ranges>
 
-// TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
-// ans : yes, but have more nuanced tests in the internal implementation
+// TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate
+// tests, should i be doing duplicated tests? ans : yes, but have more nuanced
+// tests in the internal implementation
 TEST(HidReportTest, CanInitialize) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
   auto data = report.reportData();
@@ -25,11 +26,11 @@ TEST(HidReportTest, CanInitialize) {
 }
 
 TEST(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
-  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
-                   std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6},
-                   std::byte{7}, std::byte{8}, std::byte{9}, std::byte{10},
-                   std::byte{11}, std::byte{12}, std::byte{13}, std::byte{14},
-                   std::byte{15});
+  hidapi::HIDReport report(
+      hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
+      std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6}, std::byte{7},
+      std::byte{8}, std::byte{9}, std::byte{10}, std::byte{11}, std::byte{12},
+      std::byte{13}, std::byte{14}, std::byte{15});
 }
 
 TEST(HidReportTest, CanFormatPrint) {
@@ -43,7 +44,8 @@ TEST(HidReportTest, CanFormatPrint) {
 }
 
 // We test move and copy constructable, even if we didn't overwrite them
-// it's about specifying what it suppose to do, i cannot tell if move would work correctlly.
+// it's about specifying what it suppose to do, i cannot tell if move would work
+// correctlly.
 TEST(HidReportInternalTest, CanMove) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{12});
   auto newReport = hidapi::HIDReport(std::move(report));
@@ -56,7 +58,8 @@ TEST(HidReportInternalTest, CanMove) {
   ASSERT_EQ(report.reportData().front(), std::byte{12});
 
   ASSERT_DEATH(newReport.report(), ".*called on moved-from object");
-  ASSERT_DEATH(newReport.setReport(std::byte{0x77}), ".*called on moved-from object");
+  ASSERT_DEATH(newReport.setReport(std::byte{0x77}),
+               ".*called on moved-from object");
   ASSERT_DEATH(newReport.reportData(), ".*called on moved-from object");
   ASSERT_DEATH(newReport.buffer(), ".*called on moved-from object");
 }

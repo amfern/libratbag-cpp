@@ -7,7 +7,7 @@
 
 namespace hidapi {
 
-  // TODO: should i put those using under related class? like DeviceID
+// TODO: should i put those using under related class? like DeviceID
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
 using VendorID = uint16_t;
@@ -16,11 +16,11 @@ class DeviceID {
 
 public:
   DeviceID(ProductID vid, VendorID pid);
-  
+
   VendorID vid() const;
   ProductID pid() const;
 
-  bool operator==(const DeviceID&) const = default;
+  bool operator==(const DeviceID &) const = default;
 
 private:
   VendorID vid_;
@@ -71,11 +71,11 @@ using HIDDeviceInfoList = std::vector<HIDDeviceInfo>;
 using HidBusType = hidapi::detail::HidBusTypeInternal;
 
 class HIDDeviceInfo {
-// orgnaize all other classes methond into the following groups
-// - constructor
-// - assigments
-// - comparitors
-// - member function
+  // orgnaize all other classes methond into the following groups
+  // - constructor
+  // - assigments
+  // - comparitors
+  // - member function
 public:
   static const HIDDeviceInfoList enumerate_hid_devices();
 

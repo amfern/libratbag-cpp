@@ -2,11 +2,11 @@
 
 #include "gtest/gtest.h"
 
-#include <memory>
-#include <ranges>
 #include <algorithm>
 #include <codecvt>
 #include <cstddef>
+#include <memory>
+#include <ranges>
 
 class DeviceTestSuit : public ::testing::Test {
 protected:
@@ -15,7 +15,8 @@ protected:
   DeviceTestSuit() {
     // TODO: just do a get mock device, and work on that.
     auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();
-    device_ptr = std::make_shared<hidapi::HIDDevice>(hidapi::HIDDevice::open(std::move(deviceInfos[0])));
+    device_ptr = std::make_shared<hidapi::HIDDevice>(
+        hidapi::HIDDevice::open(std::move(deviceInfos[0])));
   }
 };
 
@@ -26,7 +27,9 @@ TEST_F(DeviceTestSuit, DeviceFailedWrite) {
     device_ptr->write(buf);
     FAIL() << "Expected std::runtime_error was not thrown";
   } catch (const std::runtime_error &err) {
-    EXPECT_STREQ("Actual number of writen bytes(0) doesn't match the expected(64): Zero buffer/length", err.what());
+    EXPECT_STREQ("Actual number of writen bytes(0) doesn't match the "
+                 "expected(64): Zero buffer/length",
+                 err.what());
   } catch (...) {
     FAIL()
         << "Expected std::runtime_error, but a different exception was thrown";
@@ -51,7 +54,9 @@ TEST_F(DeviceTestSuit, DeviceReportFailedSend) {
     device_ptr->send_feature_report(report);
     FAIL() << "Expected std::runtime_error was not thrown";
   } catch (const std::runtime_error &err) {
-    EXPECT_STREQ("Actual number of writen bytes(-1) doesn't match the expected(1): Zero buffer/length", err.what());
+    EXPECT_STREQ("Actual number of writen bytes(-1) doesn't match the "
+                 "expected(1): Zero buffer/length",
+                 err.what());
   } catch (...) {
     FAIL()
         << "Expected std::runtime_error, but a different exception was thrown";
@@ -61,8 +66,8 @@ TEST_F(DeviceTestSuit, DeviceReportFailedSend) {
 TEST_F(DeviceTestSuit, DeviceReportRead) {
 
   try {
-  auto report_received =
-      device_ptr->receive_feature_report(hidapi::ReportID{0x77}, std::size_t{16});
+    auto report_received = device_ptr->receive_feature_report(
+        hidapi::ReportID{0x77}, std::size_t{16});
 
     FAIL() << "Expected std::runtime_error was not thrown";
   } catch (const std::runtime_error &err) {

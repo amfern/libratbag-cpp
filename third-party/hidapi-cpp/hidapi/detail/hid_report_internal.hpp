@@ -1,28 +1,31 @@
 #pragma once
 
-#include <vector>
 #include <span>
+#include <vector>
 
-namespace hidapi {
-namespace detail {
+namespace hidapi::detail {
 
 using HIDBuffer = std::vector<std::byte>;
 using ReportID = std::byte;
 using ReportData = std::span<std::byte>;
 
-// if based class was empty type, inhereting it would have saved data, but here it's not the case
+// if based class was empty type, inhereting it would have saved data, but here
+// it's not the case
 class HIDReportInternal : private HIDBuffer {
 
 public:
   template <std::same_as<std::byte>... Ts>
-  HIDReportInternal(ReportID report, Ts ...report_data) : HIDBuffer{report, report_data...} {}
+  HIDReportInternal(ReportID report, Ts... report_data)
+      : HIDBuffer{report, report_data...} {}
 
   // This will resize the vector and preallocte empty values
-  // We assume the buffers are small and OS+compiler can handle zeroing out in the cache line even before reaching the memory
-  HIDReportInternal(ReportID report, std::size_t count);
+  // We assume the buffers are small and OS+compiler can handle zeroing out in
+  // the cache line even before reaching the memory
+  HIDReportInternal(ReportID report, std::size_t report_data_size);
 
-  bool operator==(const HIDReportInternal& rhs) const = default;
-  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const = default;
+  bool operator==(const HIDReportInternal &rhs) const = default;
+  std::strong_ordering
+  operator<=>(const HIDReportInternal &rhs) const = default;
 
   // lifetime management
   bool isValid() const;
@@ -34,12 +37,11 @@ public:
   ReportData reportData();
 
   // get underlying HIDBuffer
-  HIDBuffer& buffer();
+  HIDBuffer &buffer();
 
   // expose vector operations
-  using HIDBuffer::size;
   using HIDBuffer::data;
+  using HIDBuffer::size;
 };
 
-} // namespace detail
-} // namespace hidapi
+} // namespace hidapi::detail

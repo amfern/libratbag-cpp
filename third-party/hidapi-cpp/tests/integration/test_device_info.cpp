@@ -1,6 +1,6 @@
 #include "hidapi/device_info.hpp"
-#include <codecvt>
 #include <algorithm>
+#include <codecvt>
 
 #include "gtest/gtest.h"
 
