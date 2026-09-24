@@ -4,5 +4,5 @@ namespace ratbag {
 namespace lib {
 class Profile {};
 
-} // namespace lib
-} // namespace ratbag
+}  // namespace lib
+}  // namespace ratbag

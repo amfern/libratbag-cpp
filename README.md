@@ -43,3 +43,12 @@ bazel run @hedron_compile_commands//:refresh_all
 ``` sh
 bazel run --sandbox_debug --config debug --run_under=lldb //ratbag/cli:cli
 ```
+
+### formatting and Linting
+
+``` sh
+bazel run //tools/format:format # fix
+# bazel run //tools/format:format.check
+bazel build --config=lint --output_groups=rules_lint_human //...
+```
+
