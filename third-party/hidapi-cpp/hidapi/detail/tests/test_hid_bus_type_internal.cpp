@@ -1,5 +1,6 @@
-#include "gtest/gtest.h"
 #include "hidapi/detail/hid_bus_type_internal.hpp"
+
+#include <gtest/gtest.h>
 
 TEST(BusTypeToStringTest, CanReturnCorrectStringToEnum) {
   ASSERT_EQ(hidapi::detail::bus_type_to_string(
