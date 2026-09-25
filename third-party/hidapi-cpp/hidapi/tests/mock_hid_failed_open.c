@@ -1,5 +1,5 @@
 
-#include "hidapi.h"
+#include "hidapi/hidapi.h"
 
 #include <stdlib.h>
 
@@ -8,8 +8,8 @@
 //            I wasn't able to overwrite with linker --wrap, it seems like all
 //            "hid_enumerate" symbol was resolved and stripped in
 //            bazel-bin/hidapi-cpp/libhidapi.so
-struct hid_device_info HID_API_EXPORT *
-hid_enumerate(unsigned short vendor_id, unsigned short product_id) {
+struct hid_device_info HID_API_EXPORT *hid_enumerate(
+    unsigned short vendor_id, unsigned short product_id) {
   struct hid_device_info *root =
       (struct hid_device_info *)calloc(1, sizeof(struct hid_device_info));
   root->path = "/mock/path";
@@ -32,19 +32,20 @@ void HID_API_EXPORT hid_free_enumeration(struct hid_device_info *devs) {
   free(devs);
 }
 
-// TODO: this test will work on linux only, maybe i should create a special variant for the mock in BUILD.bazel.hidapi
+// TODO: this test will work on linux only, maybe i should create a special
+// variant for the mock in BUILD.bazel.hidapi
 struct hid_device_ {
-	int device_handle;
-	int blocking;
-	wchar_t *last_error_str;
-	wchar_t *last_read_error_str;
-	struct hid_device_info* device_info;
+  int device_handle;
+  int blocking;
+  wchar_t *last_error_str;
+  wchar_t *last_read_error_str;
+  struct hid_device_info *device_info;
 };
 
 HID_API_EXPORT hid_device *HID_API_CALL hid_open_path(const char *path) {
   return NULL;
 }
 
-HID_API_EXPORT const wchar_t * HID_API_CALL hid_error(hid_device *dev) {
-  return  L"ioctl(GRDESCSIZE) error for";
+HID_API_EXPORT const wchar_t *HID_API_CALL hid_error(hid_device *dev) {
+  return L"ioctl(GRDESCSIZE) error for";
 }

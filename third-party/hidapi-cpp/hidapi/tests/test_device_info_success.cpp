@@ -1,4 +1,5 @@
 #include "hidapi/device_info.hpp"
+
 #include "gtest/gtest.h"
 
 #include <codecvt>
@@ -8,7 +9,7 @@
 TEST(DeviceInfoTest, CanEnumarate) {
   auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();
 
-  auto& deviceInfo = deviceInfos.front();
+  auto &deviceInfo = deviceInfos.front();
   EXPECT_EQ(deviceInfo.path(), "/mock/path");
   EXPECT_EQ(deviceInfo.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(deviceInfo.serial_number().toString(), "serial number");
@@ -26,9 +27,9 @@ TEST(DeviceInfoTest, CanMove) {
 
   // move via move constructor
   auto newDeviceInfo(std::move(deviceInfos.front()));
-  
+
   // check that moved-to object has the correct values
-  EXPECT_EQ(newDeviceInfo.path(), "/mock/path"); // example
+  EXPECT_EQ(newDeviceInfo.path(), "/mock/path");  // example
   EXPECT_EQ(newDeviceInfo.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(newDeviceInfo.serial_number(), L"serial number");
   EXPECT_EQ(newDeviceInfo.release_number(), 1);
@@ -38,24 +39,29 @@ TEST(DeviceInfoTest, CanMove) {
   EXPECT_EQ(newDeviceInfo.usage(), 3);
   EXPECT_EQ(newDeviceInfo.interface_number(), 4);
   EXPECT_EQ(newDeviceInfo.bus_type(), hidapi::HidBusType::SPI);
-  
+
   // check that the moved-from is valid bu unspecified
   // std:: library expects that object after move:
   //  1. Can be destroyed
   //  2. Can be moved into
-  //  3. Strive towards allowing people to use member function on movedFrom, but not mandatory
+  //  3. Strive towards allowing people to use member function on movedFrom, but
+  //  not mandatory
   //  4. Last resort implement .isValid()
-  //     a. We don't want move operation to throw, and sometimes it move out operation requries to reallocation an empty object, and in that case it's better to say object is in invalid state.
-  //     b. i can instruct users to not use memebers function of movedFrom, but it adds more cognitive load and gotaches for end useres to worry about.
+  //     a. We don't want move operation to throw, and sometimes it move out
+  //     operation requries to reallocation an empty object, and in that case
+  //     it's better to say object is in invalid state. b. i can instruct users
+  //     to not use memebers function of movedFrom, but it adds more cognitive
+  //     load and gotaches for end useres to worry about.
   //  The Rule of thum:
   //  - Function that do queries(getters function) return some default values
   //  - Modifies(setters function) throw
-  auto& movedFrom = deviceInfos.front();
+  auto &movedFrom = deviceInfos.front();
   ASSERT_DEATH(movedFrom.path(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.device_id(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.serial_number(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.release_number(), ".*called on moved-from object");
-  ASSERT_DEATH(movedFrom.manufacturer_string(), ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.manufacturer_string(),
+               ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.product_string(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.usage_page(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.usage(), ".*called on moved-from object");
@@ -64,7 +70,7 @@ TEST(DeviceInfoTest, CanMove) {
 
   // move back via move assign operator
   movedFrom = std::move(newDeviceInfo);
-  EXPECT_EQ(movedFrom.path(), "/mock/path"); // example
+  EXPECT_EQ(movedFrom.path(), "/mock/path");  // example
   EXPECT_EQ(movedFrom.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(movedFrom.serial_number().toString(), "serial number");
   EXPECT_EQ(movedFrom.release_number(), 1);

@@ -2,20 +2,21 @@
 
 #include "gtest/gtest.h"
 
-#include <memory>
-#include <ranges>
 #include <algorithm>
 #include <codecvt>
 #include <cstddef>
+#include <memory>
+#include <ranges>
 
 class DeviceTestSuit : public ::testing::Test {
-protected:
+ protected:
   std::shared_ptr<hidapi::HIDDevice> device_ptr;
 
   DeviceTestSuit() {
     // TODO: just do a get mock device, and work on that.
     auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();
-    device_ptr = std::make_shared<hidapi::HIDDevice>(hidapi::HIDDevice::open(std::move(deviceInfos[0])));
+    device_ptr = std::make_shared<hidapi::HIDDevice>(
+        hidapi::HIDDevice::open(std::move(deviceInfos[0])));
   }
 };
 
@@ -29,7 +30,8 @@ TEST_F(DeviceTestSuit, DeviceRead) {
   auto buf = device_ptr->read(64);
 
   //  why i can't do HIDBuffer expected{{0}, {0}, {0}};?
-  //  ANS: because std::byte doesn't have default constructor from int, and it's by design
+  //  ANS: because std::byte doesn't have default constructor from int, and it's
+  //  by design
   hidapi::HIDBuffer expected{
       std::byte{0},  std::byte{1},  std::byte{2},  std::byte{3},  std::byte{4},
       std::byte{5},  std::byte{6},  std::byte{7},  std::byte{8},  std::byte{9},
@@ -52,8 +54,9 @@ TEST_F(DeviceTestSuit, DeviceRead) {
 TEST_F(DeviceTestSuit, DeviceReportSend) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
   auto data = report.reportData();
-  // TODO: maybe i can override the operator [] to make it transperant to set and get the bytes??
-  data[0] = {0}; 
+  // TODO: maybe i can override the operator [] to make it transperant to set
+  // and get the bytes??
+  data[0] = {0};
   data[1] = {1};
   data[2] = {2};
   data[3] = {3};
@@ -65,20 +68,20 @@ TEST_F(DeviceTestSuit, DeviceReportSend) {
 }
 
 TEST_F(DeviceTestSuit, DeviceReportRead) {
-  auto report_received =
-      device_ptr->receive_feature_report(hidapi::ReportID{0x77}, std::size_t{16});
+  auto report_received = device_ptr->receive_feature_report(
+      hidapi::ReportID{0x77}, std::size_t{16});
 
   hidapi::HIDReport expected_report(
-      hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2}, std::byte{3},
-      std::byte{4}, std::byte{5}, std::byte{6}, std::byte{7}, std::byte{8},
-      std::byte{9}, std::byte{10}, std::byte{11}, std::byte{12}, std::byte{13},
-      std::byte{14}, std::byte{15});
+      hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
+      std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6}, std::byte{7},
+      std::byte{8}, std::byte{9}, std::byte{10}, std::byte{11}, std::byte{12},
+      std::byte{13}, std::byte{14}, std::byte{15});
 
   ASSERT_EQ(report_received, expected_report);
 }
 
 TEST_F(DeviceTestSuit, CanMove) {
-  hidapi::HIDDevice& device = *device_ptr;
+  hidapi::HIDDevice &device = *device_ptr;
   hidapi::HIDDevice newDevice(std::move(device));
 
   // check that moved-to object has the correct values
@@ -101,20 +104,24 @@ TEST_F(DeviceTestSuit, CanMove) {
   ASSERT_EQ(buf, expected);
 
   // TODO all variables should be written in snakecase
-  EXPECT_EQ(newDevice.deviceInfo().path(), "/mock/path"); // example
+  EXPECT_EQ(newDevice.deviceInfo().path(), "/mock/path");  // example
 
   // move back
   device = std::move(newDevice);
 
-  EXPECT_EQ(device.deviceInfo().path(), "/mock/path"); // example
+  EXPECT_EQ(device.deviceInfo().path(), "/mock/path");  // example
 
   ASSERT_DEATH(newDevice.deviceInfo().path(), ".*called on moved-from object");
 
-  hidapi::HIDReport buf_report(hidapi::ReportID{0x77}, std::byte{0}, std::byte{1});  
+  hidapi::HIDReport buf_report(hidapi::ReportID{0x77}, std::byte{0},
+                               std::byte{1});
   ASSERT_DEATH(newDevice.read(20), ".*called on moved-from object");
-  ASSERT_DEATH(newDevice.write(buf_report.buffer()), ".*called on moved-from object");
-  ASSERT_DEATH(newDevice.receive_feature_report(hidapi::ReportID{0x77}, 20), ".*called on moved-from object");
-  ASSERT_DEATH(newDevice.send_feature_report(buf_report), ".*called on moved-from object");
+  ASSERT_DEATH(newDevice.write(buf_report.buffer()),
+               ".*called on moved-from object");
+  ASSERT_DEATH(newDevice.receive_feature_report(hidapi::ReportID{0x77}, 20),
+               ".*called on moved-from object");
+  ASSERT_DEATH(newDevice.send_feature_report(buf_report),
+               ".*called on moved-from object");
 }
 
 TEST_F(DeviceTestSuit, CanMoveAndGoOutOfScope) {

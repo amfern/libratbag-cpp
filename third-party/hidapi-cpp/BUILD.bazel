@@ -1,0 +1,5 @@
+alias(
+    name = "hidapi-cpp",
+    actual = "//hidapi",
+    visibility = ["//visibility:public"],
+)

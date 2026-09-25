@@ -1,8 +1,9 @@
 #include "hidapi/device_info.hpp"
-#include <codecvt>
-#include <algorithm>
 
 #include "gtest/gtest.h"
+
+#include <algorithm>
+#include <codecvt>
 
 using hidapi::HidBusType;
 using hidapi::HIDDeviceInfo;
@@ -11,7 +12,7 @@ using hidapi::HIDDeviceInfo;
 TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
   struct hid_device_info *devs, *cur_dev;
-  devs = hid_enumerate(0, 0); // 0,0 = find all devices
+  devs = hid_enumerate(0, 0);  // 0,0 = find all devices
   cur_dev = devs;
 
   for (auto &info : deviceInfos) {

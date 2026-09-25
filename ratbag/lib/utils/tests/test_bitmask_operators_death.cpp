@@ -1,4 +1,4 @@
-enum class C{x,y};
+enum class C { x, y };
 
 C c1 = C::x | C::y;
 C c2 = c1 & C::y;
