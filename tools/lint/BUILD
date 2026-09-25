@@ -36,3 +36,11 @@ sh_binary(
         "@platforms//os:macos": ["@cppcheck_macos//:files"],
     }),
 )
+
+exports_files(
+    [
+        ".clang-tidy",
+        ".shellcheckrc",
+    ],
+    visibility = ["//visibility:public"],
+)

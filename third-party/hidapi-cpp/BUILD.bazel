@@ -1,11 +1,3 @@
-exports_files(
-    [
-        ".clang-tidy",
-        ".shellcheckrc",
-    ],
-    visibility = ["//visibility:public"],
-)
-
 alias(
     name = "hidapi-cpp",
     actual = "//hidapi",

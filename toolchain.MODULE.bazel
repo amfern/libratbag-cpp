@@ -13,7 +13,7 @@ llvm.toolchain(
     name = "llvm_toolchain",
     cxx_standard = {"": "c++23"},
     llvm_versions = {
-        "": "latest",
+        "": "21.1.6",
     },
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
