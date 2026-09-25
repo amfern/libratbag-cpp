@@ -39,9 +39,16 @@ build:ubsan --linkopt=-fsanitize=undefined
 # memory sanitizer
 build:msan --linkopt=-fsanitize=memory
 
+# rules_lint
+build:lint --aspects=//tools/lint:linters.bzl%clang_tidy
+build:lint --aspects=//tools/lint:linters.bzl%cppcheck
+build:lint --aspects=//tools/lint:linters.bzl%buildifier
+build:lint --aspects=//tools/lint:linters.bzl%shellcheck
+
+
 # Avoid building all targets when testing
 test --build_tests_only
-test --config=debug --config=asan --config=ubsan # --config=msan
+test --config=debug --config=asan --config=ubsan --config=lint # --config=msan
 
 # TODO: this probably not needed for osx anymore
 # Print relative paths where possible to reduce noise
@@ -52,9 +59,3 @@ test --config=debug --config=asan --config=ubsan # --config=msan
 
 # Enable hermetic `rules_python`
 common --@rules_python//python/config_settings:bootstrap_impl=script
-
-# rules_lint
-build:lint --aspects=//tools/lint:linters.bzl%clang_tidy
-build:lint --aspects=//tools/lint:linters.bzl%cppcheck
-build:lint --aspects=//tools/lint:linters.bzl%buildifier
-build:lint --aspects=//tools/lint:linters.bzl%shellcheck
