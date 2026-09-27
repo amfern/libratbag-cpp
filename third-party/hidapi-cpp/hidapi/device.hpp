@@ -34,7 +34,7 @@ class HIDDevice {
   // clang tidy catches use after move
   template <typename T>
   static HIDDevice open(T device_info) {
-    hid_device *handle = hid_open_path(device_info.path().data());
+    hid_device* handle = hid_open_path(device_info.path().data());
     if (handle == nullptr) {
       HIDAPIString err(hid_error(nullptr));
       throw std::runtime_error(err.toString());
@@ -43,34 +43,32 @@ class HIDDevice {
     return HIDDevice(handle, std::forward<T>(device_info));
   };
 
-  HIDDevice(const HIDDevice &other) = delete;           // copy constructor
-  HIDDevice(HIDDevice &&other) noexcept;                // move constructor
-  HIDDevice &operator=(const HIDDevice &rhs) = delete;  // copy operator
-  HIDDevice &operator=(HIDDevice &&rhs) noexcept;       // move operator
+  HIDDevice(const HIDDevice& other) = delete;           // copy constructor
+  HIDDevice(HIDDevice&& other) noexcept;                // move constructor
+  HIDDevice& operator=(const HIDDevice& rhs) = delete;  // copy operator
+  HIDDevice& operator=(HIDDevice&& rhs) noexcept;       // move operator
 
   ~HIDDevice();  // destructor
 
   bool isValid() const;
 
-  HIDDeviceInfo &deviceInfo();
+  HIDDeviceInfo& deviceInfo();
 
   // - read max_length
   // - read untile timeout is reached
   // - timeout of 0, will read max_length and exit imidiatly
   // note: We dont' support block from wait C hipapi, as it may result in
   // deadlock and not something an api should get into even by mistake
-  std::optional<HIDBuffer> read(std::size_t max_length,
-                                ReadTimeoutMilli timeout = ReadTimeoutMilli{0});
+  std::optional<HIDBuffer> read(std::size_t max_length, ReadTimeoutMilli timeout = ReadTimeoutMilli{0});
   void write(HIDBuffer buf);
 
-  std::optional<HIDReport> receive_feature_report(ReportID report_id,
-                                                  std::size_t length);
+  std::optional<HIDReport> receive_feature_report(ReportID report_id, std::size_t length);
   void send_feature_report(HIDReport report);
 
  private:
-  explicit HIDDevice(hid_device *handle, HIDDeviceInfo device_info);
+  explicit HIDDevice(hid_device* handle, HIDDeviceInfo device_info);
 
-  hid_device *handle_;
+  hid_device* handle_;
   HIDDeviceInfo device_info_;
 };
 

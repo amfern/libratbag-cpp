@@ -22,9 +22,8 @@ class HIDReportInternal : private HIDBuffer {
   // the cache line even before reaching the memory
   HIDReportInternal(ReportID report, std::size_t report_data_size);
 
-  bool operator==(const HIDReportInternal &rhs) const = default;
-  std::strong_ordering operator<=>(const HIDReportInternal &rhs) const =
-      default;
+  bool operator==(const HIDReportInternal& rhs) const = default;
+  std::strong_ordering operator<=>(const HIDReportInternal& rhs) const = default;
 
   // lifetime management
   bool isValid() const;
@@ -36,7 +35,7 @@ class HIDReportInternal : private HIDBuffer {
   ReportData reportData();
 
   // get underlying HIDBuffer
-  HIDBuffer &buffer();
+  HIDBuffer& buffer();
 
   // expose vector operations
   using HIDBuffer::data;

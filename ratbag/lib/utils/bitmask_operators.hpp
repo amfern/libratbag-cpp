@@ -44,8 +44,7 @@
 #include <utility>
 
 template <typename T>
-concept BitmaskLike =
-    std::is_enum_v<T> and requires(T e) { enable_bitmask_operators(e); };
+concept BitmaskLike = std::is_enum_v<T> and requires(T e) { enable_bitmask_operators(e); };
 
 template <BitmaskLike T>
 constexpr auto operator|(const T lhs, const T rhs) {
@@ -68,19 +67,19 @@ constexpr auto operator~(const T lhs) {
 }
 
 template <BitmaskLike T>
-constexpr auto operator|=(const T &lhs, const T rhs) {
+constexpr auto operator|=(const T& lhs, const T rhs) {
   lhs = static_cast<T>(std::to_underlying(lhs) | std::to_underlying(rhs));
   return lhs;
 }
 
 template <BitmaskLike T>
-constexpr auto operator&=(const T &lhs, const T rhs) {
+constexpr auto operator&=(const T& lhs, const T rhs) {
   lhs = static_cast<T>(std::to_underlying(lhs) & std::to_underlying(rhs));
   return lhs;
 }
 
 template <BitmaskLike T>
-constexpr auto operator^=(T &lhs, const T rhs) {
+constexpr auto operator^=(T& lhs, const T rhs) {
   lhs = static_cast<T>(std::to_underlying(lhs) ^ std::to_underlying(rhs));
   return lhs;
 }

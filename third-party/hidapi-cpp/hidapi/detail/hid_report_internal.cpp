@@ -5,8 +5,7 @@
 
 namespace hidapi::detail {
 
-HIDReportInternal::HIDReportInternal(ReportID report,
-                                     std::size_t report_data_size)
+HIDReportInternal::HIDReportInternal(ReportID report, std::size_t report_data_size)
     : HIDBuffer(report_data_size + 1) {
   setReport(report);
 }
@@ -29,7 +28,7 @@ ReportData HIDReportInternal::reportData() {
   return {this->begin() + 1, this->end()};
 };
 
-HIDBuffer &HIDReportInternal::buffer() {
+HIDBuffer& HIDReportInternal::buffer() {
   assert("called on moved-from object" && isValid());
   return *this;
 };

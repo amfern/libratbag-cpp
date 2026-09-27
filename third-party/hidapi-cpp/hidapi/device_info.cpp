@@ -8,13 +8,15 @@
 
 namespace hidapi {
 
-DeviceID::DeviceID(ProductID vid, VendorID pid) : vid_(vid), pid_(pid) {}
+DeviceID::DeviceID(ProductID vid, VendorID pid)
+    : vid_(vid),
+      pid_(pid) {}
 
 ProductID DeviceID::pid() const { return pid_; }
 
 VendorID DeviceID::vid() const { return vid_; }
 
-std::ostream &operator<<(std::ostream &os, const DeviceID &di) {
+std::ostream& operator<<(std::ostream& os, const DeviceID& di) {
   os << std::format("{}", di);
   return os;
 }
@@ -24,13 +26,13 @@ std::string HIDAPIString::toString() const {
   return converter.to_bytes(data());
 };
 
-std::ostream &operator<<(std::ostream &os, const HIDAPIString &s) {
+std::ostream& operator<<(std::ostream& os, const HIDAPIString& s) {
   os << std::format("{}", s);
   return os;
 }
 
 const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
-  struct hid_device_info *cur_dev;
+  struct hid_device_info* cur_dev;
   cur_dev = hid_enumerate(0, 0);  // 0,0 = find all devices
 
   // TODO: it will throw error if failed to open udev, or there is just no hid
@@ -38,8 +40,7 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
   // the system is totally acceptable and shouldn't be treated as an error.
   if (cur_dev == nullptr) {
     HIDAPIString err(hid_error(nullptr));
-    throw std::runtime_error(
-        std::format("Failed to enumarate HID devices: {}", err));
+    throw std::runtime_error(std::format("Failed to enumarate HID devices: {}", err));
   }
 
   HIDDeviceInfoList deviceInfos;
@@ -59,7 +60,7 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
 // braces will be elements.
 // 3. MyClass{} will call constructor as if ()
 // 4. {} It's a C++ things, uniform initialization feature.
-HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
+HIDDeviceInfo::HIDDeviceInfo(hid_device_info* device_info)
     : device_info_(device_info),
       hid_path_(device_info_->path),
       device_id_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
@@ -79,17 +80,16 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 }
 
 // move constructor
-HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
+HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo&& other) noexcept
     : device_info_(std::exchange(other.device_info_, nullptr)),
       hid_path_(std::exchange(other.hid_path_, HIDPath{})),
       device_id_(std::exchange(other.device_id_, DeviceID{0, 0})),
       serial_number_(std::exchange(other.serial_number_, HIDAPIString{})),
-      manufacturer_string_(
-          std::exchange(other.manufacturer_string_, HIDAPIString{})),
+      manufacturer_string_(std::exchange(other.manufacturer_string_, HIDAPIString{})),
       product_string_(std::exchange(other.product_string_, HIDAPIString{})) {}
 
 // move operator
-HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
+HIDDeviceInfo& HIDDeviceInfo::operator=(HIDDeviceInfo&& rhs) noexcept {
   if (this == &rhs) {
     return *this;
   }
@@ -103,8 +103,7 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   this->hid_path_ = std::exchange(rhs.hid_path_, HIDPath{});
   this->device_id_ = std::exchange(rhs.device_id_, DeviceID{0, 0});
   this->serial_number_ = std::exchange(rhs.serial_number_, HIDAPIString{});
-  this->manufacturer_string_ =
-      std::exchange(rhs.manufacturer_string_, HIDAPIString{});
+  this->manufacturer_string_ = std::exchange(rhs.manufacturer_string_, HIDAPIString{});
   this->product_string_ = std::exchange(rhs.product_string_, HIDAPIString{});
 
   return *this;
@@ -167,7 +166,7 @@ HidBusType HIDDeviceInfo::bus_type() const {
   return static_cast<HidBusType>(device_info_->bus_type);
 }
 
-std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
+std::ostream& operator<<(std::ostream& os, const HIDDeviceInfo& info) {
   os << std::format("{}", info);
   return os;
 }

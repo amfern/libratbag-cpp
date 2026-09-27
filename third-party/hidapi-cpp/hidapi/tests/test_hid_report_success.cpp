@@ -28,20 +28,43 @@ TEST(HidReportTest, CanInitialize) {
 
 TEST(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
   hidapi::HIDReport report(
-      hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
-      std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6}, std::byte{7},
-      std::byte{8}, std::byte{9}, std::byte{10}, std::byte{11}, std::byte{12},
-      std::byte{13}, std::byte{14}, std::byte{15});
+      hidapi::ReportID{0x77},
+      std::byte{0},
+      std::byte{1},
+      std::byte{2},
+      std::byte{3},
+      std::byte{4},
+      std::byte{5},
+      std::byte{6},
+      std::byte{7},
+      std::byte{8},
+      std::byte{9},
+      std::byte{10},
+      std::byte{11},
+      std::byte{12},
+      std::byte{13},
+      std::byte{14},
+      std::byte{15}
+  );
 }
 
 TEST(HidReportTest, CanFormatPrint) {
-  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{0}, std::byte{1},
-                           std::byte{2}, std::byte{3}, std::byte{4},
-                           std::byte{5}, std::byte{6});
+  hidapi::HIDReport report(
+      hidapi::ReportID{0x77},
+      std::byte{0},
+      std::byte{1},
+      std::byte{2},
+      std::byte{3},
+      std::byte{4},
+      std::byte{5},
+      std::byte{6}
+  );
 
-  EXPECT_EQ(std::format("{}", report),
-            "HIDReport(report_id: 0x77, reportData: [0x00, 0x01, "
-            "0x02, 0x03, 0x04, 0x05, 0x06])");
+  EXPECT_EQ(
+      std::format("{}", report),
+      "HIDReport(report_id: 0x77, reportData: [0x00, 0x01, "
+      "0x02, 0x03, 0x04, 0x05, 0x06])"
+  );
 }
 
 // We test move and copy constructable, even if we didn't overwrite them
@@ -59,8 +82,7 @@ TEST(HidReportInternalTest, CanMove) {
   ASSERT_EQ(report.reportData().front(), std::byte{12});
 
   ASSERT_DEATH(newReport.report(), ".*called on moved-from object");
-  ASSERT_DEATH(newReport.setReport(std::byte{0x77}),
-               ".*called on moved-from object");
+  ASSERT_DEATH(newReport.setReport(std::byte{0x77}), ".*called on moved-from object");
   ASSERT_DEATH(newReport.reportData(), ".*called on moved-from object");
   ASSERT_DEATH(newReport.buffer(), ".*called on moved-from object");
 }

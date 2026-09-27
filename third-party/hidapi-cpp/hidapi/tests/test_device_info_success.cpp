@@ -9,7 +9,7 @@
 TEST(DeviceInfoTest, CanEnumarate) {
   auto deviceInfos = hidapi::HIDDeviceInfo::enumerate_hid_devices();
 
-  auto &deviceInfo = deviceInfos.front();
+  auto& deviceInfo = deviceInfos.front();
   EXPECT_EQ(deviceInfo.path(), "/mock/path");
   EXPECT_EQ(deviceInfo.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(deviceInfo.serial_number().toString(), "serial number");
@@ -55,13 +55,12 @@ TEST(DeviceInfoTest, CanMove) {
   //  The Rule of thum:
   //  - Function that do queries(getters function) return some default values
   //  - Modifies(setters function) throw
-  auto &movedFrom = deviceInfos.front();
+  auto& movedFrom = deviceInfos.front();
   ASSERT_DEATH(movedFrom.path(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.device_id(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.serial_number(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.release_number(), ".*called on moved-from object");
-  ASSERT_DEATH(movedFrom.manufacturer_string(),
-               ".*called on moved-from object");
+  ASSERT_DEATH(movedFrom.manufacturer_string(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.product_string(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.usage_page(), ".*called on moved-from object");
   ASSERT_DEATH(movedFrom.usage(), ".*called on moved-from object");
@@ -104,5 +103,6 @@ TEST(DeviceInfoTest, CanPrintFormat) {
       "HIDDeviceInfo(path: /mock/path, deviceId: DeviceID(vid: 0x1234, pid: "
       "0x4321), serial_number: serial number, release_number: 1, "
       "manufacturer_string: mock manufacturer, product_string = mock product, "
-      "usage_page = 2, usage = 3, interface_number = 4, bus_type = SPI)");
+      "usage_page = 2, usage = 3, interface_number = 4, bus_type = SPI)"
+  );
 }

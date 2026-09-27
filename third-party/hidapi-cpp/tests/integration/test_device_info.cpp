@@ -15,7 +15,7 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
   devs = hid_enumerate(0, 0);  // 0,0 = find all devices
   cur_dev = devs;
 
-  for (auto &info : deviceInfos) {
+  for (auto& info : deviceInfos) {
     if (cur_dev == nullptr) {
       FAIL() << "HIDDeviceInfo::enumerate_hid_devices returned more elements "
                 "than returned by hid_enumurate";
@@ -36,10 +36,8 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
 
     std::wstring_convert<std::codecvt_utf8<wchar_t>> converter;
     std::string serial_number_utf8 = converter.to_bytes(cur_dev->serial_number);
-    std::string manufacturer_string_utf8 =
-        converter.to_bytes(cur_dev->manufacturer_string);
-    std::string product_string_utf8 =
-        converter.to_bytes(cur_dev->product_string);
+    std::string manufacturer_string_utf8 = converter.to_bytes(cur_dev->manufacturer_string);
+    std::string product_string_utf8 = converter.to_bytes(cur_dev->product_string);
 
     ASSERT_EQ(info.path(), cur_dev->path);
     ASSERT_EQ(info.device_id().vid(), cur_dev->vendor_id);
@@ -59,10 +57,18 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
         "{}, "
         "product_string = {}, usage_page = {}, usage = {}, "
         "interface_number = {}, bus_type = {})",
-        cur_dev->path, cur_dev->vendor_id, cur_dev->product_id,
-        serial_number_utf8, cur_dev->release_number, manufacturer_string_utf8,
-        product_string_utf8, cur_dev->usage_page, cur_dev->usage,
-        cur_dev->interface_number, bus_type);
+        cur_dev->path,
+        cur_dev->vendor_id,
+        cur_dev->product_id,
+        serial_number_utf8,
+        cur_dev->release_number,
+        manufacturer_string_utf8,
+        product_string_utf8,
+        cur_dev->usage_page,
+        cur_dev->usage,
+        cur_dev->interface_number,
+        bus_type
+    );
 
     ASSERT_EQ(std::format("{}", info), hid_device_info_string);
 

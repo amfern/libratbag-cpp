@@ -10,7 +10,7 @@ int main() {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
   std::println("List of HID devices");
 
-  for (auto &info : deviceInfos) {
+  for (auto& info : deviceInfos) {
     std::println("Available: {}.", info);
   }
 

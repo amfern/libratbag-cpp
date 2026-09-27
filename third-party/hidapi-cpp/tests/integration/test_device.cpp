@@ -16,8 +16,7 @@ using hidapi::HIDDeviceInfo;
 TEST(DeviceTestSuit, OpenDevice) {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
 
-  auto it = std::ranges::find(deviceInfos, DeviceID{0x046d, 0xc332},
-                              &HIDDeviceInfo::device_id);
+  auto it = std::ranges::find(deviceInfos, DeviceID{0x046d, 0xc332}, &HIDDeviceInfo::device_id);
 
   if (it == deviceInfos.end()) {
     GTEST_SKIP() << "Skipping this test because the device Logitech Gaming "
