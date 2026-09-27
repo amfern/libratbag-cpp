@@ -1,23 +1,22 @@
 #include "hidapi/device_info.hpp"
 
-#include <stdexcept>
 #include <codecvt>
 #include <format>
 #include <ostream>
+#include <stdexcept>
 #include <string_view>
 
 namespace hidapi {
 
-
 DeviceID::DeviceID(ProductID vid, VendorID pid)
-    : vid_(vid), pid_(pid) {
-}
+    : vid_(vid),
+      pid_(pid) {}
 
 ProductID DeviceID::pid() const { return pid_; }
 
 VendorID DeviceID::vid() const { return vid_; }
 
-std::ostream &operator<<(std::ostream &os, const DeviceID &di) {
+std::ostream& operator<<(std::ostream& os, const DeviceID& di) {
   os << std::format("{}", di);
   return os;
 }
@@ -27,17 +26,18 @@ std::string HIDAPIString::toString() const {
   return converter.to_bytes(data());
 };
 
-std::ostream &operator<<(std::ostream &os, const HIDAPIString &s) {
+std::ostream& operator<<(std::ostream& os, const HIDAPIString& s) {
   os << std::format("{}", s);
   return os;
 }
 
 const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
-  struct hid_device_info *cur_dev;
-  cur_dev = hid_enumerate(0, 0); // 0,0 = find all devices
+  struct hid_device_info* cur_dev;
+  cur_dev = hid_enumerate(0, 0);  // 0,0 = find all devices
 
-  // TODO: it will throw error if failed to open udev, or there is just no hid devices in the system.
-  // that is not ideal, as not having any hid devices in the system is totally acceptable and shouldn't be treated as an error.
+  // TODO: it will throw error if failed to open udev, or there is just no hid
+  // devices in the system. that is not ideal, as not having any hid devices in
+  // the system is totally acceptable and shouldn't be treated as an error.
   if (cur_dev == nullptr) {
     HIDAPIString err(hid_error(nullptr));
     throw std::runtime_error(std::format("Failed to enumarate HID devices: {}", err));
@@ -60,8 +60,9 @@ const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
 // braces will be elements.
 // 3. MyClass{} will call constructor as if ()
 // 4. {} It's a C++ things, uniform initialization feature.
-HIDDeviceInfo::HIDDeviceInfo(hid_device_info *device_info)
-    : device_info_(device_info), hid_path_(device_info_->path),
+HIDDeviceInfo::HIDDeviceInfo(hid_device_info* device_info)
+    : device_info_(device_info),
+      hid_path_(device_info_->path),
       device_id_(DeviceID{device_info_->vendor_id, device_info_->product_id}),
       serial_number_(device_info_->serial_number),
       manufacturer_string_(device_info_->manufacturer_string),
@@ -79,17 +80,16 @@ HIDDeviceInfo::~HIDDeviceInfo() {
 }
 
 // move constructor
-HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo &&other) noexcept
+HIDDeviceInfo::HIDDeviceInfo(HIDDeviceInfo&& other) noexcept
     : device_info_(std::exchange(other.device_info_, nullptr)),
       hid_path_(std::exchange(other.hid_path_, HIDPath{})),
       device_id_(std::exchange(other.device_id_, DeviceID{0, 0})),
       serial_number_(std::exchange(other.serial_number_, HIDAPIString{})),
-      manufacturer_string_(
-          std::exchange(other.manufacturer_string_, HIDAPIString{})),
+      manufacturer_string_(std::exchange(other.manufacturer_string_, HIDAPIString{})),
       product_string_(std::exchange(other.product_string_, HIDAPIString{})) {}
 
 // move operator
-HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
+HIDDeviceInfo& HIDDeviceInfo::operator=(HIDDeviceInfo&& rhs) noexcept {
   if (this == &rhs) {
     return *this;
   }
@@ -109,13 +109,11 @@ HIDDeviceInfo &HIDDeviceInfo::operator=(HIDDeviceInfo &&rhs) noexcept {
   return *this;
 }
 
-
-bool HIDDeviceInfo::isValid() const {
-  return device_info_ != nullptr;
-}
+bool HIDDeviceInfo::isValid() const { return device_info_ != nullptr; }
 
 HIDPath HIDDeviceInfo::path() const {
-  // clang-tidy can detect use-after-move, but still should check if the object is valid, because some cases clang-tidy won't be able to catch.
+  // clang-tidy can detect use-after-move, but still should check if the object
+  // is valid, because some cases clang-tidy won't be able to catch.
   // https://clang.llvm.org/extra/clang-tidy/checks/bugprone/use-after-move.html
   // the additional pointer check is tiny, and dwarfed by other things around it
   // https://docs.google.com/document/d/1c3iuOSepMLLYmcd4oeSsmUanQnmULeBsdeVviiSYvOo/edit?usp=sharing
@@ -168,9 +166,9 @@ HidBusType HIDDeviceInfo::bus_type() const {
   return static_cast<HidBusType>(device_info_->bus_type);
 }
 
-std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info) {
+std::ostream& operator<<(std::ostream& os, const HIDDeviceInfo& info) {
   os << std::format("{}", info);
   return os;
 }
 
-} // namespace hidapi
+}  // namespace hidapi

@@ -1,4 +1,5 @@
 #include "hidapi/device_info.hpp"
+
 #include "gtest/gtest.h"
 
 #include <codecvt>
@@ -26,9 +27,9 @@ TEST(DeviceInfoTest, CanMove) {
 
   // move via move constructor
   auto newDeviceInfo(std::move(deviceInfos.front()));
-  
+
   // check that moved-to object has the correct values
-  EXPECT_EQ(newDeviceInfo.path(), "/mock/path"); // example
+  EXPECT_EQ(newDeviceInfo.path(), "/mock/path");  // example
   EXPECT_EQ(newDeviceInfo.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(newDeviceInfo.serial_number(), L"serial number");
   EXPECT_EQ(newDeviceInfo.release_number(), 1);
@@ -38,15 +39,19 @@ TEST(DeviceInfoTest, CanMove) {
   EXPECT_EQ(newDeviceInfo.usage(), 3);
   EXPECT_EQ(newDeviceInfo.interface_number(), 4);
   EXPECT_EQ(newDeviceInfo.bus_type(), hidapi::HidBusType::SPI);
-  
+
   // check that the moved-from is valid bu unspecified
   // std:: library expects that object after move:
   //  1. Can be destroyed
   //  2. Can be moved into
-  //  3. Strive towards allowing people to use member function on movedFrom, but not mandatory
+  //  3. Strive towards allowing people to use member function on movedFrom, but
+  //  not mandatory
   //  4. Last resort implement .isValid()
-  //     a. We don't want move operation to throw, and sometimes it move out operation requries to reallocation an empty object, and in that case it's better to say object is in invalid state.
-  //     b. i can instruct users to not use memebers function of movedFrom, but it adds more cognitive load and gotaches for end useres to worry about.
+  //     a. We don't want move operation to throw, and sometimes it move out
+  //     operation requries to reallocation an empty object, and in that case
+  //     it's better to say object is in invalid state. b. i can instruct users
+  //     to not use memebers function of movedFrom, but it adds more cognitive
+  //     load and gotaches for end useres to worry about.
   //  The Rule of thum:
   //  - Function that do queries(getters function) return some default values
   //  - Modifies(setters function) throw
@@ -64,7 +69,7 @@ TEST(DeviceInfoTest, CanMove) {
 
   // move back via move assign operator
   movedFrom = std::move(newDeviceInfo);
-  EXPECT_EQ(movedFrom.path(), "/mock/path"); // example
+  EXPECT_EQ(movedFrom.path(), "/mock/path");  // example
   EXPECT_EQ(movedFrom.device_id(), hidapi::DeviceID(0x1234, 0x4321));
   EXPECT_EQ(movedFrom.serial_number().toString(), "serial number");
   EXPECT_EQ(movedFrom.release_number(), 1);
@@ -98,5 +103,6 @@ TEST(DeviceInfoTest, CanPrintFormat) {
       "HIDDeviceInfo(path: /mock/path, deviceId: DeviceID(vid: 0x1234, pid: "
       "0x4321), serial_number: serial number, release_number: 1, "
       "manufacturer_string: mock manufacturer, product_string = mock product, "
-      "usage_page = 2, usage = 3, interface_number = 4, bus_type = SPI)");
+      "usage_page = 2, usage = 3, interface_number = 4, bus_type = SPI)"
+  );
 }

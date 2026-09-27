@@ -21,8 +21,8 @@ cc_test(
 cc_test(
     name = "device_info_success",
     srcs = [
-        "test_device_info_success.cpp",
         "mock_hid_success.c",
+        "test_device_info_success.cpp",
     ],
     # linkopts = [
     #     "-Wl,--wrap,hid_enumerate",
@@ -37,8 +37,8 @@ cc_test(
 cc_test(
     name = "device_info_failed_enumarate",
     srcs = [
-        "test_device_info_failed_enumarate.cpp",
         "mock_hid_failed_enumarate.c",
+        "test_device_info_failed_enumarate.cpp",
     ],
     # linkopts = [
     #     "-Wl,--wrap,hid_enumerate",
@@ -53,8 +53,8 @@ cc_test(
 cc_test(
     name = "device_failed_to_open",
     srcs = [
-        "test_device_failed_open.cpp",
         "mock_hid_failed_open.c",
+        "test_device_failed_open.cpp",
     ],
     # linkopts = [
     #     "-Wl,--wrap,hid_enumerate",
@@ -69,8 +69,8 @@ cc_test(
 cc_test(
     name = "device_failed_write_and_read",
     srcs = [
-        "test_device_failed_to_write_and_read.cpp",
         "mock_hid_failed_write_and_read.c",
+        "test_device_failed_to_write_and_read.cpp",
     ],
     # linkopts = [
     #     "-Wl,--wrap,hid_enumerate",
@@ -85,8 +85,8 @@ cc_test(
 cc_test(
     name = "device_success",
     srcs = [
-        "test_device_success.cpp",
         "mock_hid_success.c",
+        "test_device_success.cpp",
     ],
     # linkopts = [
     #     "-Wl,--wrap,hid_enumerate",
@@ -97,5 +97,3 @@ cc_test(
         "@googletest//:gtest_main",
     ],
 )
-
-

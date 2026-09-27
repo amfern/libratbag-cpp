@@ -7,26 +7,25 @@
 
 namespace hidapi {
 
-  // TODO: should i put those using under related class? like DeviceID
+// TODO: should i put those using under related class? like DeviceID
 using HIDPath = std::string_view;
 using ProductID = uint16_t;
 using VendorID = uint16_t;
 
 class DeviceID {
-
-public:
+ public:
   DeviceID(ProductID vid, VendorID pid);
-  
+
   VendorID vid() const;
   ProductID pid() const;
 
   bool operator==(const DeviceID&) const = default;
 
-private:
+ private:
   VendorID vid_;
   ProductID pid_;
 
-  friend std::ostream &operator<<(std::ostream &os, const DeviceID &di);
+  friend std::ostream& operator<<(std::ostream& os, const DeviceID& di);
   friend class HIDDeviceInfo;
 };
 
@@ -59,9 +58,9 @@ class HIDDeviceInfo;
 // adjust the return type based on the target OS. Adopting this strategy would
 // make HIDAPI more natural and efficient to use in cross-platform projects.
 class HIDAPIString : public std::wstring_view {
-public:
+ public:
   std::string toString() const;
-  friend std::ostream &operator<<(std::ostream &os, const HIDAPIString &s);
+  friend std::ostream& operator<<(std::ostream& os, const HIDAPIString& s);
 };
 using ReleaseNumber = uint16_t;
 using UsagePage = uint16_t;
@@ -71,22 +70,22 @@ using HIDDeviceInfoList = std::vector<HIDDeviceInfo>;
 using HidBusType = hidapi::detail::HidBusTypeInternal;
 
 class HIDDeviceInfo {
-// orgnaize all other classes methond into the following groups
-// - constructor
-// - assigments
-// - comparitors
-// - member function
-public:
+  // orgnaize all other classes methond into the following groups
+  // - constructor
+  // - assigments
+  // - comparitors
+  // - member function
+ public:
   static const HIDDeviceInfoList enumerate_hid_devices();
 
-  friend std::ostream &operator<<(std::ostream &os, const HIDDeviceInfo &info);
+  friend std::ostream& operator<<(std::ostream& os, const HIDDeviceInfo& info);
 
-  ~HIDDeviceInfo(); // destructor
+  ~HIDDeviceInfo();  // destructor
 
-  HIDDeviceInfo(const HIDDeviceInfo &other) = delete; // copy constructor
-  HIDDeviceInfo(HIDDeviceInfo &&other) noexcept;      // move constructor
-  HIDDeviceInfo &operator=(const HIDDeviceInfo &rhs) = delete; // copy operator
-  HIDDeviceInfo &operator=(HIDDeviceInfo &&rhs) noexcept;      // move operator
+  HIDDeviceInfo(const HIDDeviceInfo& other) = delete;           // copy constructor
+  HIDDeviceInfo(HIDDeviceInfo&& other) noexcept;                // move constructor
+  HIDDeviceInfo& operator=(const HIDDeviceInfo& rhs) = delete;  // copy operator
+  HIDDeviceInfo& operator=(HIDDeviceInfo&& rhs) noexcept;       // move operator
 
   bool isValid() const;
 
@@ -112,10 +111,10 @@ public:
   InterfaceNumber interface_number() const;
   HidBusType bus_type() const;
 
-private:
-  explicit HIDDeviceInfo(hid_device_info *device_info);
+ private:
+  explicit HIDDeviceInfo(hid_device_info* device_info);
 
-  struct hid_device_info *device_info_;
+  struct hid_device_info* device_info_;
 
   HIDPath hid_path_;
   DeviceID device_id_;
@@ -124,37 +123,46 @@ private:
   HIDAPIString product_string_;
 };
 
-} // namespace hidapi
+}  // namespace hidapi
 
 namespace std {
 
-template <> struct formatter<hidapi::DeviceID> : formatter<string_view> {
-
-  auto format(const hidapi::DeviceID &id, auto &ctx) const {
-    return format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})",
-                     id.vid(), id.pid());
+template <>
+struct formatter<hidapi::DeviceID> : formatter<string_view> {
+  auto format(const hidapi::DeviceID& id, auto& ctx) const {
+    return format_to(ctx.out(), "DeviceID(vid: {:#06x}, pid: {:#06x})", id.vid(), id.pid());
   }
 };
 
-template <> struct formatter<hidapi::HIDAPIString> : formatter<string_view> {
-  auto format(const hidapi::HIDAPIString &hidapi_string, auto &ctx) const {
+template <>
+struct formatter<hidapi::HIDAPIString> : formatter<string_view> {
+  auto format(const hidapi::HIDAPIString& hidapi_string, auto& ctx) const {
     std::string string_utf8 = hidapi_string.toString();
     return format_to(ctx.out(), "{}", string_utf8);
   }
 };
 
-template <> struct formatter<hidapi::HIDDeviceInfo> : formatter<string_view> {
-  auto format(const hidapi::HIDDeviceInfo &info, auto &ctx) const {
-    return format_to(ctx.out(),
-                     "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
-                     "release_number: {}, "
-                     "manufacturer_string: {}, product_string = {}, usage_page "
-                     "= {}, usage = {}, interface_number = {}, bus_type = {})",
-                     info.path(), info.device_id(), info.serial_number(),
-                     info.release_number(), info.manufacturer_string(),
-                     info.product_string(), info.usage_page(), info.usage(),
-                     info.interface_number(), info.bus_type());
+template <>
+struct formatter<hidapi::HIDDeviceInfo> : formatter<string_view> {
+  auto format(const hidapi::HIDDeviceInfo& info, auto& ctx) const {
+    return format_to(
+        ctx.out(),
+        "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
+        "release_number: {}, "
+        "manufacturer_string: {}, product_string = {}, usage_page "
+        "= {}, usage = {}, interface_number = {}, bus_type = {})",
+        info.path(),
+        info.device_id(),
+        info.serial_number(),
+        info.release_number(),
+        info.manufacturer_string(),
+        info.product_string(),
+        info.usage_page(),
+        info.usage(),
+        info.interface_number(),
+        info.bus_type()
+    );
   }
 };
 
-} // namespace std
+}  // namespace std

@@ -1,5 +1,6 @@
 #include "hidapi/device.hpp"
 
+#include <cassert>
 #include <codecvt>
 #include <cstdint>
 #include <exception>
@@ -10,13 +11,12 @@
 #include <string_view>
 #include <utility>
 #include <vector>
-#include <cassert>
 
 namespace hidapi {
 
-
 HIDDevice::HIDDevice(hid_device* handle, HIDDeviceInfo device_info)
-    : handle_(handle), device_info_(std::move(device_info)) {}
+    : handle_(handle),
+      device_info_(std::move(device_info)) {}
 
 HIDDevice::~HIDDevice() {
   if (isValid()) {
@@ -25,12 +25,12 @@ HIDDevice::~HIDDevice() {
 }
 
 // move constructor
-HIDDevice::HIDDevice(HIDDevice &&other) noexcept
+HIDDevice::HIDDevice(HIDDevice&& other) noexcept
     : handle_(std::exchange(other.handle_, nullptr)),
       device_info_(std::move(other.device_info_)) {}
 
 // move operator
-HIDDevice &HIDDevice::operator=(HIDDevice &&rhs) noexcept {
+HIDDevice& HIDDevice::operator=(HIDDevice&& rhs) noexcept {
   if (this == &rhs) {
     return *this;
   }
@@ -46,11 +46,9 @@ HIDDevice &HIDDevice::operator=(HIDDevice &&rhs) noexcept {
   return *this;
 }
 
-bool HIDDevice::isValid() const {
-  return handle_ != nullptr;
-}
+bool HIDDevice::isValid() const { return handle_ != nullptr; }
 
-HIDDeviceInfo &HIDDevice::deviceInfo() {
+HIDDeviceInfo& HIDDevice::deviceInfo() {
   assert("called on moved-from object" && isValid());
   return device_info_;
 }
@@ -61,7 +59,7 @@ std::optional<HIDBuffer> HIDDevice::read(std::size_t max_length, ReadTimeoutMill
   HIDBuffer buf(max_length);
 
   auto buf_ptr = reinterpret_cast<unsigned char*>(buf.data());
- 
+
   // Read requested state
   auto bytes_read = hid_read_timeout(handle_, buf_ptr, buf.size(), static_cast<int>(timeout.count()));
 
@@ -89,12 +87,18 @@ void HIDDevice::write(HIDBuffer buf) {
   }
 
   HIDAPIString err(hid_error(handle_));
-  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
-                                       "doesn't match the expected({}): {}",
-                                       bytes_written, buf.size(),
-                                       err));
+  throw std::runtime_error(
+      std::format(
+          "Actual number of writen bytes({}) "
+          "doesn't match the expected({}): {}",
+          bytes_written,
+          buf.size(),
+          err
+      )
+  );
 }
 
+// TODO: should i reduce the error count with -ferror-limit=1
 std::optional<HIDReport> HIDDevice::receive_feature_report(ReportID report_id, std::size_t length) {
   assert("called on moved-from object" && isValid());
 
@@ -121,9 +125,15 @@ void HIDDevice::send_feature_report(HIDReport report) {
   }
 
   HIDAPIString err(hid_error(handle_));
-  throw std::runtime_error(std::format("Actual number of writen bytes({}) "
-                                       "doesn't match the expected({}): {}",
-                                       bytes_written, report.size(), err));
+  throw std::runtime_error(
+      std::format(
+          "Actual number of writen bytes({}) "
+          "doesn't match the expected({}): {}",
+          bytes_written,
+          report.size(),
+          err
+      )
+  );
 }
 
-} // namespace hidapi
+}  // namespace hidapi

@@ -1,16 +1,16 @@
-#include <format>
-#include <iostream>
-
 #include "ratbag/lib/libratbag.hpp"
 
-using ratbag::lib::Device;
-using ratbag::lib::hidapi::HIDDeviceInfo;
+// #include <format>
+#include <iostream>
+
+// using ratbag::lib::Device;
+using hidapi::HIDDeviceInfo;
 
 int main() {
   auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
   std::println("List of HID devices");
 
-  for (auto &info : deviceInfos) {
+  for (auto& info : deviceInfos) {
     std::println("Available: {}.", info);
   }
 

@@ -1,14 +1,16 @@
 #include "hidapi/hid_report.hpp"
 
+#include "gtest/gtest.h"
+
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
-#include <gtest/gtest.h>
 #include <iterator>
 #include <ranges>
 
-// TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate tests, should i be doing duplicated tests?
-// ans : yes, but have more nuanced tests in the internal implementation
+// TODO: now that i have HidReport an HidReportInternal, i endup doing duplicate
+// tests, should i be doing duplicated tests? ans : yes, but have more nuanced
+// tests in the internal implementation
 TEST(HidReportTest, CanInitialize) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::size_t{16});
   auto data = report.reportData();
@@ -25,25 +27,49 @@ TEST(HidReportTest, CanInitialize) {
 }
 
 TEST(HidReportTest, CanInitiazlieAnyNumberOfbytes) {
-  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{0}, std::byte{1}, std::byte{2},
-                   std::byte{3}, std::byte{4}, std::byte{5}, std::byte{6},
-                   std::byte{7}, std::byte{8}, std::byte{9}, std::byte{10},
-                   std::byte{11}, std::byte{12}, std::byte{13}, std::byte{14},
-                   std::byte{15});
+  hidapi::HIDReport report(
+      hidapi::ReportID{0x77},
+      std::byte{0},
+      std::byte{1},
+      std::byte{2},
+      std::byte{3},
+      std::byte{4},
+      std::byte{5},
+      std::byte{6},
+      std::byte{7},
+      std::byte{8},
+      std::byte{9},
+      std::byte{10},
+      std::byte{11},
+      std::byte{12},
+      std::byte{13},
+      std::byte{14},
+      std::byte{15}
+  );
 }
 
 TEST(HidReportTest, CanFormatPrint) {
-  hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{0}, std::byte{1},
-                           std::byte{2}, std::byte{3}, std::byte{4},
-                           std::byte{5}, std::byte{6});
+  hidapi::HIDReport report(
+      hidapi::ReportID{0x77},
+      std::byte{0},
+      std::byte{1},
+      std::byte{2},
+      std::byte{3},
+      std::byte{4},
+      std::byte{5},
+      std::byte{6}
+  );
 
-  EXPECT_EQ(std::format("{}", report),
-            "HIDReport(report_id: 0x77, reportData: [0x00, 0x01, "
-            "0x02, 0x03, 0x04, 0x05, 0x06])");
+  EXPECT_EQ(
+      std::format("{}", report),
+      "HIDReport(report_id: 0x77, reportData: [0x00, 0x01, "
+      "0x02, 0x03, 0x04, 0x05, 0x06])"
+  );
 }
 
 // We test move and copy constructable, even if we didn't overwrite them
-// it's about specifying what it suppose to do, i cannot tell if move would work correctlly.
+// it's about specifying what it suppose to do, i cannot tell if move would work
+// correctlly.
 TEST(HidReportInternalTest, CanMove) {
   hidapi::HIDReport report(hidapi::ReportID{0x77}, std::byte{12});
   auto newReport = hidapi::HIDReport(std::move(report));

@@ -9,6 +9,6 @@ Device Device::Open() {
   return dev;
 }
 
-} // namespace lib
+}  // namespace lib
 
-} // namespace ratbag
+}  // namespace ratbag

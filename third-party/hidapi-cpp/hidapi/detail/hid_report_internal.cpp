@@ -1,18 +1,16 @@
 #include "hidapi/detail/hid_report_internal.hpp"
-#include "hid_report_internal.hpp"
 
 #include <cassert>
+#include <cstddef>
 
-namespace hidapi {
-namespace detail {
+namespace hidapi::detail {
 
-HIDReportInternal::HIDReportInternal(ReportID report, std::size_t report_data_size) : HIDBuffer(report_data_size + 1) {
+HIDReportInternal::HIDReportInternal(ReportID report, std::size_t report_data_size)
+    : HIDBuffer(report_data_size + 1) {
   setReport(report);
 }
 
-bool HIDReportInternal::isValid() const {
-  return !empty();
-}
+bool HIDReportInternal::isValid() const { return !empty(); }
 
 ReportID HIDReportInternal::report() const {
   assert("called on moved-from object" && isValid());
@@ -27,7 +25,7 @@ void HIDReportInternal::setReport(ReportID report_id) {
 ReportData HIDReportInternal::reportData() {
   assert("called on moved-from object" && isValid());
   // return everything except the first byte which is the report
-  return std::span<std::byte>(this->begin() + 1, this->end());
+  return {this->begin() + 1, this->end()};
 };
 
 HIDBuffer& HIDReportInternal::buffer() {
@@ -35,6 +33,4 @@ HIDBuffer& HIDReportInternal::buffer() {
   return *this;
 };
 
-} // namespace detail
-} // namespace hidapi
-
+}  // namespace hidapi::detail

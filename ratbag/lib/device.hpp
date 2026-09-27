@@ -1,14 +1,14 @@
 #pragma once
 
-#include <vector>
-
 #include "ratbag/lib/common/profile.hpp"
+
+#include <vector>
 
 namespace ratbag {
 namespace lib {
 
 class Device {
-public:
+ public:
   static Device Open();
 
   void Read();
@@ -17,6 +17,6 @@ public:
 
   std::vector<Profile> GetProfiles();
 };
-} // namespace lib
+}  // namespace lib
 
-} // namespace ratbag
+}  // namespace ratbag

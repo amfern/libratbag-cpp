@@ -1,6 +1,0 @@
-load("@pre-commit//pre-commit:defs.bzl", "pre_commit")
-
-pre_commit(
-    name = "hooks",
-    srcs = ["@pre-commit-hooks"],
-)

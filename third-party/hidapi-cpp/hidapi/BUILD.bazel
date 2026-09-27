@@ -5,11 +5,11 @@ cc_library(
     hdrs = [
         "hid_report.hpp",
     ],
+    visibility = ["//hidapi:__subpackages__"],
     deps = [
         "//hidapi/detail:hid_report_internal",
         "@hidapi",
     ],
-    visibility = ["//hidapi:__subpackages__"],
 )
 
 cc_library(
@@ -26,7 +26,7 @@ cc_library(
     ],
     visibility = [
         "//hidapi:__subpackages__",
-        "//tests:__subpackages__"
+        "//tests:__subpackages__",
     ],
     deps = [
         "//hidapi/detail:hid_bus_type_internal",
@@ -48,7 +48,7 @@ cc_library(
     ],
     visibility = [
         "//hidapi:__subpackages__",
-        "//tests:__subpackages__"
+        "//tests:__subpackages__",
     ],
     deps = [
         ":device_info",
@@ -59,13 +59,13 @@ cc_library(
 
 cc_library(
     name = "hidapi",
-    visibility = ["//hidapi:__subpackages__"],
     hdrs = [
         "hidapi.hpp",
     ],
+    visibility = ["//:__subpackages__"],
     deps = [
-        ":device_info",
         ":device",
+        ":device_info",
         ":hid_report",
     ],
 )

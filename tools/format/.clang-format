@@ -1,0 +1,41 @@
+---
+##### Options specified by the WPCS ####
+BasedOnStyle: Google
+Language: Cpp
+
+# Use a wider column limit to align with the broader Woven ecosystem.
+ColumnLimit: 120
+
+# Standardize pointer alignment.
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+# Do not split clang-tidy suppression comments.
+CommentPragmas: "^ NOLINT(NEXTLINE|BEGIN|END)?"
+
+IncludeCategories:
+  - Regex: hidapi/.*\.hpp
+    Priority: 1
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: ^<.*\.h>
+    Priority: 3
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: ^<.*>
+    Priority: 4
+    SortPriority: 0
+    CaseSensitive: false
+  - Regex: .*
+    Priority: 2
+    SortPriority: 0
+    CaseSensitive: false
+
+# Standardize on always breaking argument packs
+AlignAfterOpenBracket: BlockIndent
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: false
+BinPackParameters: false
+BreakInheritanceList: BeforeComma
+PackConstructorInitializers: Never
