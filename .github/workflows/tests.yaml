@@ -39,12 +39,17 @@ jobs:
 
       # TODO(34): run integraiton tests only if the physical device is present
       - name: hidapi-cpp - Test, lint and format
+        env:
+          BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
         run: |
           cd third-party/hidapi-cpp
           bazel test -- //... -//tests/integration/... 
           bazel run //tools/format:format.check
 
+
       - name: ratbag-cpp - Test, lint and format
+        env:
+          BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
         run: |
           bazel test //...
           bazel run //tools/format:format.check
