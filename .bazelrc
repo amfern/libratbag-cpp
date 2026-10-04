@@ -44,7 +44,7 @@ build:lint --aspects=//tools/lint:linters.bzl%clang_tidy
 build:lint --aspects=//tools/lint:linters.bzl%cppcheck
 build:lint --aspects=//tools/lint:linters.bzl%buildifier
 build:lint --aspects=//tools/lint:linters.bzl%shellcheck
-
+build:lint --output_groups=rules_lint_human
 
 # Avoid building all targets when testing
 test --build_tests_only
