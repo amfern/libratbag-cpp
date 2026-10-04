@@ -1,0 +1,46 @@
+name: Tests
+
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel previous runs for the same branch or pull request automatically
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Build, Test, lint and Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install Linux Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libudev-dev
+      - uses: bazel-contrib/setup-bazel@0.19.0
+        with:
+          # Avoid downloading Bazel every time.
+          bazelisk-cache: true
+          # Store build cache per workflow.
+          disk-cache: ${{ github.workflow }}
+          # Share repository cache between workflows.
+          repository-cache: true
+          bazelrc: |
+            build --color=yes
+            build --show_timestamps
+
+      # TODO(34): run integraiton tests only if the physical device is present
+      - name: Test & lint
+        run: |
+          bazel test //...
+          cd third-party/hidapi-cpp && bazel test -- //... -//tests/integration/... 
+
+      - name: Format
+        run: |
+          bazel run //tools/format:format.check 
