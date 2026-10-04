@@ -1,5 +1,6 @@
 name: Tests
 
+
 on:
   push:
     branches: [main]
@@ -34,10 +35,11 @@ jobs:
           bazel build --config=lint //...
           cd third-party/hidapi-cpp && bazel build --config=lint --output_groups=rules_lint_human //...
 
+      # TODO(34): run integraiton tests only if the physical device is present
       - name: Test & lint
         run: |
           bazel test //...
-          cd third-party/hidapi-cpp && bazel test //... 
+          cd third-party/hidapi-cpp && bazel test //... -//tests/integration/... 
 
       - name: Format
         run: |
