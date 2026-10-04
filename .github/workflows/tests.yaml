@@ -1,18 +1,22 @@
 name: Tests
- 
+
 on:
-  push:
-    branches: [main]
   pull_request:
-    branches: [main]
+    types: [review_requested, ready_for_review]
 
 jobs:
-  test-and-lint:
-    name: Build & Run Tests
+  if: github.event.review.state == 'approved'
+
+  tests:
+    name: Build, Test, lint and Format
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v7
+      - name: Install Linux Packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libudev-dev
       - uses: bazel-contrib/setup-bazel@0.19.0
         with:
           # Avoid downloading Bazel every time.
@@ -25,7 +29,7 @@ jobs:
             build --color=yes
             build --show_timestamps
 
-      - name: Build
+      - name: Build & lint
         run: |
           bazel build --config=lint //...
           cd third-party/hidapi-cpp && bazel build --config=lint --output_groups=rules_lint_human //...
@@ -35,6 +39,6 @@ jobs:
           bazel test //...
           cd third-party/hidapi-cpp && bazel test //... 
 
-      - name: Format check
+      - name: Format
         run: |
           bazel run //tools/format:format.check 
