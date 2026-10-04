@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -eu
+
+if [[ -z "${BUILDBUDDY_API_KEY:-}" ]]; then
+  BUILDBUDDY_API_KEY="$(git config buildbuddy.api-key)"
+fi
+
+echo '{
+  "headers": {
+    "x-buildbuddy-api-key": ["'"$BUILDBUDDY_API_KEY"'"]
+  }
+}'
