@@ -7,6 +7,11 @@ on:
   pull_request:
     branches: [main]
 
+# Cancel previous runs for the same branch or pull request automatically
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     name: Build, Test, lint and Format
