@@ -2,10 +2,18 @@ name: Tests
 
 
 on:
+  workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
 
 # Cancel previous runs for the same branch or pull request automatically
 concurrency:
@@ -16,6 +24,7 @@ jobs:
   tests:
     name: Build, Test, lint and Format
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
 
     steps:
       - uses: actions/checkout@v7
@@ -32,15 +41,23 @@ jobs:
           # Share repository cache between workflows.
           repository-cache: true
           bazelrc: |
-            build --color=yes
-            build --show_timestamps
+            common --color=yes
+            common --show_timestamps
+            common --show_progress_rate_limit=-1
+            common --config=remote-cache
 
       # TODO(34): run integraiton tests only if the physical device is present
-      - name: Test & lint
+      - name: hidapi-cpp - Test, lint and format
+        env:
+          BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
+        run: |
+          cd third-party/hidapi-cpp
+          bazel test -- //... -//tests/integration/... 
+          bazel run //tools/format:format.check
+
+      - name: ratbag-cpp - Test, lint and format
+        env:
+          BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
         run: |
           bazel test //...
-          cd third-party/hidapi-cpp && bazel test -- //... -//tests/integration/... 
-
-      - name: Format
-        run: |
-          bazel run //tools/format:format.check 
+          bazel run //tools/format:format.check
