@@ -32,14 +32,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libudev-dev
-      # - uses: bazel-contrib/setup-bazel@0.19.0
-      #   with:
-      #     # Avoid downloading Bazel every time.
-      #     bazelisk-cache: true
-      #     # Store build cache per workflow.
-      #     disk-cache: ${{ github.workflow }}
-      #     # Share repository cache between workflows.
-      #     repository-cache: true
 
       - name: Restore cached bazel vendor
         id: bazel-vendor-restore
