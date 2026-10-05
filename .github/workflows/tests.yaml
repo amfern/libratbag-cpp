@@ -2,10 +2,18 @@ name: Tests
 
 
 on:
+  workflow_dispatch:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
 
 # Cancel previous runs for the same branch or pull request automatically
 concurrency:
@@ -16,6 +24,7 @@ jobs:
   tests:
     name: Build, Test, lint and Format
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
 
     steps:
       - uses: actions/checkout@v7
@@ -45,7 +54,6 @@ jobs:
           cd third-party/hidapi-cpp
           bazel test -- //... -//tests/integration/... 
           bazel run //tools/format:format.check
-
 
       - name: ratbag-cpp - Test, lint and format
         env:
