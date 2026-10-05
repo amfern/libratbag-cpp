@@ -1,4 +1,5 @@
 import %workspace%/bazelrc/remote.bazelrc
+import %workspace%/bazelrc/ci.bazelrc
 
 # Use the toolchain-resolution mechanism for C++
 build --incompatible_enable_cc_toolchain_resolution

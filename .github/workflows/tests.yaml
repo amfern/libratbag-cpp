@@ -32,19 +32,17 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libudev-dev
-      - uses: bazel-contrib/setup-bazel@0.19.0
+
+      - name: Restore cached bazel vendor
+        id: bazel-vendor-restore
+        uses: actions/cache/restore@v6
         with:
-          # Avoid downloading Bazel every time.
-          bazelisk-cache: true
-          # Store build cache per workflow.
-          disk-cache: ${{ github.workflow }}
-          # Share repository cache between workflows.
-          repository-cache: true
-          bazelrc: |
-            common --color=yes
-            common --show_timestamps
-            common --show_progress_rate_limit=-1
-            common --config=remote-cache
+          path: |
+            ~/bazel-vendor-cache
+          key: bazel-vendor-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: |
+            bazel-vendor-${{ runner.os }}-
+            bazel-vendor-
 
       # TODO(34): run integraiton tests only if the physical device is present
       - name: hidapi-cpp - Test, lint and format
@@ -52,12 +50,23 @@ jobs:
           BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
         run: |
           cd third-party/hidapi-cpp
-          bazel test -- //... -//tests/integration/... 
-          bazel run //tools/format:format.check
+          bazel vendor --config=ci //...
+          bazel test --config=ci -- //... -//tests/integration/...
+          bazel run --config=ci //tools/format:format.check
 
       - name: ratbag-cpp - Test, lint and format
         env:
           BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
         run: |
-          bazel test //...
-          bazel run //tools/format:format.check
+          bazel vendor --config=ci //...
+          bazel test --config=ci //...
+          bazel run --config=ci //tools/format:format.check
+
+      - name: Save bazel vendor to github cache
+        if: github.ref == 'refs/heads/main'
+        id: cache-primes-save
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/bazel-vendor-cache
+          key: bazel-vendor-${{ runner.os }}-${{ github.run_id }}
