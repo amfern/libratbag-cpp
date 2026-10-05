@@ -74,7 +74,7 @@ jobs:
           bazel run //tools/format:format.check
 
       - name: Save bazel vendor to github cache
-        if: github.ref == 'refs/heads/main'
+        # if: github.ref == 'refs/heads/main'
         id: cache-primes-save
         uses: actions/cache/save@v6
         with:
