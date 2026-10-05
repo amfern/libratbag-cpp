@@ -45,6 +45,15 @@ jobs:
             common --show_timestamps
             common --show_progress_rate_limit=-1
             common --config=remote-cache
+            common --vendor_dir=~/bazel-vendor-cache
+
+      - name: Restore cached bazel vendor
+        id: bazel-vendor-restore
+        uses: actions/cache/restore@v6
+        with:
+          path: |
+            ~/bazel-vendor-cache
+          key: ${{ runner.os }}-bazel-vendor
 
       # TODO(34): run integraiton tests only if the physical device is present
       - name: hidapi-cpp - Test, lint and format
@@ -61,3 +70,11 @@ jobs:
         run: |
           bazel test //...
           bazel run //tools/format:format.check
+
+      - name: Save bazel vendor into cache
+        id: cache-primes-save
+        uses: actions/cache/save@v6
+        with:
+          path: |
+            ~/bazel-vendor-cache
+          key: ${{ steps.bazel-vendor-restore.outputs.cache-primary-key }}
