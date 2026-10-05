@@ -61,17 +61,17 @@ jobs:
           BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
         run: |
           cd third-party/hidapi-cpp
+          bazel vendor //...
           bazel test --nofetch -- //... -//tests/integration/...
           bazel run --nofetch //tools/format:format.check
-          bazel vendor
 
       - name: ratbag-cpp - Test, lint and format
         env:
           BUILDBUDDY_API_KEY: ${{ secrets.BUILDBUDDY_API_KEY }}
         run: |
+          bazel vendor //...
           bazel test --nofetch //...
           bazel run --nofetch //tools/format:format.check
-          bazel vendor
 
       - name: Save bazel vendor to github cache
         if: github.ref == 'refs/heads/main'
