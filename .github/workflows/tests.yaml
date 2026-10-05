@@ -63,6 +63,7 @@ jobs:
           cd third-party/hidapi-cpp
           bazel test -- //... -//tests/integration/... 
           bazel run //tools/format:format.check
+          bazel vendor
 
       - name: ratbag-cpp - Test, lint and format
         env:
@@ -70,8 +71,9 @@ jobs:
         run: |
           bazel test //...
           bazel run //tools/format:format.check
+          bazel vendor
 
-      - name: Save bazel vendor into cache
+      - name: Save bazel vendor to github cache
         id: cache-primes-save
         uses: actions/cache/save@v6
         with:
