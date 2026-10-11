@@ -32,7 +32,7 @@ cc_test(
         "@platforms//os:linux",
     ],
     deps = [
-        "//hidapi:device",
+        "//hidapi:device_info",
         "@googletest//:gtest_main",
     ],
 )
