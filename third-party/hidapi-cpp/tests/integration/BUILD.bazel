@@ -11,11 +11,15 @@ cc_test(
         "//hidapi:device_info",
         "@googletest//:gtest_main",
     ],
+    tags = [
+        "local",     # needs real /sys and /dev, so no sandbox
+        "external",  # hardware state isn't a Bazel input, so never cache the result
+    ],
 )
 
 cc_test(
-    name = "test_device",
-    srcs = ["test_device.cpp"],
+    name = "test_device_info_logitech_g502",
+    srcs = ["test_device_info_logitech_g502.cpp"],
     cxxopts = [
         # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
         "-Wno-deprecated-declarations",
@@ -23,5 +27,12 @@ cc_test(
     deps = [
         "//hidapi:device",
         "@googletest//:gtest_main",
+    ],
+    tags = [
+        "local",     # needs real /sys and /dev, so no sandbox
+        "external",  # hardware state isn't a Bazel input, so never cache the result
+    ],
+    target_compatible_with = [
+        "@platforms//os:linux",
     ],
 )

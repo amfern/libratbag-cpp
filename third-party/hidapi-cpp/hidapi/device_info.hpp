@@ -148,9 +148,9 @@ struct formatter<hidapi::HIDDeviceInfo> : formatter<string_view> {
     return format_to(
         ctx.out(),
         "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
-        "release_number: {}, "
+        "release_number: {:#05x}, "
         "manufacturer_string: {}, product_string = {}, usage_page "
-        "= {}, usage = {}, interface_number = {}, bus_type = {})",
+        "= {:#04x}, usage = {:#04x}, interface_number = {}, bus_type = {})",
         info.path(),
         info.device_id(),
         info.serial_number(),
