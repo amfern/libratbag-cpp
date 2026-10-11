@@ -15,7 +15,6 @@ TEST(DeviceInfoTestSuit, EnumarateDevicesCompareToHidAPI) {
   devs = hid_enumerate(0, 0);  // 0,0 = find all devices
   cur_dev = devs;
 
-
   cur_dev = nullptr;
   if (cur_dev == nullptr) {
     hid_free_enumeration(devs);

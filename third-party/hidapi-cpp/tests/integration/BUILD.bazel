@@ -7,13 +7,13 @@ cc_test(
         # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
         "-Wno-deprecated-declarations",
     ],
+    tags = [
+        "external",  # hardware state isn't a Bazel input, so never cache the result
+        "local",  # needs real /sys and /dev, so no sandbox
+    ],
     deps = [
         "//hidapi:device_info",
         "@googletest//:gtest_main",
-    ],
-    tags = [
-        "local",     # needs real /sys and /dev, so no sandbox
-        "external",  # hardware state isn't a Bazel input, so never cache the result
     ],
 )
 
@@ -24,15 +24,15 @@ cc_test(
         # wstring_convert<std::codecvt_utf8<wchar_t>>' is deprecated
         "-Wno-deprecated-declarations",
     ],
-    deps = [
-        "//hidapi:device",
-        "@googletest//:gtest_main",
-    ],
     tags = [
-        "local",     # needs real /sys and /dev, so no sandbox
         "external",  # hardware state isn't a Bazel input, so never cache the result
+        "local",  # needs real /sys and /dev, so no sandbox
     ],
     target_compatible_with = [
         "@platforms//os:linux",
+    ],
+    deps = [
+        "//hidapi:device",
+        "@googletest//:gtest_main",
     ],
 )
