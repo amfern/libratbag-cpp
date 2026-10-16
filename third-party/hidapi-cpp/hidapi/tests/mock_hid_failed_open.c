@@ -38,6 +38,23 @@ struct hid_device_ {
   struct hid_device_info* device_info;
 };
 
+int HID_API_EXPORT HID_API_CALL hid_write(hid_device* dev, const unsigned char* data, size_t length) { return 0; }
+
+int HID_API_EXPORT HID_API_CALL
+hid_read_timeout(hid_device* dev, unsigned char* data, size_t length, int milliseconds) {
+  return -1;
+}
+
+int HID_API_EXPORT HID_API_CALL hid_send_feature_report(hid_device* dev, const unsigned char* data, size_t length) {
+  return -1;
+}
+
+int HID_API_EXPORT HID_API_CALL hid_get_feature_report(hid_device* dev, unsigned char* data, size_t length) {
+  return -1;
+}
+
 HID_API_EXPORT hid_device* HID_API_CALL hid_open_path(const char* path) { return NULL; }
 
 HID_API_EXPORT const wchar_t* HID_API_CALL hid_error(hid_device* dev) { return L"ioctl(GRDESCSIZE) error for"; }
+
+void HID_API_EXPORT hid_close(hid_device *dev) { }

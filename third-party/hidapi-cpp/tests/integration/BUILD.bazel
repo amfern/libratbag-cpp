@@ -9,6 +9,7 @@ cc_test(
     ],
     deps = [
         "//hidapi:device_info",
+        "//hidapi",
         "@googletest//:gtest_main",
     ],
 )
@@ -22,6 +23,7 @@ cc_test(
     ],
     deps = [
         "//hidapi:device",
+        "@hidapi",
         "@googletest//:gtest_main",
     ],
 )

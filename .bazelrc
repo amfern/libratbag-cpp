@@ -25,11 +25,13 @@ build:lint --aspects=//tools/lint:linters.bzl%buildifier
 build:lint --aspects=//tools/lint:linters.bzl%shellcheck
 build:lint --output_groups=rules_lint_human
 
-build:macos --macos_minimum_os=14.0 --host_macos_minimum_os=14.0 
+build:macos --macos_minimum_os=14.0 --host_macos_minimum_os=14.0
+build:macos --features=oso_prefix_is_pwd
 
 # TODO: on mac combination of asan and ubsan causes exception in tests to not be caught
 #       enabling sanitizer via --feastures=asan fails with unsupported option '-static-libgcc' 
-test:macos --config=debug --config=lint
+# TODO: bazel-lint doesn't work on macos https://github.com/aspect-build/rules_lint/issues/924
+test:macos --config=debug
 test:linux --config=debug --config=asan --config=ubsan --config=lint
 
 # Enable hermetic `rules_python`, needed for herdron
