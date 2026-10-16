@@ -25,17 +25,20 @@ static constexpr hidapi::ProductID G502_PID = 0xc332;
 TEST(DeviceTestSuit, OpenDevice) {
   // TODO(ask): this funciton may throw an exception, and i don't handle it. clang-tidy doesn't warn about it.
   //            This fails i the CI, because there is no devices
+  //      ans: lint doesn't complain because gtest has top level catch all
 
   // TODO(ask): how do catch error and return the std::vector out of the catch block?
+
+  
+  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices({G502_VID, G502_PID});
+  
   // hidapi::HIDDeviceInfoList deviceInfos;
   // try {
-  //   deviceInfos = HIDDeviceInfo::enumerate_hid_devices();
   // } catch(std::runtime_error e) {
-  //   GTEST_SKIP() << "Skipping this test because the device Logitech Gaming "
-  //                   "Mouse G502 not found.";    
+    
   // }
 
-  auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices({G502_VID, G502_PID});
+  // auto deviceInfos = HIDDeviceInfo::enumerate_hid_devices({G502_VID, G502_PID});
   // auto it = std::ranges::find(deviceInfos, DeviceID{0x046d, 0xc332}, &HIDDeviceInfo::device_id);
 
   if (deviceInfos.empty()) {

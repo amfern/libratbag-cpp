@@ -32,7 +32,7 @@ std::ostream& operator<<(std::ostream& os, const HIDAPIString& s) {
 }
 
 // TODO: add mock tests for "DeviceID deviceID" param
-const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices(DeviceID deviceID) {
+HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices(DeviceID deviceID) {
   struct hid_device_info* cur_dev;
   cur_dev = hid_enumerate(deviceID.vid(), deviceID.pid());  // 0,0 = find all devices
 

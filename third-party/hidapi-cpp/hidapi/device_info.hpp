@@ -76,7 +76,7 @@ class HIDDeviceInfo {
   // - comparitors
   // - member function
  public:
-  static const HIDDeviceInfoList enumerate_hid_devices(DeviceID deviceID = {0, 0});
+  static HIDDeviceInfoList enumerate_hid_devices(DeviceID deviceID = {0, 0});
 
   friend std::ostream& operator<<(std::ostream& os, const HIDDeviceInfo& info);
 
