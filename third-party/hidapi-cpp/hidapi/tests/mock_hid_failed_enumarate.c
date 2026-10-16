@@ -19,3 +19,5 @@ struct hid_device_ {
 };
 
 HID_API_EXPORT const wchar_t* HID_API_CALL hid_error(hid_device* dev) { return L"Couldn't create udev context"; }
+
+void HID_API_EXPORT hid_close(hid_device* dev) {}

@@ -4,17 +4,15 @@
 bazel_dep(name = "rules_shell", version = "0.6.1", dev_dependency = True)
 bazel_dep(name = "bazel_skylib", version = "1.9.2", dev_dependency = True)
 bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
-bazel_dep(name = "toolchains_llvm", version = "1.6.0", dev_dependency = True)
+bazel_dep(name = "toolchains_llvm", version = "1.11.3", dev_dependency = True)
 bazel_dep(name = "platforms", version = "1.0.0", dev_dependency = True)
 bazel_dep(name = "rules_build_error", version = "0.11.0", dev_dependency = True)
 
+# Configure and register the toolchain.
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
 llvm.toolchain(
-    name = "llvm_toolchain",
     cxx_standard = {"": "c++23"},
-    llvm_versions = {
-        "": "21.1.6",
-    },
+    llvm_version = "21.1.6",
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
 

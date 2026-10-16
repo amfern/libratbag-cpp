@@ -72,3 +72,12 @@ int HID_API_EXPORT HID_API_CALL hid_get_feature_report(hid_device* dev, unsigned
 }
 
 HID_API_EXPORT const wchar_t* HID_API_CALL hid_error(hid_device* dev) { return L"Success"; }
+
+// TODO: i don't want to reimplement those functions, i'd rather use the original one
+void HID_API_EXPORT hid_close(hid_device* dev) {
+  if (!dev) return;
+
+  hid_free_enumeration(dev->device_info);
+
+  free(dev);
+}
