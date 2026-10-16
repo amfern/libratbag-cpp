@@ -32,7 +32,8 @@ class HIDDevice {
   // https://github.com/xuchen-tech/Books/blob/main/C%2B%2B%20Templates%20The%20Complete%20Guide%2C%202nd%20Edition%20[BooxRack].pdf
   // ussually we copy pass by const &, but
   // clang tidy catches use after move
-  // TODO(ask): C++ seperation of definition and implemetnation between .hpp and .cpp files allows me to mock the implentation by providing a different .cpp file.
+  // TODO(ask): C++ seperation of definition and implemetnation between .hpp and .cpp files allows me to mock the
+  // implentation by providing a different .cpp file.
   //            But how would a downstream user be abel to mock function with template?
   //            altough i can just mock the hid_open_path
   template <typename T>

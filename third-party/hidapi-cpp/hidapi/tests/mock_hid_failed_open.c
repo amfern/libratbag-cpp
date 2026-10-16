@@ -57,4 +57,4 @@ HID_API_EXPORT hid_device* HID_API_CALL hid_open_path(const char* path) { return
 
 HID_API_EXPORT const wchar_t* HID_API_CALL hid_error(hid_device* dev) { return L"ioctl(GRDESCSIZE) error for"; }
 
-void HID_API_EXPORT hid_close(hid_device *dev) { }
+void HID_API_EXPORT hid_close(hid_device* dev) {}
