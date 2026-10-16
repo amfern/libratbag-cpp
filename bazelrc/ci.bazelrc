@@ -3,3 +3,4 @@ common:ci --show_timestamps
 common:ci --show_progress_rate_limit=-1
 common:ci --config=remote-cache
 common:ci --vendor_dir=~/bazel-vendor-cache
+common:ci --test_output=errors
