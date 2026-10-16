@@ -8,7 +8,7 @@
 
 namespace hidapi {
 
-DeviceID::DeviceID(ProductID vid, VendorID pid)
+DeviceID::DeviceID(VendorID vid, ProductID pid)
     : vid_(vid),
       pid_(pid) {}
 
@@ -31,9 +31,10 @@ std::ostream& operator<<(std::ostream& os, const HIDAPIString& s) {
   return os;
 }
 
-const HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices() {
+// TODO: add mock tests for "DeviceID deviceID" param
+HIDDeviceInfoList HIDDeviceInfo::enumerate_hid_devices(DeviceID deviceID) {
   struct hid_device_info* cur_dev;
-  cur_dev = hid_enumerate(0, 0);  // 0,0 = find all devices
+  cur_dev = hid_enumerate(deviceID.vid(), deviceID.pid());  // 0,0 = find all devices
 
   // TODO: it will throw error if failed to open udev, or there is just no hid
   // devices in the system. that is not ideal, as not having any hid devices in
