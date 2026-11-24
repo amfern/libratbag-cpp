@@ -1,12 +1,8 @@
 ############################################################################
 # configure toolchain
 ############################################################################
-bazel_dep(name = "rules_shell", version = "0.6.1", dev_dependency = True)
-bazel_dep(name = "bazel_skylib", version = "1.9.2", dev_dependency = True)
-bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
 bazel_dep(name = "toolchains_llvm", version = "1.6.0", dev_dependency = True)
 bazel_dep(name = "platforms", version = "1.0.0", dev_dependency = True)
-bazel_dep(name = "rules_build_error", version = "0.11.0", dev_dependency = True)
 
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
 llvm.toolchain(
@@ -26,7 +22,7 @@ register_toolchains(
 ############################################################################
 # configure linters
 ############################################################################
-bazel_dep(name = "aspect_rules_lint", version = "2.7.2", dev_dependency = True)
+bazel_dep(name = "aspect_rules_lint", version = "2.9.1", dev_dependency = True)
 
 # C++ linter tools
 lint_tools = use_extension("@aspect_rules_lint//lint:extensions.bzl", "tools", dev_dependency = True)

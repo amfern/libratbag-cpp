@@ -13,7 +13,7 @@ buildifier = lint_buildifier_aspect(
 buildifier_test = lint_test(aspect = buildifier)
 
 clang_tidy = lint_clang_tidy_aspect(
-    binary = Label("//tools/lint:clang_tidy"),
+    binary = Label(":clang_tidy"),
     configs = [
         Label(".clang-tidy"),
     ],
@@ -25,7 +25,7 @@ clang_tidy = lint_clang_tidy_aspect(
 clang_tidy_test = lint_test(aspect = clang_tidy)
 
 cppcheck = lint_cppcheck_aspect(
-    binary = Label("//tools/lint:cppcheck"),
+    binary = Label(":cppcheck"),
     verbose = True,
 )
 
