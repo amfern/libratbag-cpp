@@ -8,7 +8,7 @@ llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", 
 llvm.toolchain(
     name = "llvm_toolchain",
     cxx_standard = {"": "c++23"},
-    llvm_version = "23.1.5",
+    llvm_version = "21.1.6",
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
 
