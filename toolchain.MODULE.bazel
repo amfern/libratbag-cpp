@@ -1,16 +1,14 @@
 ############################################################################
 # configure toolchain
 ############################################################################
-bazel_dep(name = "toolchains_llvm", version = "1.6.0", dev_dependency = True)
 bazel_dep(name = "platforms", version = "1.0.0", dev_dependency = True)
+bazel_dep(name = "toolchains_llvm", version = "1.13.0", dev_dependency = True)
 
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
 llvm.toolchain(
     name = "llvm_toolchain",
     cxx_standard = {"": "c++23"},
-    llvm_versions = {
-        "": "21.1.6",
-    },
+    llvm_version = "23.1.5",
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
 
