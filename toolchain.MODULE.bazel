@@ -33,6 +33,8 @@ use_repo(
     "cppcheck_macos",
 )
 
+bazel_dep(name = "rules_shell", version = "0.6.1", dev_dependency = True)
+bazel_dep(name = "bazel_skylib", version = "1.9.2", dev_dependency = True)
 bazel_dep(name = "bazel_lib", version = "3.0.0", dev_dependency = True)
 bazel_dep(name = "buildifier_prebuilt", version = "8.5.1.4", dev_dependency = True)
 
