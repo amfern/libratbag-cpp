@@ -8,10 +8,7 @@ llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", 
 llvm.toolchain(
     name = "llvm_toolchain",
     cxx_standard = {"": "c++23"},
-    # TODO: llvm 21.1 is last version to support std::wstring_convert, but it suffers from a bug
-    # https://github.com/llvm/llvm-project/issues/113696
-    # https://github.com/bazel-contrib/toolchains_llvm/issues/657
-    # we use ubuntu 24.04 runner for now
+    # TODO: llvm 21.1 is last version to support std::wstring_convert
     llvm_version = "21.1.6",
 )
 use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")

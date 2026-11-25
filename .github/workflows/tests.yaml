@@ -32,6 +32,10 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libudev-dev
+          # TODO: llvm 21.1 is last version to support std::wstring_convert, but it suffers from a bug
+          # https://github.com/llvm/llvm-project/issues/113696
+          # https://github.com/bazel-contrib/toolchains_llvm/issues/657
+          sudo apt-get install -y libxml2-dev
 
       - name: Restore cached bazel vendor
         id: bazel-vendor-restore
