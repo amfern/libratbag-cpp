@@ -37,9 +37,6 @@ jobs:
           # https://github.com/bazel-contrib/toolchains_llvm/issues/657
           sudo apt-get install -y libxml2
 
-      - name: Install libxml2
-        run: |
-
       - name: Restore cached bazel vendor
         id: bazel-vendor-restore
         uses: actions/cache/restore@v6
