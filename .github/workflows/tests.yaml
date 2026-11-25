@@ -1,6 +1,5 @@
 name: Tests
 
-
 on:
   workflow_dispatch:
   push:
@@ -23,7 +22,12 @@ concurrency:
 jobs:
   tests:
     name: Build, Test, lint and Format
-    runs-on: ubuntu-latest
+    # TODO: llvm 21.1 is last version to support std::wstring_convert, but it suffers from a bug
+    # https://github.com/llvm/llvm-project/issues/113696
+    # https://github.com/bazel-contrib/toolchains_llvm/issues/657
+    # ubuntu 26.04 ships libxml2 2.15.2 under the new SONAME libxml2.so.16, with no .so.2 compat package
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: github.event.pull_request.draft == false
 
     steps:
