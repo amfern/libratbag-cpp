@@ -1,8 +1,10 @@
 module(name = "libratbag")
 
 bazel_dep(name = "rules_cc", version = "0.2.26")
+
 bazel_dep(name = "rules_build_error", version = "0.11.0", dev_dependency = True)
 bazel_dep(name = "googletest", version = "1.17.0", dev_dependency = True)
+
 bazel_dep(name = "hidapi-cpp", version = "0.0.1")
 local_path_override(
     module_name = "hidapi-cpp",

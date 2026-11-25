@@ -7,7 +7,7 @@ format_multirun(
     c = "@llvm_toolchain_llvm//:bin/clang-format",
     cc = "@llvm_toolchain_llvm//:bin/clang-format",
     cuda = "@llvm_toolchain_llvm//:bin/clang-format",
-    starlark = "@buildifier_prebuilt//:buildifier",
     shell = "@aspect_rules_lint//format:shfmt",
+    starlark = "@buildifier_prebuilt//:buildifier",
     visibility = ["//:__subpackages__"],
 )
