@@ -2,21 +2,20 @@
 # configure toolchain
 ############################################################################
 bazel_dep(name = "platforms", version = "1.0.0", dev_dependency = True)
-bazel_dep(name = "toolchains_llvm", version = "1.6.0", dev_dependency = True)
+bazel_dep(name = "toolchains_llvm", version = "1.11.3", dev_dependency = True)
 
 # Configure and register the toolchain.
 llvm = use_extension("@toolchains_llvm//toolchain/extensions:llvm.bzl", "llvm", dev_dependency = True)
 llvm.toolchain(
     cxx_standard = {"": "c++23"},
+    stdlib = {"": "builtin-libc++"},
+    # stdlib = {"": "stdc++"},
     # TODO: llvm 21.1 is last version to support std::wstring_convert
     llvm_version = "21.1.6",
 )
-use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
 
-register_toolchains(
-    "@llvm_toolchain//:all",
-    dev_dependency = True,
-)
+use_repo(llvm, "llvm_toolchain", "llvm_toolchain_llvm")
+register_toolchains("@llvm_toolchain//:all", dev_dependency = True)
 
 ############################################################################
 # configure linters
