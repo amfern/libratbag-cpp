@@ -23,7 +23,7 @@ concurrency:
 jobs:
   tests:
     name: Build, Test, lint and Format
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
 
     steps:
