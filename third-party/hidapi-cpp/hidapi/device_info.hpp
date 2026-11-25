@@ -14,7 +14,7 @@ using VendorID = uint16_t;
 
 class DeviceID {
  public:
-  DeviceID(ProductID vid, VendorID pid);
+  DeviceID(VendorID vid, ProductID pid);
 
   VendorID vid() const;
   ProductID pid() const;
@@ -76,7 +76,7 @@ class HIDDeviceInfo {
   // - comparitors
   // - member function
  public:
-  static const HIDDeviceInfoList enumerate_hid_devices();
+  static HIDDeviceInfoList enumerate_hid_devices(DeviceID deviceID = {0, 0});
 
   friend std::ostream& operator<<(std::ostream& os, const HIDDeviceInfo& info);
 
@@ -148,9 +148,9 @@ struct formatter<hidapi::HIDDeviceInfo> : formatter<string_view> {
     return format_to(
         ctx.out(),
         "HIDDeviceInfo(path: {}, deviceId: {}, serial_number: {}, "
-        "release_number: {}, "
+        "release_number: {:#05x}, "
         "manufacturer_string: {}, product_string = {}, usage_page "
-        "= {}, usage = {}, interface_number = {}, bus_type = {})",
+        "= {:#04x}, usage = {:#04x}, interface_number = {}, bus_type = {})",
         info.path(),
         info.device_id(),
         info.serial_number(),

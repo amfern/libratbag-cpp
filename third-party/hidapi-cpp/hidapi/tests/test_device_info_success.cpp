@@ -75,8 +75,8 @@ TEST(DeviceInfoTest, CanMove) {
   EXPECT_EQ(movedFrom.release_number(), 1);
   EXPECT_EQ(movedFrom.manufacturer_string().toString(), "mock manufacturer");
   EXPECT_EQ(movedFrom.product_string().toString(), "mock product");
-  EXPECT_EQ(movedFrom.usage_page(), 2);
-  EXPECT_EQ(movedFrom.usage(), 3);
+  EXPECT_EQ(movedFrom.usage_page(), 0x02);
+  EXPECT_EQ(movedFrom.usage(), 0x03);
   EXPECT_EQ(movedFrom.interface_number(), 4);
   EXPECT_EQ(movedFrom.bus_type(), hidapi::HidBusType::SPI);
 }
@@ -101,8 +101,8 @@ TEST(DeviceInfoTest, CanPrintFormat) {
   EXPECT_EQ(
       std::format("{}", deviceInfos.front()),
       "HIDDeviceInfo(path: /mock/path, deviceId: DeviceID(vid: 0x1234, pid: "
-      "0x4321), serial_number: serial number, release_number: 1, "
+      "0x4321), serial_number: serial number, release_number: 0x001, "
       "manufacturer_string: mock manufacturer, product_string = mock product, "
-      "usage_page = 2, usage = 3, interface_number = 4, bus_type = SPI)"
+      "usage_page = 0x02, usage = 0x03, interface_number = 4, bus_type = SPI)"
   );
 }
