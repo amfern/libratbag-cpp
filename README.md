@@ -47,8 +47,8 @@ bazel run --sandbox_debug --config debug --run_under=lldb //ratbag/cli:cli
 ### formatting and Linting
 
 ``` sh
-bazel run //tools/format:format # fix
+bazel run //:format
 # bazel run //tools/format:format.check
-bazel build --config=lint --output_groups=rules_lint_human //...
+bazel build --config=lint //...
 ```
 

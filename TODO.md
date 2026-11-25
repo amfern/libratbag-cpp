@@ -79,3 +79,8 @@ cheap to copy. cheaper than dereferencing an address
 // working togather, even if it's in the same process and same project. Use
 // "detail" directory to be able to test internal implemenetation detail things while keeping them hidden from API user.
 // like in arene-base for all the private functions that need testing,
+
+
+### trailing return type
+// trailing return type make formatting pretieres, easier to deduce type from parameter instead of declaring std::declval ahead. Which eseetially saves on typing.
+// auto foo(T1 arg1,T2 arg2) -> decltype(arg1+arg2);
