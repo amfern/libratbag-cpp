@@ -1,12 +1,5 @@
 load("@rules_cc//cc:defs.bzl", "cc_test")
 
-# TODO: Help me make sense of what happens here.
-#            I was able to overwrite hid_enumerate symbol from from hidapi.so with my own... and there was no error.
-#            Shouldn't i get an ODR violation of redeclarion of a symbol.
-#            I wasn't able to overwrite with linker --wrap, it seems like all
-#            "hid_enumerate" symbol was resolved and stripped in
-#            bazel-bin/hidapi-cpp/libhidapi.so
-
 cc_test(
     name = "hid_report_success",
     srcs = [
@@ -24,11 +17,7 @@ cc_test(
         "mock_hid_success.c",
         "test_device_info_success.cpp",
     ],
-    # linkopts = [
-    #     "-Wl,--wrap,hid_enumerate",
-    # ],
     deps = [
-        # ":mocked_hidapi",
         "//hidapi:device_info",
         "@googletest//:gtest_main",
     ],
@@ -40,11 +29,7 @@ cc_test(
         "mock_hid_failed_enumarate.c",
         "test_device_info_failed_enumarate.cpp",
     ],
-    # linkopts = [
-    #     "-Wl,--wrap,hid_enumerate",
-    # ],
     deps = [
-        # ":mocked_hidapi",
         "//hidapi:device_info",
         "@googletest//:gtest_main",
     ],
@@ -56,11 +41,7 @@ cc_test(
         "mock_hid_failed_open.c",
         "test_device_failed_open.cpp",
     ],
-    # linkopts = [
-    #     "-Wl,--wrap,hid_enumerate",
-    # ],
     deps = [
-        # ":mocked_hidapi",
         "//hidapi:device",
         "@googletest//:gtest_main",
     ],
@@ -72,11 +53,7 @@ cc_test(
         "mock_hid_failed_write_and_read.c",
         "test_device_failed_to_write_and_read.cpp",
     ],
-    # linkopts = [
-    #     "-Wl,--wrap,hid_enumerate",
-    # ],
     deps = [
-        # ":mocked_hidapi",
         "//hidapi:device",
         "@googletest//:gtest_main",
     ],
@@ -88,11 +65,7 @@ cc_test(
         "mock_hid_success.c",
         "test_device_success.cpp",
     ],
-    # linkopts = [
-    #     "-Wl,--wrap,hid_enumerate",
-    # ],
     deps = [
-        # ":mocked_hidapi",
         "//hidapi:device",
         "@googletest//:gtest_main",
     ],

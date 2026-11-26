@@ -8,7 +8,7 @@ cc_library(
     visibility = ["//hidapi:__subpackages__"],
     deps = [
         "//hidapi/detail:hid_report_internal",
-        "@hidapi",
+        "@hidapi//:headers",
     ],
 )
 
@@ -30,7 +30,7 @@ cc_library(
     ],
     deps = [
         "//hidapi/detail:hid_bus_type_internal",
-        "@hidapi",
+        "@hidapi//:headers",
     ],
 )
 
@@ -53,7 +53,7 @@ cc_library(
     deps = [
         ":device_info",
         ":hid_report",
-        "@hidapi",
+        "@hidapi//:headers",
     ],
 )
 
@@ -67,5 +67,6 @@ cc_library(
         ":device",
         ":device_info",
         ":hid_report",
+        "@hidapi",
     ],
 )

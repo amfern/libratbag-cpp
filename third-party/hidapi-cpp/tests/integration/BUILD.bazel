@@ -8,6 +8,7 @@ cc_test(
         "-Wno-deprecated-declarations",
     ],
     deps = [
+        "//hidapi",
         "//hidapi:device_info",
         "@googletest//:gtest_main",
     ],
@@ -23,5 +24,6 @@ cc_test(
     deps = [
         "//hidapi:device",
         "@googletest//:gtest_main",
+        "@hidapi",
     ],
 )

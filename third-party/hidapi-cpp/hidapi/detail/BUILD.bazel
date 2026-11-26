@@ -9,7 +9,7 @@ cc_library(
         "//hidapi:__subpackages__",
     ],
     deps = [
-        "@hidapi",
+        "@hidapi//:headers",
     ],
 )
 

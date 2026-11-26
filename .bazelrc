@@ -1,30 +1,10 @@
 import %workspace%/bazelrc/remote.bazelrc
 import %workspace%/bazelrc/ci.bazelrc
 
-# Use the toolchain-resolution mechanism for C++
-build --incompatible_enable_cc_toolchain_resolution
-
-# Build cache
-build --guard_against_concurrent_changes
-
-# Disable `WORKSPACE`
-build --noenable_workspace
-
-# Prevent `PATH` and `LD_LIBRARY_PATH` leaking into action enviroment
-build --incompatible_strict_action_env
-
-# Prevent symlink forest under `.runfiles/wsname/external/repo`
-build --nolegacy_external_runfiles
-
-# fail on warnning
-build --copt=-Werror
-build --linkopt=-Werror
-
 # To debug: lldb bazel-bin/ratbag/cli/cli
 # build:debug --spawn_strategy=local
 # build:debug --sandbox_debug
 build:debug --strip=never
-build:debug --features=oso_prefix_is_pwd
 build:debug -c dbg
 build:debug --copt=-fno-omit-frame-pointer
 build:debug --copt=-ferror-limit=1
@@ -32,15 +12,11 @@ build:debug --copt=-ferror-limit=1
 # build:debug --strip=never
 
 # address sanitizer
-build:asan --copt=-fsanitize=address
-build:asan --linkopt=-fsanitize=address
-
+build:asan --features=asan
 # undefined behavior sanitizer
-build:ubsan --copt=-fsanitize=undefined
-build:ubsan --linkopt=-fsanitize=undefined
-
+build:ubsan --features=ubsan
 # memory sanitizer
-build:msan --linkopt=-fsanitize=memory
+build:msan --features=msan
 
 # rules_lint
 build:lint --aspects=//tools/lint:linters.bzl%clang_tidy
@@ -49,15 +25,18 @@ build:lint --aspects=//tools/lint:linters.bzl%buildifier
 build:lint --aspects=//tools/lint:linters.bzl%shellcheck
 build:lint --output_groups=rules_lint_human
 
-test --test_output=errors
-test --config=debug --config=asan --config=ubsan --config=lint # --config=msan
+build:macos --macos_minimum_os=14.0 --host_macos_minimum_os=14.0
+build:macos --features=oso_prefix_is_pwd
 
-# TODO: this probably not needed for osx anymore
-# Print relative paths where possible to reduce noise
-# test --test_env="PATH=/bin:/usr/bin:$PATH" # TODO: why i need this work around on osx?
-# common --attempt_to_print_relative_paths
-# common --macos_minimum_os=13.3
-# common --cxxopt="-std=c++23"
+# TODO: on mac combination of asan and ubsan causes exception in tests to not be caught
+#       enabling sanitizer via --feastures=asan fails with unsupported option '-static-libgcc' 
+# TODO: bazel-lint doesn't work on macos https://github.com/aspect-build/rules_lint/issues/924
+test:macos --config=debug
+test:linux --config=debug --config=asan --config=ubsan --config=lint
 
-# Enable hermetic `rules_python`
+# Enable hermetic `rules_python`, needed for herdron
 common --@rules_python//python/config_settings:bootstrap_impl=script
+common --enable_platform_specific_config
+build --copt=-Werror
+build --linkopt=-Werror
+test --test_output=errors
